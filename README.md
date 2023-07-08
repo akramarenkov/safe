@@ -31,7 +31,7 @@ func main() {
 
     _, err = safe.SumInt[int8](3, 125)
     if err == nil {
-        panic(err)
+        panic("expected overflow")
     }
     // Output: 127
 }
