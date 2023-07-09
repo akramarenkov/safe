@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -1012,4 +1013,106 @@ func TestUintToIntOverflow(t *testing.T) {
 	converted, err = UnsignedToSigned[uint16, int8](259)
 	require.Error(t, err)
 	require.Equal(t, int8(0), converted)
+}
+
+func FuzzSum(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, first int16, second int16) {
+			higher := int64(first) + int64(second)
+
+			sum, err := SumInt(first, second)
+			if higher > math.MaxInt16 || higher < math.MinInt16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, higher, int64(sum))
+		},
+	)
+}
+
+func FuzzSumUnsigned(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, first uint16, second uint16) {
+			higher := uint64(first) + uint64(second)
+
+			sum, err := SumInt(first, second)
+			if higher > math.MaxUint16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, higher, uint64(sum))
+		},
+	)
+}
+
+func FuzzProduct(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, first int16, second int16) {
+			higher := int64(first) * int64(second)
+
+			sum, err := ProductInt(first, second)
+			if higher > math.MaxInt16 || higher < math.MinInt16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, higher, int64(sum))
+		},
+	)
+}
+
+func FuzzProductUnsigned(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, first uint16, second uint16) {
+			higher := uint64(first) * uint64(second)
+
+			sum, err := ProductInt(first, second)
+			if higher > math.MaxUint16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, higher, uint64(sum))
+		},
+	)
+}
+
+func FuzzFloatToInt(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, number int32) {
+			float := float64(number)
+
+			casted, err := FloatToInt[float64, int16](float)
+			if number > math.MaxInt16 || number < math.MinInt16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, number, int32(casted))
+		},
+	)
+}
+
+func FuzzFloatToIntUnsigned(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, number uint32) {
+			float := float64(number)
+
+			casted, err := FloatToInt[float64, uint16](float)
+			if number > math.MaxUint16 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, number, uint32(casted))
+		},
+	)
 }
