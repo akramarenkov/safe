@@ -564,6 +564,14 @@ func TestFloatToInt(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int8(127), converted)
 
+	converted, err = FloatToInt[float64, int8](127.1)
+	require.NoError(t, err)
+	require.Equal(t, int8(127), converted)
+
+	converted, err = FloatToInt[float64, int8](127.6)
+	require.NoError(t, err)
+	require.Equal(t, int8(127), converted)
+
 	converted, err = FloatToInt[float64, int8](3.0)
 	require.NoError(t, err)
 	require.Equal(t, int8(3), converted)
@@ -619,18 +627,18 @@ func TestFloatToInt(t *testing.T) {
 	converted, err = FloatToInt[float64, int8](-128.0)
 	require.NoError(t, err)
 	require.Equal(t, int8(-128), converted)
+
+	converted, err = FloatToInt[float64, int8](-128.1)
+	require.NoError(t, err)
+	require.Equal(t, int8(-128), converted)
+
+	converted, err = FloatToInt[float64, int8](-128.6)
+	require.NoError(t, err)
+	require.Equal(t, int8(-128), converted)
 }
 
 func TestFloatToIntOverflow(t *testing.T) {
-	converted, err := FloatToInt[float64, int8](127.1)
-	require.Error(t, err)
-	require.Equal(t, int8(0), converted)
-
-	converted, err = FloatToInt[float64, int8](127.6)
-	require.Error(t, err)
-	require.Equal(t, int8(0), converted)
-
-	converted, err = FloatToInt[float64, int8](128)
+	converted, err := FloatToInt[float64, int8](128)
 	require.Error(t, err)
 	require.Equal(t, int8(0), converted)
 
@@ -671,14 +679,6 @@ func TestFloatToIntOverflow(t *testing.T) {
 	require.Equal(t, int8(0), converted)
 
 	converted, err = FloatToInt[float64, int8](127 * 5 / 3)
-	require.Error(t, err)
-	require.Equal(t, int8(0), converted)
-
-	converted, err = FloatToInt[float64, int8](-128.1)
-	require.Error(t, err)
-	require.Equal(t, int8(0), converted)
-
-	converted, err = FloatToInt[float64, int8](-128.6)
 	require.Error(t, err)
 	require.Equal(t, int8(0), converted)
 
@@ -763,18 +763,18 @@ func TestFloatToUint(t *testing.T) {
 	converted, err = FloatToInt[float64, uint8](255.0)
 	require.NoError(t, err)
 	require.Equal(t, uint8(255), converted)
+
+	converted, err = FloatToInt[float64, uint8](255.1)
+	require.NoError(t, err)
+	require.Equal(t, uint8(255), converted)
+
+	converted, err = FloatToInt[float64, uint8](255.6)
+	require.NoError(t, err)
+	require.Equal(t, uint8(255), converted)
 }
 
 func TestFloatToUintOverflow(t *testing.T) {
-	converted, err := FloatToInt[float64, uint8](255.1)
-	require.Error(t, err)
-	require.Equal(t, uint8(0), converted)
-
-	converted, err = FloatToInt[float64, uint8](255.6)
-	require.Error(t, err)
-	require.Equal(t, uint8(0), converted)
-
-	converted, err = FloatToInt[float64, uint8](256)
+	converted, err := FloatToInt[float64, uint8](256)
 	require.Error(t, err)
 	require.Equal(t, uint8(0), converted)
 

@@ -72,14 +72,6 @@ func FloatToInt[
 	converted := Integer(float)
 	reverted := Float(converted)
 
-	if reverted > float && IsMaxNegative(converted) {
-		return 0, ErrValueOverflow
-	}
-
-	if reverted < float && IsMaxPositive(converted) {
-		return 0, ErrValueOverflow
-	}
-
 	if reverted > float+1 {
 		return 0, ErrValueOverflow
 	}
