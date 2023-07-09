@@ -1146,13 +1146,30 @@ func FuzzInvert(f *testing.F) {
 	)
 }
 
-func FuzzUnsignedToSigned(f *testing.F) {
+func FuzzUnsignedToSigned8(f *testing.F) {
+	f.Fuzz(
+		func(t *testing.T, number uint16) {
+			higher := int64(number)
+
+			casted, err := UnsignedToSigned[uint16, int8](number)
+			if higher > math.MaxInt8 {
+				require.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.Equal(t, higher, int64(casted))
+		},
+	)
+}
+
+func FuzzUnsignedToSigned16(f *testing.F) {
 	f.Fuzz(
 		func(t *testing.T, number uint16) {
 			higher := int64(number)
 
 			casted, err := UnsignedToSigned[uint16, int16](number)
-			if higher > math.MaxUint16 {
+			if higher > math.MaxInt16 {
 				require.Error(t, err)
 				return
 			}
