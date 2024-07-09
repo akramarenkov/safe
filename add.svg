@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="39cm" height="29cm" viewBox="18 26 763 562" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="20" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="40" y="165.683">
+      <tspan x="40" y="165.683">0</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x1="440" y1="60" x2="440" y2="110.264"/>
+    <polygon style="fill: #ff0000" points="440,117.764 435,107.764 440,110.264 445,107.764 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="440,117.764 435,107.764 440,110.264 445,107.764 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="440" y="40">
+    <tspan x="440" y="40">imaginary 2^n</tspan>
+  </text>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="380" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="400" y="165.683">
+      <tspan x="400" y="165.683">2^n-1</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="420" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="440" y="165.683">
+      <tspan x="440" y="165.683">0</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="740" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="760" y="165.683">
+      <tspan x="760" y="165.683">2^n-1</tspan>
+    </text>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="40" y="340">
+    <tspan x="40" y="340">F ∊ [1; 2^n - 1]</tspan>
+    <tspan x="40" y="356"></tspan>
+    <tspan x="40" y="372">S ∊ [1; 2^n - 1]</tspan>
+    <tspan x="40" y="388"></tspan>
+    <tspan x="40" y="404">from 1 so that overflow is possible</tspan>
+  </text>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="220" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="240" y="165.683">
+      <tspan x="240" y="165.683">F</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="300" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="320" y="165.683">
+      <tspan x="320" y="165.683">S</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="60" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="80" y="165.683">
+      <tspan x="80" y="165.683">1</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="500" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="520" y="165.683">
+      <tspan x="520" y="165.683">sum</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="240" y1="320" x2="240" y2="209.736"/>
+    <polygon style="fill: #000000" points="240,202.236 245,212.236 240,209.736 235,212.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="240,202.236 245,212.236 240,209.736 235,212.236 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="520" y1="320" x2="520" y2="209.736"/>
+    <polygon style="fill: #000000" points="520,202.236 525,212.236 520,209.736 515,212.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="520,202.236 525,212.236 520,209.736 515,212.236 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="249.736" y1="300" x2="510.264" y2="300"/>
+    <polygon style="fill: #000000" points="242.236,300 252.236,295 249.736,300 252.236,305 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="242.236,300 252.236,295 249.736,300 252.236,305 "/>
+    <polygon style="fill: #000000" points="517.764,300 507.764,305 510.264,300 507.764,295 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="517.764,300 507.764,305 510.264,300 507.764,295 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="380" y="280">
+    <tspan x="380" y="280">S</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="40" y1="260" x2="40" y2="209.736"/>
+    <polygon style="fill: #000000" points="40,202.236 45,212.236 40,209.736 35,212.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="40,202.236 45,212.236 40,209.736 35,212.236 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="49.7361" y1="240" x2="230.264" y2="240"/>
+    <polygon style="fill: #000000" points="42.2361,240 52.2361,235 49.7361,240 52.2361,245 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="42.2361,240 52.2361,235 49.7361,240 52.2361,245 "/>
+    <polygon style="fill: #000000" points="237.764,240 227.764,245 230.264,240 227.764,235 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="237.764,240 227.764,245 230.264,240 227.764,235 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="140" y="220">
+    <tspan x="140" y="220">F</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="440" y1="260" x2="440" y2="209.736"/>
+    <polygon style="fill: #000000" points="440,202.236 445,212.236 440,209.736 435,212.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="440,202.236 445,212.236 440,209.736 435,212.236 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="449.736" y1="240" x2="510.264" y2="240"/>
+    <polygon style="fill: #000000" points="442.236,240 452.236,235 449.736,240 452.236,245 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="442.236,240 452.236,235 449.736,240 452.236,245 "/>
+    <polygon style="fill: #000000" points="517.764,240 507.764,245 510.264,240 507.764,235 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="517.764,240 507.764,245 510.264,240 507.764,235 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="480" y="220">
+    <tspan x="480" y="220">sum</tspan>
+  </text>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="249.736" y1="240" x2="430.264" y2="240"/>
+    <polygon style="fill: #000000" points="242.236,240 252.236,235 249.736,240 252.236,245 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="242.236,240 252.236,235 249.736,240 252.236,245 "/>
+    <polygon style="fill: #000000" points="437.764,240 427.764,245 430.264,240 427.764,235 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="437.764,240 427.764,245 430.264,240 427.764,235 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="340" y="220">
+    <tspan x="340" y="220">S1</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="40" y="440">
+    <tspan x="40" y="440">F + S1 = 2^n ⇒ S1 ∊ [1; 2^n - F]</tspan>
+    <tspan x="40" y="456"></tspan>
+    <tspan x="40" y="472">S = S1 + sum ⇒ sum = S - S1 ⇒ sum ∊ [1 - 1; 2^n - 1 - 2^n + F] ∊ [0; F - 1] ∊ [0; 2^n - 2]</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="40" y="520">
+    <tspan x="40" y="520">Finally, when overflowing:</tspan>
+    <tspan x="40" y="536"></tspan>
+    <tspan x="40" y="552">sum &lt; S because sum = S - S1 and S1 &gt;= 1</tspan>
+    <tspan x="40" y="568"></tspan>
+    <tspan x="40" y="584">sum &lt; F because sum ∊ [0; F - 1]</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="20" y="60">
+    <tspan x="20" y="60">F - first term</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="20" y="80">
+    <tspan x="20" y="80">S - second term</tspan>
+  </text>
+  <g>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x="700" y="140" width="40" height="40"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="720" y="165.683">
+      <tspan x="720" y="165.683">2^n-2</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" x1="720" y1="60" x2="720" y2="110.264"/>
+    <polygon style="fill: #ff0000" points="720,117.764 715,107.764 720,110.264 725,107.764 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="720,117.764 715,107.764 720,110.264 725,107.764 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #ff0000" x1="449.736" y1="80" x2="710.264" y2="80"/>
+    <polygon style="fill: #ff0000" points="442.236,80 452.236,75 449.736,80 452.236,85 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="442.236,80 452.236,75 449.736,80 452.236,85 "/>
+    <polygon style="fill: #ff0000" points="717.764,80 707.764,85 710.264,80 707.764,75 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000" points="717.764,80 707.764,85 710.264,80 707.764,75 "/>
+  </g>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="580" y="60">
+    <tspan x="580" y="60">overflow range</tspan>
+  </text>
+</svg>

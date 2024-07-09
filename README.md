@@ -22,17 +22,18 @@ import (
 )
 
 func main() {
-    sum, err := safe.SumInt[int8](3, 124)
+    sum, err := safe.Add[int8](124, 3)
     if err != nil {
         panic(err)
     }
 
     fmt.Println(sum)
 
-    _, err = safe.SumInt[int8](3, 125)
+    _, err = safe.Add[int8](125, 3)
     if err == nil {
         panic("expected overflow")
     }
+
     // Output: 127
 }
 ```
