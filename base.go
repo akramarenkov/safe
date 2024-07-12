@@ -230,12 +230,15 @@ func UToS[Uns constraints.Unsigned, Sgn constraints.Signed](number Uns) (Sgn, er
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Pow10[Type constraints.Integer](power int) (Type, error) {
+func Pow10[Type constraints.Integer, TypeP constraints.Integer](
+	power TypeP,
+) (Type, error) {
 	if power < 0 {
 		return 0, nil
 	}
 
-	if power >= len(pow10table) {
+	// Value of pow10table length fits into any integer type
+	if power >= TypeP(len(pow10table)) {
 		return 0, ErrOverflow
 	}
 
