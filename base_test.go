@@ -1462,9 +1462,9 @@ func BenchmarkUToS(b *testing.B) {
 func BenchmarkPow10Reference(b *testing.B) {
 	product := float64(0)
 
-	// b.N, product and require is used to prevent compiler optimizations
+	// product and require is used to prevent compiler optimizations
 	for range b.N {
-		product = math.Pow10(b.N % 19)
+		product = math.Pow10(19)
 	}
 
 	b.StopTimer()
@@ -1476,9 +1476,9 @@ func BenchmarkPow10Reference(b *testing.B) {
 func BenchmarkPow10(b *testing.B) {
 	product := uint64(0)
 
-	// b.N, product and require is used to prevent compiler optimizations
+	// product and require is used to prevent compiler optimizations
 	for range b.N {
-		product, _ = Pow10[uint64](b.N % 19)
+		product, _ = Pow10[uint64](19)
 	}
 
 	b.StopTimer()
@@ -1546,9 +1546,9 @@ func BenchmarkFToI(b *testing.B) {
 func BenchmarkPowReference(b *testing.B) {
 	product := float64(0)
 
-	// b.N, product and require is used to prevent compiler optimizations
+	// product and require is used to prevent compiler optimizations
 	for range b.N {
-		product = math.Pow(float64(b.N), float64(b.N))
+		product = math.Pow(14, 14)
 	}
 
 	b.StopTimer()
@@ -1560,9 +1560,9 @@ func BenchmarkPowReference(b *testing.B) {
 func BenchmarkPow(b *testing.B) {
 	product := uint64(0)
 
-	// b.N, product and require is used to prevent compiler optimizations
+	// product and require is used to prevent compiler optimizations
 	for range b.N {
-		product, _ = Pow(uint64(b.N), b.N)
+		product, _ = Pow(uint64(14), 14)
 	}
 
 	b.StopTimer()
