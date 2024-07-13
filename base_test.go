@@ -526,7 +526,7 @@ func testIToIU8ToS8(t *testing.T) {
 	successful := 0
 
 	for number := 0; number <= math.MaxUint8; number++ {
-		converted, err := IToI[uint8, int8](uint8(number))
+		converted, err := IToI[int8](uint8(number))
 
 		reference := number
 
@@ -568,7 +568,7 @@ func testIToIS8ToU8(t *testing.T) {
 	successful := 0
 
 	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		converted, err := IToI[int8, uint8](int8(number))
+		converted, err := IToI[uint8](int8(number))
 
 		reference := number
 
@@ -610,7 +610,7 @@ func testIToIS8ToU16(t *testing.T) {
 	successful := 0
 
 	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		converted, err := IToI[int8, uint16](int8(number))
+		converted, err := IToI[uint16](int8(number))
 
 		reference := number
 
@@ -652,7 +652,7 @@ func testIToIU16ToS8(t *testing.T) {
 	successful := 0
 
 	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := IToI[uint16, int8](uint16(number))
+		converted, err := IToI[int8](uint16(number))
 
 		reference := number
 
@@ -694,7 +694,7 @@ func testIToIU16ToU8(t *testing.T) {
 	successful := 0
 
 	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := IToI[uint16, uint8](uint16(number))
+		converted, err := IToI[uint8](uint16(number))
 
 		reference := number
 
@@ -736,7 +736,7 @@ func testIToIS16ToS8(t *testing.T) {
 	successful := 0
 
 	for number := math.MinInt16; number <= math.MaxInt16; number++ {
-		converted, err := IToI[int16, int8](int16(number))
+		converted, err := IToI[int8](int16(number))
 
 		reference := number
 
@@ -778,7 +778,7 @@ func testIToIS16ToU8(t *testing.T) {
 	successful := 0
 
 	for number := math.MinInt16; number <= math.MaxInt16; number++ {
-		converted, err := IToI[int16, uint8](int16(number))
+		converted, err := IToI[uint8](int16(number))
 
 		reference := number
 
@@ -825,7 +825,7 @@ func testUToS8To8(t *testing.T) {
 	successful := 0
 
 	for number := 0; number <= math.MaxUint8; number++ {
-		converted, err := UToS[uint8, int8](uint8(number))
+		converted, err := UToS[int8](uint8(number))
 
 		reference := number
 
@@ -867,7 +867,7 @@ func testUToS16To8(t *testing.T) {
 	successful := 0
 
 	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := UToS[uint16, int8](uint16(number))
+		converted, err := UToS[int8](uint16(number))
 
 		reference := number
 
@@ -970,46 +970,46 @@ func TestIToF(t *testing.T) {
 }
 
 func testIToF32(t *testing.T) {
-	converted, loss := IToF[uint64, float32](math.MaxUint8)
+	converted, loss := IToF[float32](math.MaxUint8)
 	require.False(t, loss)
 	require.InDelta(t, float32(math.MaxUint8), converted, 0.0)
 
-	converted, loss = IToF[uint64, float32](math.MaxUint16)
+	converted, loss = IToF[float32](math.MaxUint16)
 	require.False(t, loss)
 	require.InDelta(t, float32(math.MaxUint16), converted, 0.0)
 
-	converted, loss = IToF[uint64, float32](1 << 24)
+	converted, loss = IToF[float32](1 << 24)
 	require.False(t, loss)
 	require.InDelta(t, float32(1<<24), converted, 0.0)
 
-	_, loss = IToF[uint64, float32](1<<24 + 1)
+	_, loss = IToF[float32](1<<24 + 1)
 	require.True(t, loss)
 
-	_, loss = IToF[uint64, float32](math.MaxUint32)
+	_, loss = IToF[float32](math.MaxUint32)
 	require.True(t, loss)
 }
 
 func testIToF64(t *testing.T) {
-	converted, loss := IToF[uint64, float64](math.MaxUint8)
+	converted, loss := IToF[float64](math.MaxUint8)
 	require.False(t, loss)
 	require.InDelta(t, float64(math.MaxUint8), converted, 0.0)
 
-	converted, loss = IToF[uint64, float64](math.MaxUint16)
+	converted, loss = IToF[float64](math.MaxUint16)
 	require.False(t, loss)
 	require.InDelta(t, float64(math.MaxUint16), converted, 0.0)
 
-	converted, loss = IToF[uint64, float64](math.MaxUint32)
+	converted, loss = IToF[float64](math.MaxUint32)
 	require.False(t, loss)
 	require.InDelta(t, float64(math.MaxUint32), converted, 0.0)
 
-	converted, loss = IToF[uint64, float64](1 << 53)
+	converted, loss = IToF[float64](1 << 53)
 	require.False(t, loss)
 	require.InDelta(t, float64(1<<53), converted, 0.0)
 
-	_, loss = IToF[uint64, float64](1<<53 + 1)
+	_, loss = IToF[float64](1<<53 + 1)
 	require.True(t, loss)
 
-	_, loss = IToF[uint64, float64](math.MaxUint64)
+	_, loss = IToF[float64](uint64(math.MaxUint64))
 	require.True(t, loss)
 }
 
@@ -1022,7 +1022,7 @@ func TestFToI(t *testing.T) {
 	successfulUint := 0
 
 	for reference := math.MinInt16; reference <= math.MaxInt16; reference++ {
-		integer, loss := IToF[int, float64](reference)
+		integer, loss := IToF[float64](reference)
 		require.False(t, loss)
 
 		for id, fractional := range fractionals {
@@ -1066,7 +1066,7 @@ func TestFToI(t *testing.T) {
 }
 
 func testFToIInt(t *testing.T, number float64, reference int) (int, int) {
-	converted, err := FToI[float64, int8](number)
+	converted, err := FToI[int8](number)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
 		require.Error(
@@ -1096,7 +1096,7 @@ func testFToIInt(t *testing.T, number float64, reference int) (int, int) {
 }
 
 func testFToIUint(t *testing.T, number float64, reference int) (int, int) {
-	converted, err := FToI[float64, uint8](number)
+	converted, err := FToI[uint8](number)
 
 	if reference > math.MaxUint8 || reference < 0 {
 		require.Error(
@@ -1143,10 +1143,10 @@ func testPow(t *testing.T, maxPower int8) {
 
 	// int32 is used because in its value range float64 does not lose the precision of
 	// the integer part
-	maxInt32, loss := IToF[int32, float64](math.MaxInt32)
+	maxInt32, loss := IToF[float64](math.MaxInt32)
 	require.False(t, loss)
 
-	minInt32, loss := IToF[int32, float64](math.MinInt32)
+	minInt32, loss := IToF[float64](math.MinInt32)
 	require.False(t, loss)
 
 	// int8 range is used because when using base and power in its values,
@@ -1154,10 +1154,10 @@ func testPow(t *testing.T, maxPower int8) {
 	// except in the case of raising 0 to a negative power
 	for base := int32(math.MinInt8); base <= math.MaxInt8; base++ {
 		for power := int32(math.MinInt8); power <= int32(maxPower); power++ {
-			bf, loss := IToF[int32, float64](base)
+			bf, loss := IToF[float64](base)
 			require.False(t, loss)
 
-			pf, loss := IToF[int32, float64](power)
+			pf, loss := IToF[float64](power)
 			require.False(t, loss)
 
 			reference := math.Pow(bf, pf)
@@ -1422,7 +1422,7 @@ func BenchmarkIToI(b *testing.B) {
 
 	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = IToI[int, uint](b.N)
+		converted, _ = IToI[uint](b.N)
 	}
 
 	b.StopTimer()
@@ -1450,7 +1450,7 @@ func BenchmarkUToS(b *testing.B) {
 
 	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = UToS[uint, int](uint(b.N))
+		converted, _ = UToS[int](uint(b.N))
 	}
 
 	b.StopTimer()
@@ -1506,7 +1506,7 @@ func BenchmarkIToF(b *testing.B) {
 
 	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = IToF[int, float64](b.N)
+		converted, _ = IToF[float64](b.N)
 	}
 
 	b.StopTimer()
@@ -1534,7 +1534,7 @@ func BenchmarkFToI(b *testing.B) {
 
 	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = FToI[float64, int](float64(b.N))
+		converted, _ = FToI[int](float64(b.N))
 	}
 
 	b.StopTimer()

@@ -176,7 +176,7 @@ func Negate[Type constraints.Signed](number Type) (Type, error) {
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func IToI[TypeS constraints.Integer, TypeD constraints.Integer](
+func IToI[TypeD constraints.Integer, TypeS constraints.Integer](
 	number TypeS,
 ) (TypeD, error) {
 	converted := TypeD(number)
@@ -209,7 +209,7 @@ func IToI[TypeS constraints.Integer, TypeD constraints.Integer](
 // Slightly faster than the IToI function.
 //
 // In case of overflow, an error is returned.
-func UToS[Uns constraints.Unsigned, Sgn constraints.Signed](number Uns) (Sgn, error) {
+func UToS[Sgn constraints.Signed, Uns constraints.Unsigned](number Uns) (Sgn, error) {
 	converted := Sgn(number)
 
 	if converted < 0 {
@@ -242,7 +242,7 @@ func Pow10[Type constraints.Integer, TypeP constraints.Integer](
 		return 0, ErrOverflow
 	}
 
-	return IToI[uint64, Type](pow10table[power])
+	return IToI[Type](pow10table[power])
 }
 
 // Converts an integer to a floating point number and determines whether loss of
@@ -251,7 +251,7 @@ func Pow10[Type constraints.Integer, TypeP constraints.Integer](
 // Loss of precision can lead to overflow when converting back to an integer number.
 //
 // Returns true if precision is lost.
-func IToF[Int constraints.Integer, Flt constraints.Float](number Int) (Flt, bool) {
+func IToF[Flt constraints.Float, Int constraints.Integer](number Int) (Flt, bool) {
 	converted := Flt(number)
 	reverted := Int(converted)
 
@@ -262,7 +262,7 @@ func IToF[Int constraints.Integer, Flt constraints.Float](number Int) (Flt, bool
 // has occurred or not.
 //
 // In case of overflow, an error is returned.
-func FToI[Flt constraints.Float, Int constraints.Integer](number Flt) (Int, error) {
+func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, error) {
 	converted := Int(number)
 	reverted := Flt(converted)
 
