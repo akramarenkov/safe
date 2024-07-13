@@ -31,7 +31,7 @@ func AddT[Type constraints.Integer](first Type, second Type, third Type) (Type, 
 
 	interim, err = Add(second, third)
 	if err == nil {
-		return Add(interim, first)
+		return Add(first, interim)
 	}
 
 	return 0, ErrOverflow
@@ -56,6 +56,39 @@ func AddUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) 
 	}
 
 	return sum, nil
+}
+
+// Subtracts three integers (subtrahend from minuend) and determines whether an overflow
+// has occurred or not.
+//
+// In case of overflow, an error is returned.
+func SubT[Type constraints.Integer](
+	minuend Type,
+	subtrahend Type,
+	secondSubtrahend Type,
+) (Type, error) {
+	interim, err := Sub(minuend, subtrahend)
+	if err == nil {
+		diff, err := Sub(interim, secondSubtrahend)
+		if err == nil {
+			return diff, nil
+		}
+	}
+
+	interim, err = Sub(minuend, secondSubtrahend)
+	if err == nil {
+		diff, err := Sub(interim, subtrahend)
+		if err == nil {
+			return diff, nil
+		}
+	}
+
+	interim, err = Add(subtrahend, secondSubtrahend)
+	if err == nil {
+		return Sub(minuend, interim)
+	}
+
+	return 0, ErrOverflow
 }
 
 // Raises 10 to a power and determines whether an overflow has occurred or not.

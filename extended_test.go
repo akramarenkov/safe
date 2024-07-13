@@ -194,6 +194,131 @@ func testAddUM(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func TestSubT(t *testing.T) {
+	testSubTInt(t)
+	testSubTUint(t)
+}
+
+func testSubTInt(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for minuend := math.MinInt8; minuend <= math.MaxInt8; minuend++ {
+		for subtrahend := math.MinInt8; subtrahend <= math.MaxInt8; subtrahend++ {
+			for secondSub := math.MinInt8; secondSub <= math.MaxInt8; secondSub++ {
+				diff, err := SubT(int8(minuend), int8(subtrahend), int8(secondSub))
+
+				reference := minuend - subtrahend - secondSub
+
+				if reference > math.MaxInt8 || reference < math.MinInt8 {
+					require.Error(
+						t,
+						err,
+						"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
+							"reference: %v",
+						minuend,
+						subtrahend,
+						secondSub,
+						diff,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
+						"reference: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+					diff,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(diff),
+					"minuend: %v, subtrahend: %v, second subtrahend: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
+func testSubTUint(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for minuend := 0; minuend <= math.MaxUint8; minuend++ {
+		for subtrahend := 0; subtrahend <= math.MaxUint8; subtrahend++ {
+			for secondSub := 0; secondSub <= math.MaxUint8; secondSub++ {
+				diff, err := SubT(uint8(minuend), uint8(subtrahend), uint8(secondSub))
+
+				reference := minuend - subtrahend - secondSub
+
+				if reference < 0 {
+					require.Error(
+						t,
+						err,
+						"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
+							"reference: %v",
+						minuend,
+						subtrahend,
+						secondSub,
+						diff,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
+						"reference: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+					diff,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(diff),
+					"minuend: %v, subtrahend: %v, second subtrahend: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestPow10(t *testing.T) {
 	testPow10Manually(t)
 	testPow10Diff(t)
@@ -385,6 +510,20 @@ func BenchmarkAddUM(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, sum)
+}
+
+func BenchmarkSubT(b *testing.B) {
+	diff := 0
+
+	// b.N, diff and require is used to prevent compiler optimizations
+	for range b.N {
+		diff, _ = SubT(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
 }
 
 func BenchmarkPow10Reference(b *testing.B) {
