@@ -11,18 +11,13 @@ var (
 	ErrOverflow       = errors.New("integer overflow")
 )
 
-var pow10table = [...]uint64{ //nolint:gochecknoglobals
-	1e00, 1e01, 1e02, 1e03, 1e04, 1e05, 1e06, 1e07, 1e08, 1e09,
-	1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
-}
-
 // Adds two integers and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Add[Type constraints.Integer](first Type, second Type) (Type, error) {
 	sum := first + second
 
-	// When adding or subtracting, only one times overflow is possible
+	// When adding or subtracting two integers, only one times overflow is possible
 
 	// When overflowing, the sum turns out to be less than both terms, so you can
 	// compare it with any of them. For an illustration of overflow when adding
@@ -52,7 +47,7 @@ func Add[Type constraints.Integer](first Type, second Type) (Type, error) {
 func AddU[Type constraints.Unsigned](first Type, second Type) (Type, error) {
 	sum := first + second
 
-	// When adding or subtracting, only one times overflow is possible
+	// When adding or subtracting two integers, only one times overflow is possible
 
 	if sum < first {
 		return 0, ErrOverflow
@@ -68,7 +63,7 @@ func AddU[Type constraints.Unsigned](first Type, second Type) (Type, error) {
 func Sub[Type constraints.Integer](minuend Type, subtrahend Type) (Type, error) {
 	diff := minuend - subtrahend
 
-	// When adding or subtracting, only one times overflow is possible
+	// When adding or subtracting two integers, only one times overflow is possible
 
 	switch {
 	case subtrahend > 0:
@@ -93,7 +88,7 @@ func Sub[Type constraints.Integer](minuend Type, subtrahend Type) (Type, error) 
 func SubU[Type constraints.Unsigned](minuend Type, subtrahend Type) (Type, error) {
 	diff := minuend - subtrahend
 
-	// When adding or subtracting, only one times overflow is possible
+	// When adding or subtracting two integers, only one times overflow is possible
 
 	if diff > minuend {
 		return 0, ErrOverflow
@@ -227,24 +222,6 @@ func UToS[Sgn constraints.Signed, Uns constraints.Unsigned](number Uns) (Sgn, er
 	return converted, nil
 }
 
-// Raises 10 to a power and determines whether an overflow has occurred or not.
-//
-// In case of overflow, an error is returned.
-func Pow10[Type constraints.Integer, TypeP constraints.Integer](
-	power TypeP,
-) (Type, error) {
-	if power < 0 {
-		return 0, nil
-	}
-
-	// Value of pow10table length fits into any integer type
-	if power >= TypeP(len(pow10table)) {
-		return 0, ErrOverflow
-	}
-
-	return IToI[Type](pow10table[power])
-}
-
 // Converts an integer to a floating point number and determines whether loss of
 // precision has occurred or not.
 //
@@ -274,56 +251,4 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 	}
 
 	return converted, nil
-}
-
-// Raises base to a power and determines whether an overflow has occurred or not.
-//
-// Straightforward and slow implementation. Be careful.
-//
-// In case of overflow, an error is returned.
-func Pow[Type constraints.Integer, TypeP constraints.Integer](
-	base Type,
-	power TypeP,
-) (Type, error) {
-	if power == 0 {
-		return 1, nil
-	}
-
-	if base == 1 {
-		return 1, nil
-	}
-
-	if base == 0 {
-		if power < 0 {
-			return 0, ErrDivisionByZero
-		}
-
-		return 0, nil
-	}
-
-	if power < 0 {
-		if isMinusOne(base) {
-			if isEven(power) {
-				return 1, nil
-			}
-
-			return base, nil
-		}
-
-		return 0, nil
-	}
-
-	powered := base
-
-	for step := TypeP(1); step < power; step++ {
-		// overflow must be checked at each multiplication step
-		product, err := Mul(powered, base)
-		if err != nil {
-			return 0, err
-		}
-
-		powered = product
-	}
-
-	return powered, nil
 }
