@@ -275,3 +275,55 @@ func FToI[Flt constraints.Float, Int constraints.Integer](number Flt) (Int, erro
 
 	return converted, nil
 }
+
+// Raises base to a power and determines whether an overflow has occurred or not.
+//
+// Straightforward and slow implementation. Be careful.
+//
+// In case of overflow, an error is returned.
+func Pow[Type constraints.Integer, TypeP constraints.Integer](
+	base Type,
+	power TypeP,
+) (Type, error) {
+	if power == 0 {
+		return 1, nil
+	}
+
+	if base == 1 {
+		return 1, nil
+	}
+
+	if base == 0 {
+		if power < 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return 0, nil
+	}
+
+	if power < 0 {
+		if isMinusOne(base) {
+			if isEven(power) {
+				return 1, nil
+			}
+
+			return base, nil
+		}
+
+		return 0, nil
+	}
+
+	powered := base
+
+	for step := TypeP(1); step < power; step++ {
+		// overflow must be checked at each multiplication step
+		product, err := Mul(powered, base)
+		if err != nil {
+			return 0, err
+		}
+
+		powered = product
+	}
+
+	return powered, nil
+}

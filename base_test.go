@@ -910,45 +910,45 @@ func TestPow10(t *testing.T) {
 }
 
 func testPow10Manually(t *testing.T) {
-	powered, err := Pow10[uint64](-3)
+	product, err := Pow10[uint64](-3)
 	require.NoError(t, err)
-	require.Equal(t, uint64(0), powered)
+	require.Equal(t, uint64(0), product)
 
-	powered, err = Pow10[uint64](-2)
+	product, err = Pow10[uint64](-2)
 	require.NoError(t, err)
-	require.Equal(t, uint64(0), powered)
+	require.Equal(t, uint64(0), product)
 
-	powered, err = Pow10[uint64](-1)
+	product, err = Pow10[uint64](-1)
 	require.NoError(t, err)
-	require.Equal(t, uint64(0), powered)
+	require.Equal(t, uint64(0), product)
 
-	powered, err = Pow10[uint64](0)
+	product, err = Pow10[uint64](0)
 	require.NoError(t, err)
-	require.Equal(t, uint64(1), powered)
+	require.Equal(t, uint64(1), product)
 
-	powered, err = Pow10[uint64](1)
+	product, err = Pow10[uint64](1)
 	require.NoError(t, err)
-	require.Equal(t, uint64(10), powered)
+	require.Equal(t, uint64(10), product)
 
-	powered, err = Pow10[uint64](2)
+	product, err = Pow10[uint64](2)
 	require.NoError(t, err)
-	require.Equal(t, uint64(100), powered)
+	require.Equal(t, uint64(100), product)
 
-	powered, err = Pow10[uint64](3)
+	product, err = Pow10[uint64](3)
 	require.NoError(t, err)
-	require.Equal(t, uint64(1000), powered)
+	require.Equal(t, uint64(1000), product)
 
-	powered, err = Pow10[uint64](19)
+	product, err = Pow10[uint64](19)
 	require.NoError(t, err)
-	require.Equal(t, uint64(1e19), powered)
+	require.Equal(t, uint64(1e19), product)
 
-	powered, err = Pow10[uint64](20)
+	product, err = Pow10[uint64](20)
 	require.Error(t, err)
-	require.Equal(t, uint64(0), powered)
+	require.Equal(t, uint64(0), product)
 
-	powered, err = Pow10[uint64](21)
+	product, err = Pow10[uint64](21)
 	require.Error(t, err)
-	require.Equal(t, uint64(0), powered)
+	require.Equal(t, uint64(0), product)
 }
 
 func testPow10Diff(t *testing.T) {
@@ -1123,6 +1123,97 @@ func testFToIUint(t *testing.T, number float64, reference int) (int, int) {
 	require.Equal(t, reference, int(converted))
 
 	return 0, 1
+}
+
+func TestPow(t *testing.T) {
+	product, err := Pow[int32](2, 30)
+	require.NoError(t, err)
+	require.Equal(t, int32(1<<30), product)
+
+	product, err = Pow[int32](2, 31)
+	require.Error(t, err)
+	require.Equal(t, int32(0), product)
+
+	testPow(t, 31)
+}
+
+func testPow(t *testing.T, maxPower int32) {
+	faults := 0
+	successful := 0
+
+	// int32 is used because in its value range float64 does not lose the precision of
+	// the integer part
+	maxInt32, loss := IToF[int32, float64](math.MaxInt32)
+	require.False(t, loss)
+
+	minInt32, loss := IToF[int32, float64](math.MinInt32)
+	require.False(t, loss)
+
+	for base := int32(math.MinInt8); base <= math.MaxInt8; base++ {
+		for power := int32(math.MinInt8); power <= maxPower; power++ {
+			bf, loss := IToF[int32, float64](base)
+			require.False(t, loss)
+
+			pf, loss := IToF[int32, float64](power)
+			require.False(t, loss)
+
+			reference := math.Pow(bf, pf)
+
+			product, err := Pow(base, power)
+
+			if reference > maxInt32 || reference < minInt32 {
+				require.Error(
+					t,
+					err,
+					"base: %v, power: %v, product: %v, reference: %f",
+					base,
+					power,
+					product,
+					reference,
+				)
+
+				faults++
+
+				continue
+			}
+
+			successful++
+
+			require.NoError(
+				t,
+				err,
+				"base: %v, power: %v, product: %v, reference: %f",
+				base,
+				power,
+				product,
+				reference,
+			)
+
+			require.Equal(
+				t,
+				int32(reference),
+				product,
+				"base: %v, power: %v, reference: %f",
+				base,
+				power,
+				reference,
+			)
+
+			require.InDelta(
+				t,
+				reference,
+				float64(product),
+				0.5,
+				"base: %v, power: %v, product: %v",
+				base,
+				power,
+				product,
+			)
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
 }
 
 func BenchmarkIdle(b *testing.B) {
@@ -1355,31 +1446,31 @@ func BenchmarkUToS(b *testing.B) {
 }
 
 func BenchmarkPow10Reference(b *testing.B) {
-	powered := float64(0)
+	product := float64(0)
 
-	// b.N, powered and require is used to prevent compiler optimizations
+	// b.N, product and require is used to prevent compiler optimizations
 	for range b.N {
-		powered = math.Pow10(b.N % 19)
+		product = math.Pow10(b.N % 19)
 	}
 
 	b.StopTimer()
 
 	// meaningless check
-	require.NotNil(b, powered)
+	require.NotNil(b, product)
 }
 
 func BenchmarkPow10(b *testing.B) {
-	powered := uint64(0)
+	product := uint64(0)
 
-	// b.N, powered and require is used to prevent compiler optimizations
+	// b.N, product and require is used to prevent compiler optimizations
 	for range b.N {
-		powered, _ = Pow10[uint64](b.N % 19)
+		product, _ = Pow10[uint64](b.N % 19)
 	}
 
 	b.StopTimer()
 
 	// meaningless check
-	require.NotNil(b, powered)
+	require.NotNil(b, product)
 }
 
 func BenchmarkIToFReference(b *testing.B) {
@@ -1436,4 +1527,32 @@ func BenchmarkFToI(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, converted)
+}
+
+func BenchmarkPowReference(b *testing.B) {
+	product := float64(0)
+
+	// b.N, product and require is used to prevent compiler optimizations
+	for range b.N {
+		product = math.Pow(float64(b.N), float64(b.N))
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
+}
+
+func BenchmarkPow(b *testing.B) {
+	product := uint64(0)
+
+	// b.N, product and require is used to prevent compiler optimizations
+	for range b.N {
+		product, _ = Pow(uint64(b.N), b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
 }
