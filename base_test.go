@@ -1137,7 +1137,7 @@ func TestPow(t *testing.T) {
 	testPow(t, 31)
 }
 
-func testPow(t *testing.T, maxPower int32) {
+func testPow(t *testing.T, maxPower int8) {
 	faults := 0
 	successful := 0
 
@@ -1149,8 +1149,11 @@ func testPow(t *testing.T, maxPower int32) {
 	minInt32, loss := IToF[int32, float64](math.MinInt32)
 	require.False(t, loss)
 
+	// int8 range is used because when using base and power in its values,
+	// the result of exponentiation in floating point numbers is less than infinity,
+	// except in the case of raising 0 to a negative power
 	for base := int32(math.MinInt8); base <= math.MaxInt8; base++ {
-		for power := int32(math.MinInt8); power <= maxPower; power++ {
+		for power := int32(math.MinInt8); power <= int32(maxPower); power++ {
 			bf, loss := IToF[int32, float64](base)
 			require.False(t, loss)
 
@@ -1158,6 +1161,17 @@ func testPow(t *testing.T, maxPower int32) {
 			require.False(t, loss)
 
 			reference := math.Pow(bf, pf)
+			require.False(t, math.IsNaN(reference))
+
+			if base != 0 || power >= 0 {
+				require.False(
+					t,
+					math.IsInf(reference, 0),
+					"base: %v, power: %v",
+					base,
+					power,
+				)
+			}
 
 			product, err := Pow(base, power)
 
