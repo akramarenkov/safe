@@ -47,7 +47,7 @@ func AddUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) 
 	sum := first
 
 	for _, next := range others {
-		interim, err := Add(sum, next)
+		interim, err := AddU(sum, next)
 		if err != nil {
 			return 0, err
 		}
