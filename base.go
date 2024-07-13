@@ -8,7 +8,7 @@ import (
 
 var (
 	ErrDivisionByZero = errors.New("division by zero")
-	ErrOverflow       = errors.New("overflow")
+	ErrOverflow       = errors.New("integer overflow")
 )
 
 var pow10table = [...]uint64{ //nolint:gochecknoglobals
