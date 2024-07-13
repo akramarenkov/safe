@@ -1,6 +1,8 @@
 package safe
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 var pow10table = [...]uint64{ //nolint:gochecknoglobals
 	1e00, 1e01, 1e02, 1e03, 1e04, 1e05, 1e06, 1e07, 1e08, 1e09,

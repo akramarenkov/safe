@@ -1,6 +1,8 @@
 package safe
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // Determines whether a number is the minimum number for a given integer type.
 func isMin[Type constraints.Integer](number Type) bool {
