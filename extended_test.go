@@ -214,8 +214,8 @@ func testSubTInt(t *testing.T) {
 					require.Error(
 						t,
 						err,
-						"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
-							"reference: %v",
+						"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+							"diff: %v, reference: %v",
 						minuend,
 						subtrahend,
 						secondSub,
@@ -233,8 +233,8 @@ func testSubTInt(t *testing.T) {
 				require.NoError(
 					t,
 					err,
-					"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
-						"reference: %v",
+					"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+						"diff: %v, reference: %v",
 					minuend,
 					subtrahend,
 					secondSub,
@@ -274,8 +274,8 @@ func testSubTUint(t *testing.T) {
 					require.Error(
 						t,
 						err,
-						"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
-							"reference: %v",
+						"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+							"diff: %v, reference: %v",
 						minuend,
 						subtrahend,
 						secondSub,
@@ -293,8 +293,8 @@ func testSubTUint(t *testing.T) {
 				require.NoError(
 					t,
 					err,
-					"minuend: %v, subtrahend: %v, second subtrahend: %v, diff: %v, "+
-						"reference: %v",
+					"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+						"diff: %v, reference: %v",
 					minuend,
 					subtrahend,
 					secondSub,
