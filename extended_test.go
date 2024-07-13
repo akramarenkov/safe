@@ -128,6 +128,72 @@ func testAddTUint(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func TestAddUM(t *testing.T) {
+	sum, err := AddUM(uint(math.MaxUint))
+	require.NoError(t, err)
+	require.Equal(t, uint(math.MaxUint), sum)
+
+	testAddUM(t)
+}
+
+func testAddUM(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for first := 0; first <= math.MaxUint8; first++ {
+		for second := 0; second <= math.MaxUint8; second++ {
+			for third := 0; third <= math.MaxUint8; third++ {
+				sum, err := AddUM(uint8(first), uint8(second), uint8(third))
+
+				reference := first + second + third
+
+				if reference > math.MaxUint8 {
+					require.Error(
+						t,
+						err,
+						"first: %v, second: %v, third: %v, sum: %v, reference: %v",
+						first,
+						second,
+						third,
+						sum,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"first: %v, second: %v, third: %v, sum: %v, reference: %v",
+					first,
+					second,
+					third,
+					sum,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(sum),
+					"first: %v, second: %v, third: %v",
+					first,
+					second,
+					third,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestPow10(t *testing.T) {
 	testPow10Manually(t)
 	testPow10Diff(t)
@@ -299,6 +365,20 @@ func BenchmarkAddT(b *testing.B) {
 	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
 		sum, _ = AddT(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddUM(b *testing.B) {
+	sum := uint(0)
+
+	// b.N, sum and require is used to prevent compiler optimizations
+	for range b.N {
+		sum, _ = AddUM(uint(b.N), 3, 3)
 	}
 
 	b.StopTimer()

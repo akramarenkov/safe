@@ -37,6 +37,27 @@ func AddT[Type constraints.Integer](first Type, second Type, third Type) (Type, 
 	return 0, ErrOverflow
 }
 
+// Adds up multiple unsigned integers and determines whether an overflow has occurred or
+// not.
+//
+// Slower than a function with two arguments.
+//
+// In case of overflow, an error is returned.
+func AddUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) {
+	sum := first
+
+	for _, next := range others {
+		interim, err := Add(sum, next)
+		if err != nil {
+			return 0, err
+		}
+
+		sum = interim
+	}
+
+	return sum, nil
+}
+
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
