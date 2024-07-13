@@ -11,28 +11,25 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 //
 // In case of overflow, an error is returned.
 func AddT[Type constraints.Integer](first Type, second Type, third Type) (Type, error) {
-	sum, err := Add(first, second)
+	interim, err := Add(first, second)
 	if err == nil {
-		interim, err := Add(sum, third)
+		sum, err := Add(interim, third)
 		if err == nil {
-			return interim, nil
+			return sum, nil
 		}
 	}
 
-	sum, err = Add(first, third)
+	interim, err = Add(first, third)
 	if err == nil {
-		interim, err := Add(sum, second)
+		sum, err := Add(interim, second)
 		if err == nil {
-			return interim, nil
+			return sum, nil
 		}
 	}
 
-	sum, err = Add(second, third)
+	interim, err = Add(second, third)
 	if err == nil {
-		interim, err := Add(sum, first)
-		if err == nil {
-			return interim, nil
-		}
+		return Add(interim, first)
 	}
 
 	return 0, ErrOverflow
