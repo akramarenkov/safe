@@ -83,6 +83,60 @@ func testIsMinusOneUint(t *testing.T) {
 	}
 }
 
+func TestGetMinusOne(t *testing.T) {
+	value8, successfully := getMinusOne[int8]()
+	require.True(t, successfully)
+	require.Equal(t, int8(-1), value8)
+
+	_, successfully = getMinusOne[uint8]()
+	require.False(t, successfully)
+
+	value16, successfully := getMinusOne[int16]()
+	require.True(t, successfully)
+	require.Equal(t, int16(-1), value16)
+
+	_, successfully = getMinusOne[uint16]()
+	require.False(t, successfully)
+
+	value32, successfully := getMinusOne[int32]()
+	require.True(t, successfully)
+	require.Equal(t, int32(-1), value32)
+
+	_, successfully = getMinusOne[uint32]()
+	require.False(t, successfully)
+
+	value, successfully := getMinusOne[int]()
+	require.True(t, successfully)
+	require.Equal(t, int(-1), value)
+
+	_, successfully = getMinusOne[uint]()
+	require.False(t, successfully)
+
+	value64, successfully := getMinusOne[int64]()
+	require.True(t, successfully)
+	require.Equal(t, int64(-1), value64)
+
+	_, successfully = getMinusOne[uint64]()
+	require.False(t, successfully)
+}
+
+func TestGetMinusOneUnsure(t *testing.T) {
+	require.Equal(t, int8(-1), getMinusOneUnsure[int8]())
+	require.Equal(t, uint8(math.MaxUint8), getMinusOneUnsure[uint8]())
+
+	require.Equal(t, int16(-1), getMinusOneUnsure[int16]())
+	require.Equal(t, uint16(math.MaxUint16), getMinusOneUnsure[uint16]())
+
+	require.Equal(t, int32(-1), getMinusOneUnsure[int32]())
+	require.Equal(t, uint32(math.MaxUint32), getMinusOneUnsure[uint32]())
+
+	require.Equal(t, int(-1), getMinusOneUnsure[int]())
+	require.Equal(t, uint(math.MaxUint), getMinusOneUnsure[uint]())
+
+	require.Equal(t, int64(-1), getMinusOneUnsure[int64]())
+	require.Equal(t, uint64(math.MaxUint64), getMinusOneUnsure[uint64]())
+}
+
 func TestIsEven(t *testing.T) {
 	require.True(t, isEven(-8))
 	require.False(t, isEven(-7))
@@ -191,6 +245,34 @@ func BenchmarkIsMinusOne(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, conclusion)
+}
+
+func BenchmarkGetMinusOne(b *testing.B) {
+	value := 0
+
+	// value and require is used to prevent compiler optimizations
+	for range b.N {
+		value, _ = getMinusOne[int]()
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, value)
+}
+
+func BenchmarkGetMinusOneUnsure(b *testing.B) {
+	value := 0
+
+	// value and require is used to prevent compiler optimizations
+	for range b.N {
+		value = getMinusOneUnsure[int]()
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, value)
 }
 
 func BenchmarkIsEven(b *testing.B) {

@@ -129,7 +129,8 @@ func Mul[Type constraints.Integer](first Type, second Type) (Type, error) {
 	return product, nil
 }
 
-// Divides two integers and determines whether an overflow has occurred or not.
+// Divides two integers (dividend to divisor) and determines whether an overflow has
+// occurred or not.
 //
 // The divisor is also checked for equality to zero.
 //

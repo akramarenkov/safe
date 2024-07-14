@@ -354,6 +354,7 @@ func TestDiv(t *testing.T) {
 }
 
 func testDivInt(t *testing.T) {
+	zeros := 0
 	faults := 0
 	successful := 0
 
@@ -363,6 +364,9 @@ func testDivInt(t *testing.T) {
 
 			if divisor == 0 {
 				require.Error(t, err, "dividend: %v, divisor: %v", dividend, divisor)
+
+				zeros++
+
 				continue
 			}
 
@@ -407,11 +411,13 @@ func testDivInt(t *testing.T) {
 		}
 	}
 
+	require.NotZero(t, zeros)
 	require.NotZero(t, faults)
 	require.NotZero(t, successful)
 }
 
 func testDivUint(t *testing.T) {
+	zeros := 0
 	faults := 0
 	successful := 0
 
@@ -421,6 +427,9 @@ func testDivUint(t *testing.T) {
 
 			if divisor == 0 {
 				require.Error(t, err, "dividend: %v, divisor: %v", dividend, divisor)
+
+				zeros++
+
 				continue
 			}
 
@@ -465,6 +474,7 @@ func testDivUint(t *testing.T) {
 		}
 	}
 
+	require.NotZero(t, zeros)
 	require.Zero(t, faults)
 	require.NotZero(t, successful)
 }

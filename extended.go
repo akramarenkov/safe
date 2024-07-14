@@ -167,6 +167,40 @@ func MulUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) 
 	return product, nil
 }
 
+// Divides multiple integers (dividend to divisors) and determines whether an overflow
+// has occurred or not.
+//
+// The divisors is also checked for equality to zero.
+//
+// Slower than a function with two arguments.
+//
+// In case of overflow or the equality of the divisors to zero, an error is returned.
+func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, error) {
+	quotient := dividend
+
+	minusOnes := 0
+
+	for _, divisor := range divisors {
+		if divisor == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		if isMinusOne(divisor) {
+			minusOnes++
+			continue
+		}
+
+		quotient /= divisor
+	}
+
+	// Paired minus ones cancel each other out
+	if minusOnes%2 == 0 {
+		return quotient, nil
+	}
+
+	return Div(quotient, getMinusOneUnsure[Type]())
+}
+
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.

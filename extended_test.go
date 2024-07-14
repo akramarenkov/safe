@@ -410,6 +410,169 @@ func TestMulUM(t *testing.T) {
 	testMulTUint(t, mul)
 }
 
+func TestDivM(t *testing.T) {
+	quotient, err := DivM(uint(math.MaxUint))
+	require.NoError(t, err)
+	require.Equal(t, uint(math.MaxUint), quotient)
+
+	testDivMInt(t)
+	testDivMUint(t)
+}
+
+func testDivMInt(t *testing.T) {
+	zeros := 0
+	faults := 0
+	successful := 0
+
+	for dividend := math.MinInt8; dividend <= math.MaxInt8; dividend++ {
+		for divisor := math.MinInt8; divisor <= math.MaxInt8; divisor++ {
+			for secondDiv := math.MinInt8; secondDiv <= math.MaxInt8; secondDiv++ {
+				quotient, err := DivM(int8(dividend), int8(divisor), int8(secondDiv))
+
+				if divisor == 0 || secondDiv == 0 {
+					require.Error(
+						t,
+						err,
+						"dividend: %v, divisor: %v, second divisor: %v",
+						dividend,
+						divisor,
+						secondDiv,
+					)
+
+					zeros++
+
+					continue
+				}
+
+				reference := dividend / divisor / secondDiv
+
+				if reference > math.MaxInt8 || reference < math.MinInt8 {
+					require.Error(
+						t,
+						err,
+						"dividend: %v, divisor: %v, second divisor: %v, "+
+							"quotient: %v, reference: %v",
+						dividend,
+						divisor,
+						secondDiv,
+						quotient,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"dividend: %v, divisor: %v, second divisor: %v, "+
+						"quotient: %v, reference: %v",
+					dividend,
+					divisor,
+					secondDiv,
+					quotient,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(quotient),
+					"dividend: %v, divisor: %v, second divisor: %v",
+					dividend,
+					divisor,
+					secondDiv,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, zeros)
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
+func testDivMUint(t *testing.T) {
+	zeros := 0
+	faults := 0
+	successful := 0
+
+	for dividend := 0; dividend <= math.MaxUint8; dividend++ {
+		for divisor := 0; divisor <= math.MaxUint8; divisor++ {
+			for secondDiv := 0; secondDiv <= math.MaxUint8; secondDiv++ {
+				quotient, err := DivM(uint8(dividend), uint8(divisor), uint8(secondDiv))
+
+				if divisor == 0 || secondDiv == 0 {
+					require.Error(
+						t,
+						err,
+						"dividend: %v, divisor: %v, second divisor: %v",
+						dividend,
+						divisor,
+						secondDiv,
+					)
+
+					zeros++
+
+					continue
+				}
+
+				reference := dividend / divisor / secondDiv
+
+				if reference > math.MaxUint8 {
+					require.Error(
+						t,
+						err,
+						"dividend: %v, divisor: %v, second divisor: %v, "+
+							"quotient: %v, reference: %v",
+						dividend,
+						divisor,
+						secondDiv,
+						quotient,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"dividend: %v, divisor: %v, second divisor: %v, "+
+						"quotient: %v, reference: %v",
+					dividend,
+					divisor,
+					secondDiv,
+					quotient,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(quotient),
+					"dividend: %v, divisor: %v, second divisor: %v",
+					dividend,
+					divisor,
+					secondDiv,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, zeros)
+	require.Zero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestPow10(t *testing.T) {
 	testPow10Manually(t)
 	testPow10Diff(t)
@@ -657,6 +820,20 @@ func BenchmarkMulUM(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, product)
+}
+
+func BenchmarkDivM(b *testing.B) {
+	quotient := 0
+
+	// b.N, quotient and require is used to prevent compiler optimizations
+	for range b.N {
+		quotient, _ = DivM(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, quotient)
 }
 
 func BenchmarkPow10Reference(b *testing.B) {
