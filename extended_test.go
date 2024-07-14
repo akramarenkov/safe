@@ -9,7 +9,7 @@ import (
 
 func TestAddT(t *testing.T) {
 	testAddTInt(t)
-	testAddTUint(t)
+	testAddTUint(t, AddT)
 }
 
 func testAddTInt(t *testing.T) {
@@ -70,14 +70,14 @@ func testAddTInt(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func testAddTUint(t *testing.T) {
+func testAddTUint(t *testing.T, add func(uint8, uint8, uint8) (uint8, error)) {
 	faults := 0
 	successful := 0
 
 	for first := 0; first <= math.MaxUint8; first++ {
 		for second := 0; second <= math.MaxUint8; second++ {
 			for third := 0; third <= math.MaxUint8; third++ {
-				sum, err := AddT(uint8(first), uint8(second), uint8(third))
+				sum, err := add(uint8(first), uint8(second), uint8(third))
 
 				reference := first + second + third
 
@@ -133,70 +133,16 @@ func TestAddUM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint(math.MaxUint), sum)
 
-	testAddUM(t)
-}
-
-func testAddUM(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for first := 0; first <= math.MaxUint8; first++ {
-		for second := 0; second <= math.MaxUint8; second++ {
-			for third := 0; third <= math.MaxUint8; third++ {
-				sum, err := AddUM(uint8(first), uint8(second), uint8(third))
-
-				reference := first + second + third
-
-				if reference > math.MaxUint8 {
-					require.Error(
-						t,
-						err,
-						"first: %v, second: %v, third: %v, sum: %v, reference: %v",
-						first,
-						second,
-						third,
-						sum,
-						reference,
-					)
-
-					faults++
-
-					continue
-				}
-
-				successful++
-
-				require.NoError(
-					t,
-					err,
-					"first: %v, second: %v, third: %v, sum: %v, reference: %v",
-					first,
-					second,
-					third,
-					sum,
-					reference,
-				)
-
-				require.Equal(
-					t,
-					reference,
-					int(sum),
-					"first: %v, second: %v, third: %v",
-					first,
-					second,
-					third,
-				)
-			}
-		}
+	add := func(first uint8, second uint8, third uint8) (uint8, error) {
+		return AddUM(first, second, third)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	testAddTUint(t, add)
 }
 
 func TestSubT(t *testing.T) {
 	testSubTInt(t)
-	testSubTUint(t)
+	testSubTUint(t, SubT)
 }
 
 func testSubTInt(t *testing.T) {
@@ -259,14 +205,14 @@ func testSubTInt(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func testSubTUint(t *testing.T) {
+func testSubTUint(t *testing.T, sub func(uint8, uint8, uint8) (uint8, error)) {
 	faults := 0
 	successful := 0
 
 	for minuend := 0; minuend <= math.MaxUint8; minuend++ {
 		for subtrahend := 0; subtrahend <= math.MaxUint8; subtrahend++ {
 			for secondSub := 0; secondSub <= math.MaxUint8; secondSub++ {
-				diff, err := SubT(uint8(minuend), uint8(subtrahend), uint8(secondSub))
+				diff, err := sub(uint8(minuend), uint8(subtrahend), uint8(secondSub))
 
 				reference := minuend - subtrahend - secondSub
 
@@ -324,72 +270,16 @@ func TestSubUM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint(math.MaxUint), diff)
 
-	testSubUM(t)
-}
-
-func testSubUM(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for minuend := 0; minuend <= math.MaxUint8; minuend++ {
-		for subtrahend := 0; subtrahend <= math.MaxUint8; subtrahend++ {
-			for secondSub := 0; secondSub <= math.MaxUint8; secondSub++ {
-				diff, err := SubUM(uint8(minuend), uint8(subtrahend), uint8(secondSub))
-
-				reference := minuend - subtrahend - secondSub
-
-				if reference < 0 {
-					require.Error(
-						t,
-						err,
-						"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
-							"diff: %v, reference: %v",
-						minuend,
-						subtrahend,
-						secondSub,
-						diff,
-						reference,
-					)
-
-					faults++
-
-					continue
-				}
-
-				successful++
-
-				require.NoError(
-					t,
-					err,
-					"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
-						"diff: %v, reference: %v",
-					minuend,
-					subtrahend,
-					secondSub,
-					diff,
-					reference,
-				)
-
-				require.Equal(
-					t,
-					reference,
-					int(diff),
-					"minuend: %v, subtrahend: %v, second subtrahend: %v",
-					minuend,
-					subtrahend,
-					secondSub,
-				)
-			}
-		}
+	sub := func(minuend uint8, subtrahend uint8, secondSubtrahend uint8) (uint8, error) {
+		return SubUM(minuend, subtrahend, secondSubtrahend)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	testSubTUint(t, sub)
 }
 
 func TestMulT(t *testing.T) {
 	testMulTInt(t)
-	testMulTUint(t)
+	testMulTUint(t, MulT)
 }
 
 func testMulTInt(t *testing.T) {
@@ -450,14 +340,14 @@ func testMulTInt(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func testMulTUint(t *testing.T) {
+func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 	faults := 0
 	successful := 0
 
 	for first := 0; first <= math.MaxUint8; first++ {
 		for second := 0; second <= math.MaxUint8; second++ {
 			for third := 0; third <= math.MaxUint8; third++ {
-				sum, err := MulT(uint8(first), uint8(second), uint8(third))
+				sum, err := mul(uint8(first), uint8(second), uint8(third))
 
 				reference := first * second * third
 
@@ -513,65 +403,11 @@ func TestMulUM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint(math.MaxUint), product)
 
-	testMulUM(t)
-}
-
-func testMulUM(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for first := 0; first <= math.MaxUint8; first++ {
-		for second := 0; second <= math.MaxUint8; second++ {
-			for third := 0; third <= math.MaxUint8; third++ {
-				product, err := MulUM(uint8(first), uint8(second), uint8(third))
-
-				reference := first * second * third
-
-				if reference > math.MaxUint8 {
-					require.Error(
-						t,
-						err,
-						"first: %v, second: %v, third: %v, product: %v, reference: %v",
-						first,
-						second,
-						third,
-						product,
-						reference,
-					)
-
-					faults++
-
-					continue
-				}
-
-				successful++
-
-				require.NoError(
-					t,
-					err,
-					"first: %v, second: %v, third: %v, product: %v, reference: %v",
-					first,
-					second,
-					third,
-					product,
-					reference,
-				)
-
-				require.Equal(
-					t,
-					reference,
-					int(product),
-					"first: %v, second: %v, third: %v",
-					first,
-					second,
-					third,
-				)
-			}
-		}
+	mul := func(first uint8, second uint8, third uint8) (uint8, error) {
+		return MulUM(first, second, third)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	testMulTUint(t, mul)
 }
 
 func TestPow10(t *testing.T) {
