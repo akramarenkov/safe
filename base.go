@@ -156,11 +156,32 @@ func Div[Type constraints.Integer](dividend Type, divisor Type) (Type, error) {
 	return quotient, nil
 }
 
+// Changes the sign of a integer and determines whether an overflow has occurred or not.
+//
+// In case of overflow, an error is returned.
+func Negate[Type constraints.Integer](number Type) (Type, error) {
+	if isMin(number) {
+		return 0, ErrOverflow
+	}
+
+	negated := -number
+
+	if number > 0 {
+		if negated > 0 {
+			return 0, ErrOverflow
+		}
+	}
+
+	return negated, nil
+}
+
 // Changes the sign of a signed integer and determines whether an overflow has
 // occurred or not.
 //
+// Slightly faster than the Negate function.
+//
 // In case of overflow, an error is returned.
-func Negate[Type constraints.Signed](number Type) (Type, error) {
+func NegateS[Type constraints.Signed](number Type) (Type, error) {
 	if isMin(number) {
 		return 0, ErrOverflow
 	}

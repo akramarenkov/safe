@@ -480,11 +480,17 @@ func testDivUint(t *testing.T) {
 }
 
 func TestNegate(t *testing.T) {
+	testNegateInt(t, Negate)
+	testNegateInt(t, NegateS)
+	testNegateUint(t)
+}
+
+func testNegateInt(t *testing.T, negate func(int8) (int8, error)) {
 	faults := 0
 	successful := 0
 
 	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		negated, err := Negate(int8(number))
+		negated, err := negate(int8(number))
 
 		reference := -number
 
@@ -519,6 +525,14 @@ func TestNegate(t *testing.T) {
 
 	require.NotZero(t, faults)
 	require.NotZero(t, successful)
+}
+
+func testNegateUint(t *testing.T) {
+	for number := 0; number <= math.MaxUint8; number++ {
+		negated, err := Negate(uint8(number))
+		require.Error(t, err, "number: %v, negated: %v", number, negated)
+		require.Equal(t, 0, int(negated), "number: %v", number)
+	}
 }
 
 func TestIToI(t *testing.T) {
@@ -1240,6 +1254,20 @@ func BenchmarkNegate(b *testing.B) {
 	// b.N, negated and require is used to prevent compiler optimizations
 	for range b.N {
 		negated, _ = Negate(b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, negated)
+}
+
+func BenchmarkNegateS(b *testing.B) {
+	negated := 0
+
+	// b.N, negated and require is used to prevent compiler optimizations
+	for range b.N {
+		negated, _ = NegateS(b.N)
 	}
 
 	b.StopTimer()
