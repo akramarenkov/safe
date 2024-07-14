@@ -387,6 +387,72 @@ func testSubUM(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func TestMulUM(t *testing.T) {
+	product, err := MulUM(uint(math.MaxUint))
+	require.NoError(t, err)
+	require.Equal(t, uint(math.MaxUint), product)
+
+	testMulUM(t)
+}
+
+func testMulUM(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for first := 0; first <= math.MaxUint8; first++ {
+		for second := 0; second <= math.MaxUint8; second++ {
+			for third := 0; third <= math.MaxUint8; third++ {
+				product, err := MulUM(uint8(first), uint8(second), uint8(third))
+
+				reference := first * second * third
+
+				if reference > math.MaxUint8 {
+					require.Error(
+						t,
+						err,
+						"first: %v, second: %v, third: %v, product: %v, reference: %v",
+						first,
+						second,
+						third,
+						product,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"first: %v, second: %v, third: %v, product: %v, reference: %v",
+					first,
+					second,
+					third,
+					product,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(product),
+					"first: %v, second: %v, third: %v",
+					first,
+					second,
+					third,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestPow10(t *testing.T) {
 	testPow10Manually(t)
 	testPow10Diff(t)
@@ -606,6 +672,20 @@ func BenchmarkSubUM(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, diff)
+}
+
+func BenchmarkMulUM(b *testing.B) {
+	product := uint(0)
+
+	// b.N, product and require is used to prevent compiler optimizations
+	for range b.N {
+		product, _ = MulUM(uint(b.N), 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
 }
 
 func BenchmarkPow10Reference(b *testing.B) {

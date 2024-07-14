@@ -112,6 +112,33 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 	return diff, nil
 }
 
+// Multiplies multiple unsigned integers and determines whether an overflow has
+// occurred or not.
+//
+// Slower than a function with two arguments.
+//
+// In case of overflow, an error is returned.
+func MulUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) {
+	product := first
+
+	for _, next := range others {
+		if next == 0 {
+			return 0, nil
+		}
+	}
+
+	for _, next := range others {
+		interim, err := Mul(product, next)
+		if err != nil {
+			return 0, err
+		}
+
+		product = interim
+	}
+
+	return product, nil
+}
+
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
