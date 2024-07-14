@@ -113,7 +113,7 @@ func Mul[Type constraints.Integer](first Type, second Type) (Type, error) {
 	// Therefore, this case is checked separately. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a
 	// simple check for equality of the second -1 fails, therefore second is checked
-	// for a negative value
+	// for a negative value (is slightly faster than isMinusOne)
 	if isMin(first) && second < 0 {
 		return 0, ErrOverflow
 	}
@@ -148,7 +148,7 @@ func Div[Type constraints.Integer](dividend Type, divisor Type) (Type, error) {
 	// due to overflow - minimum negative value. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a simple
 	// check for equality of the divisor -1 fails, therefore divisor is checked for a
-	// negative value
+	// negative value (is slightly faster than isMinusOne)
 	if isMin(quotient) && divisor < 0 {
 		return 0, ErrOverflow
 	}
