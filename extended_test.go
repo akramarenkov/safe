@@ -387,6 +387,127 @@ func testSubUM(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func TestMulT(t *testing.T) {
+	testMulTInt(t)
+	testMulTUint(t)
+}
+
+func testMulTInt(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for first := math.MinInt8; first <= math.MaxInt8; first++ {
+		for second := math.MinInt8; second <= math.MaxInt8; second++ {
+			for third := math.MinInt8; third <= math.MaxInt8; third++ {
+				product, err := MulT(int8(first), int8(second), int8(third))
+
+				reference := first * second * third
+
+				if reference > math.MaxInt8 || reference < math.MinInt8 {
+					require.Error(
+						t,
+						err,
+						"first: %v, second: %v, third: %v, product: %v, reference: %v",
+						first,
+						second,
+						third,
+						product,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"first: %v, second: %v, third: %v, product: %v, reference: %v",
+					first,
+					second,
+					third,
+					product,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(product),
+					"first: %v, second: %v, third: %v",
+					first,
+					second,
+					third,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
+func testMulTUint(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for first := 0; first <= math.MaxUint8; first++ {
+		for second := 0; second <= math.MaxUint8; second++ {
+			for third := 0; third <= math.MaxUint8; third++ {
+				sum, err := MulT(uint8(first), uint8(second), uint8(third))
+
+				reference := first * second * third
+
+				if reference > math.MaxUint8 {
+					require.Error(
+						t,
+						err,
+						"first: %v, second: %v, third: %v, product: %v, reference: %v",
+						first,
+						second,
+						third,
+						sum,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"first: %v, second: %v, third: %v, product: %v, reference: %v",
+					first,
+					second,
+					third,
+					sum,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(sum),
+					"first: %v, second: %v, third: %v",
+					first,
+					second,
+					third,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestMulUM(t *testing.T) {
 	product, err := MulUM(uint(math.MaxUint))
 	require.NoError(t, err)
@@ -672,6 +793,20 @@ func BenchmarkSubUM(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, diff)
+}
+
+func BenchmarkMulT(b *testing.B) {
+	product := 0
+
+	// b.N, product and require is used to prevent compiler optimizations
+	for range b.N {
+		product, _ = MulT(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
 }
 
 func BenchmarkMulUM(b *testing.B) {

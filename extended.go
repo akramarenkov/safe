@@ -112,6 +112,34 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 	return diff, nil
 }
 
+// Multiplies three integers and determines whether an overflow has occurred or not.
+//
+// In case of overflow, an error is returned.
+func MulT[Type constraints.Integer](first Type, second Type, third Type) (Type, error) {
+	interim, err := Mul(first, second)
+	if err == nil {
+		product, err := Mul(interim, third)
+		if err == nil {
+			return product, nil
+		}
+	}
+
+	interim, err = Mul(first, third)
+	if err == nil {
+		product, err := Mul(interim, second)
+		if err == nil {
+			return product, nil
+		}
+	}
+
+	interim, err = Mul(second, third)
+	if err == nil {
+		return Mul(first, interim)
+	}
+
+	return 0, ErrOverflow
+}
+
 // Multiplies multiple unsigned integers and determines whether an overflow has
 // occurred or not.
 //
