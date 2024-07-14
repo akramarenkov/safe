@@ -347,7 +347,7 @@ func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 	for first := 0; first <= math.MaxUint8; first++ {
 		for second := 0; second <= math.MaxUint8; second++ {
 			for third := 0; third <= math.MaxUint8; third++ {
-				sum, err := mul(uint8(first), uint8(second), uint8(third))
+				product, err := mul(uint8(first), uint8(second), uint8(third))
 
 				reference := first * second * third
 
@@ -359,7 +359,7 @@ func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 						first,
 						second,
 						third,
-						sum,
+						product,
 						reference,
 					)
 
@@ -377,14 +377,14 @@ func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 					first,
 					second,
 					third,
-					sum,
+					product,
 					reference,
 				)
 
 				require.Equal(
 					t,
 					reference,
-					int(sum),
+					int(product),
 					"first: %v, second: %v, third: %v",
 					first,
 					second,
