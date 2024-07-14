@@ -193,10 +193,10 @@ func NegateS[Type constraints.Signed](number Type) (Type, error) {
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func IToI[TypeD constraints.Integer, TypeS constraints.Integer](
-	number TypeS,
-) (TypeD, error) {
-	converted := TypeD(number)
+func IToI[TypeTo constraints.Integer, TypeFrom constraints.Integer](
+	number TypeFrom,
+) (TypeTo, error) {
+	converted := TypeTo(number)
 
 	switch {
 	case converted < 0:
@@ -211,7 +211,7 @@ func IToI[TypeD constraints.Integer, TypeS constraints.Integer](
 
 	// When converting from a variable with a larger bit width to a variable with a
 	// smaller bit width, multiple overflows are possible
-	reverted := TypeS(converted)
+	reverted := TypeFrom(converted)
 
 	if reverted != number {
 		return 0, ErrOverflow

@@ -208,15 +208,15 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Pow10[Type constraints.Integer, TypeP constraints.Integer](
-	power TypeP,
+func Pow10[Type constraints.Integer, TypePower constraints.Integer](
+	power TypePower,
 ) (Type, error) {
 	if power < 0 {
 		return 0, nil
 	}
 
 	// Value of pow10table length fits into any integer type
-	if power >= TypeP(len(pow10table)) {
+	if power >= TypePower(len(pow10table)) {
 		return 0, ErrOverflow
 	}
 
@@ -228,9 +228,9 @@ func Pow10[Type constraints.Integer, TypeP constraints.Integer](
 // Straightforward and slow implementation. Be careful.
 //
 // In case of overflow, an error is returned.
-func Pow[Type constraints.Integer, TypeP constraints.Integer](
+func Pow[Type constraints.Integer, TypePower constraints.Integer](
 	base Type,
-	power TypeP,
+	power TypePower,
 ) (Type, error) {
 	if power == 0 {
 		return 1, nil
@@ -262,7 +262,7 @@ func Pow[Type constraints.Integer, TypeP constraints.Integer](
 
 	powered := base
 
-	for step := TypeP(1); step < power; step++ {
+	for step := TypePower(1); step < power; step++ {
 		// overflow must be checked at each multiplication step
 		product, err := Mul(powered, base)
 		if err != nil {
