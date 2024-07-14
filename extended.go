@@ -198,7 +198,11 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 		return quotient, nil
 	}
 
-	return Div(quotient, getMinusOneUnsure[Type]())
+	if isMin(quotient) {
+		return 0, ErrOverflow
+	}
+
+	return -quotient, nil
 }
 
 // Raises 10 to a power and determines whether an overflow has occurred or not.
