@@ -91,6 +91,27 @@ func SubT[Type constraints.Integer](
 	return 0, ErrOverflow
 }
 
+// Subtracts multiple unsigned integers (subtrahend from minuend) and determines whether
+// an overflow has occurred or not.
+//
+// Slower than a function with two arguments.
+//
+// In case of overflow, an error is returned.
+func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
+	diff := minuend
+
+	for _, subtrahend := range subtrahends {
+		interim, err := SubU(diff, subtrahend)
+		if err != nil {
+			return 0, err
+		}
+
+		diff = interim
+	}
+
+	return diff, nil
+}
+
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.

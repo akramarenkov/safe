@@ -319,6 +319,74 @@ func testSubTUint(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func TestSubUM(t *testing.T) {
+	diff, err := SubUM(uint(math.MaxUint))
+	require.NoError(t, err)
+	require.Equal(t, uint(math.MaxUint), diff)
+
+	testSubUM(t)
+}
+
+func testSubUM(t *testing.T) {
+	faults := 0
+	successful := 0
+
+	for minuend := 0; minuend <= math.MaxUint8; minuend++ {
+		for subtrahend := 0; subtrahend <= math.MaxUint8; subtrahend++ {
+			for secondSub := 0; secondSub <= math.MaxUint8; secondSub++ {
+				diff, err := SubUM(uint8(minuend), uint8(subtrahend), uint8(secondSub))
+
+				reference := minuend - subtrahend - secondSub
+
+				if reference < 0 {
+					require.Error(
+						t,
+						err,
+						"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+							"diff: %v, reference: %v",
+						minuend,
+						subtrahend,
+						secondSub,
+						diff,
+						reference,
+					)
+
+					faults++
+
+					continue
+				}
+
+				successful++
+
+				require.NoError(
+					t,
+					err,
+					"minuend: %v, subtrahend: %v, second subtrahend: %v, "+
+						"diff: %v, reference: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+					diff,
+					reference,
+				)
+
+				require.Equal(
+					t,
+					reference,
+					int(diff),
+					"minuend: %v, subtrahend: %v, second subtrahend: %v",
+					minuend,
+					subtrahend,
+					secondSub,
+				)
+			}
+		}
+	}
+
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
+}
+
 func TestPow10(t *testing.T) {
 	testPow10Manually(t)
 	testPow10Diff(t)
@@ -518,6 +586,20 @@ func BenchmarkSubT(b *testing.B) {
 	// b.N, diff and require is used to prevent compiler optimizations
 	for range b.N {
 		diff, _ = SubT(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubUM(b *testing.B) {
+	diff := uint(0)
+
+	// b.N, diff and require is used to prevent compiler optimizations
+	for range b.N {
+		diff, _ = SubUM(uint(b.N), 3, 3)
 	}
 
 	b.StopTimer()
