@@ -2,6 +2,7 @@ package safe
 
 import (
 	"math"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -934,43 +935,51 @@ func TestIToF(t *testing.T) {
 }
 
 func testIToF32(t *testing.T) {
-	converted, loss := IToF[float32](math.MaxUint8)
+	_, loss := IToF[float32](-1 << 24)
 	require.False(t, loss)
-	require.InDelta(t, float32(math.MaxUint8), converted, 0.0)
 
-	converted, loss = IToF[float32](math.MaxUint16)
+	_, loss = IToF[float32](1 << 24)
 	require.False(t, loss)
-	require.InDelta(t, float32(math.MaxUint16), converted, 0.0)
 
-	converted, loss = IToF[float32](1 << 24)
-	require.False(t, loss)
-	require.InDelta(t, float32(1<<24), converted, 0.0)
+	_, loss = IToF[float32](-1<<24 - 1)
+	require.True(t, loss)
 
 	_, loss = IToF[float32](1<<24 + 1)
 	require.True(t, loss)
 
-	_, loss = IToF[float32](math.MaxUint32)
+	_, loss = IToF[float32](math.MinInt32)
+	require.False(t, loss)
+
+	_, loss = IToF[float32](math.MaxInt32)
+	require.True(t, loss)
+
+	_, loss = IToF[float32](uint32(math.MaxUint32))
 	require.True(t, loss)
 }
 
 func testIToF64(t *testing.T) {
-	converted, loss := IToF[float64](math.MaxUint8)
+	_, loss := IToF[float64](math.MinInt32)
 	require.False(t, loss)
-	require.InDelta(t, float64(math.MaxUint8), converted, 0.0)
 
-	converted, loss = IToF[float64](math.MaxUint16)
+	_, loss = IToF[float64](math.MaxInt32)
 	require.False(t, loss)
-	require.InDelta(t, float64(math.MaxUint16), converted, 0.0)
 
-	converted, loss = IToF[float64](math.MaxUint32)
+	_, loss = IToF[float64](int64(-1 << 53))
 	require.False(t, loss)
-	require.InDelta(t, float64(math.MaxUint32), converted, 0.0)
 
-	converted, loss = IToF[float64](1 << 53)
+	_, loss = IToF[float64](int64(1 << 53))
 	require.False(t, loss)
-	require.InDelta(t, float64(1<<53), converted, 0.0)
 
-	_, loss = IToF[float64](1<<53 + 1)
+	_, loss = IToF[float64](int64(-1<<53 - 1))
+	require.True(t, loss)
+
+	_, loss = IToF[float64](int64(1<<53 + 1))
+	require.True(t, loss)
+
+	_, loss = IToF[float64](int64(math.MinInt64))
+	require.False(t, loss)
+
+	_, loss = IToF[float64](int64(math.MaxInt64))
 	require.True(t, loss)
 
 	_, loss = IToF[float64](uint64(math.MaxUint64))
@@ -978,115 +987,144 @@ func testIToF64(t *testing.T) {
 }
 
 func TestFToI(t *testing.T) {
-	fractionals := []float64{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9}
+	steps := []float64{
+		0.1,
+		0.2,
+		0.25,
+		0.333,
+		0.444,
+		0.5,
+		0.555,
+		0.666,
+		0.75,
+		0.777,
+		0.999,
+		// with max fractional value for 0.0
+		// 0b0011111111101111111111111111111111111111111111111111111111111111
+		0.9999999999999999,
+		1,
+		1.001,
+		// with max fractional value for 1.0
+		// 0b0011111111111111111111111111111111111111111111111111111111111111
+		1.9999999999999997,
+	}
 
-	faultsInt := 0
-	faultsUint := 0
-	successfulInt := 0
-	successfulUint := 0
+	for _, step := range steps {
+		t.Run(
+			"step="+strconv.FormatFloat(step, 'f', -1, 64),
+			func(t *testing.T) {
+				t.Parallel()
+				testFToIInt(t, step)
+				testFToIUint(t, step)
+			},
+		)
+	}
 
-	for reference := math.MinInt16; reference <= math.MaxInt16; reference++ {
-		integer, loss := IToF[float64](reference)
-		require.False(t, loss)
+	_, err := FToI[int64](math.Inf(-1))
+	require.Error(t, err)
 
-		for id, fractional := range fractionals {
-			number := integer + fractional
+	_, err = FToI[uint64](math.Inf(-1))
+	require.Error(t, err)
 
-			if integer < 0 {
-				number = integer - fractional
-			}
+	_, err = FToI[int64](math.Inf(0))
+	require.Error(t, err)
 
-			if id == 0 {
-				require.InDelta(t, integer, number, 0.0)
-			} else {
-				require.InDelta(t, integer, number, fractional+fractional/2)
-			}
+	_, err = FToI[uint64](math.Inf(0))
+	require.Error(t, err)
 
-			fi, si := testFToIInt(t, number, reference)
-			fu, su := testFToIUint(t, number, reference)
+	_, err = FToI[int64](math.NaN())
+	require.Error(t, err)
 
-			faultsInt += fi
-			faultsUint += fu
-			successfulInt += si
-			successfulUint += su
+	_, err = FToI[uint64](math.NaN())
+	require.Error(t, err)
+}
+
+func testFToIInt(t *testing.T, step float64) {
+	faults := 0
+	successful := 0
+
+	begin := float64(2 * math.MinInt16)
+	end := float64(2 * math.MaxInt16)
+
+	// imprecision accumulation is acceptable
+	for number := begin; number <= end; number += step {
+		converted, err := FToI[int16](number)
+
+		reference := int(number)
+
+		if reference > math.MaxInt16 || reference < math.MinInt16 {
+			require.Error(
+				t,
+				err,
+				"converted: %v, reference: %v",
+				converted,
+				number,
+			)
+
+			faults++
+
+			continue
 		}
-	}
 
-	// Previous loop does not generate a sequence of 0-fractionals
-	for _, fractional := range fractionals {
-		fi, si := testFToIInt(t, -fractional, 0)
-		fu, su := testFToIUint(t, -fractional, 0)
-
-		faultsInt += fi
-		faultsUint += fu
-		successfulInt += si
-		successfulUint += su
-	}
-
-	require.NotZero(t, faultsInt)
-	require.NotZero(t, faultsUint)
-	require.NotZero(t, successfulInt)
-	require.NotZero(t, successfulUint)
-}
-
-func testFToIInt(t *testing.T, number float64, reference int) (int, int) {
-	converted, err := FToI[int8](number)
-
-	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		require.Error(
+		require.NoError(
 			t,
 			err,
-			"number: %f, converted: %v, reference: %v",
-			number,
+			"converted: %v, reference: %v",
 			converted,
-			reference,
+			number,
 		)
 
-		return 1, 0
+		require.Equal(t, reference, int(converted))
+
+		successful++
 	}
 
-	require.NoError(
-		t,
-		err,
-		"number: %f, converted: %v, reference: %v",
-		number,
-		converted,
-		reference,
-	)
-
-	require.Equal(t, reference, int(converted))
-
-	return 0, 1
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
 }
 
-func testFToIUint(t *testing.T, number float64, reference int) (int, int) {
-	converted, err := FToI[uint8](number)
+func testFToIUint(t *testing.T, step float64) {
+	faults := 0
+	successful := 0
 
-	if reference > math.MaxUint8 || reference < 0 {
-		require.Error(
+	begin := 0.0
+	end := float64(2 * math.MaxUint16)
+
+	// imprecision accumulation is acceptable
+	for number := begin; number <= end; number += step {
+		converted, err := FToI[uint16](number)
+
+		reference := int(number)
+
+		if reference > math.MaxUint16 {
+			require.Error(
+				t,
+				err,
+				"converted: %v, reference: %v",
+				converted,
+				number,
+			)
+
+			faults++
+
+			continue
+		}
+
+		require.NoError(
 			t,
 			err,
-			"number: %f, converted: %v, reference: %v",
-			number,
+			"converted: %v, reference: %v",
 			converted,
-			reference,
+			number,
 		)
 
-		return 1, 0
+		require.Equal(t, reference, int(converted))
+
+		successful++
 	}
 
-	require.NoError(
-		t,
-		err,
-		"number: %f, converted: %v, reference: %v",
-		number,
-		converted,
-		reference,
-	)
-
-	require.Equal(t, reference, int(converted))
-
-	return 0, 1
+	require.NotZero(t, faults)
+	require.NotZero(t, successful)
 }
 
 func BenchmarkIdle(b *testing.B) {

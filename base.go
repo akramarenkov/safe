@@ -8,6 +8,7 @@ import (
 
 var (
 	ErrDivisionByZero = errors.New("division by zero")
+	ErrNaN            = errors.New("number is NaN")
 	ErrOverflow       = errors.New("integer overflow")
 )
 
@@ -260,15 +261,28 @@ func IToF[Flt constraints.Float, Int constraints.Integer](number Int) (Flt, bool
 // Converts a floating point number to an integer and determines whether an overflow
 // has occurred or not.
 //
-// In case of overflow, an error is returned.
+// Number is also checked for equality to NaN.
+//
+// In case of overflow or number is equality to NaN, an error is returned.
 func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, error) {
+	// It was not possible to find cases where, in the absence of overflow, the
+	// difference between a number with a fractional part and its integer part would
+	// exceed or equal 1. However, to guarantee the absence of false overflow
+	// determinations, a difference of 2 was chosen. In the case of real overflow,
+	// the difference is always greater.
+	const absenceOverflowDiff = 2
+
+	if number != number { //nolint:gocritic
+		return 0, ErrNaN
+	}
+
 	converted := Int(number)
 	reverted := Flt(converted)
 
 	switch {
-	case number-reverted >= 1:
+	case number-reverted > absenceOverflowDiff:
 		return 0, ErrOverflow
-	case number-reverted <= -1:
+	case number-reverted < -absenceOverflowDiff:
 		return 0, ErrOverflow
 	}
 

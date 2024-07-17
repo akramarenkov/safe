@@ -634,55 +634,39 @@ func testPow10Diff(t *testing.T) {
 }
 
 func TestPow(t *testing.T) {
-	product, err := Pow[int32](2, 30)
-	require.NoError(t, err)
-	require.Equal(t, int32(1<<30), product)
-
-	product, err = Pow[int32](2, 31)
-	require.Error(t, err)
-	require.Equal(t, int32(0), product)
-
-	testPow(t, 31)
-}
-
-func testPow(t *testing.T, maxPower int8) {
 	faults := 0
 	successful := 0
 
-	// int32 is used because in its value range float64 does not lose the precision of
+	// Is used int32 because in its value range float64 does not lose the precision of
 	// the integer part
-	maxInt32, loss := IToF[float64](math.MaxInt32)
-	require.False(t, loss)
+	maxInt32 := float64(math.MaxInt32)
+	minInt32 := float64(math.MinInt32)
 
-	minInt32, loss := IToF[float64](math.MinInt32)
-	require.False(t, loss)
-
-	// int8 range is used because when using base and power in its values,
-	// the result of exponentiation in floating point numbers is less than infinity,
-	// except in the case of raising 0 to a negative power
 	for base := int32(math.MinInt8); base <= math.MaxInt8; base++ {
-		for power := int32(math.MinInt8); power <= int32(maxPower); power++ {
-			bf, loss := IToF[float64](base)
-			require.False(t, loss)
-
-			pf, loss := IToF[float64](power)
-			require.False(t, loss)
-
-			reference := math.Pow(bf, pf)
+		for power := int32(math.MinInt8); power <= math.MaxInt8; power++ {
+			reference := math.Pow(float64(base), float64(power))
 			require.False(t, math.IsNaN(reference))
 
-			if base != 0 || power >= 0 {
-				require.False(
-					t,
-					math.IsInf(reference, 0),
-					"base: %v, power: %v",
-					base,
-					power,
-				)
+			// It is separately checked that in areas close to the maximum/minimum int32
+			// values, the overflow conditions are satisfied correctly
+			if reference >= maxInt32-2 && reference <= maxInt32+2 {
+				require.InDelta(t, maxInt32+1, reference, 0)
+
+				// reference > maxInt32 == true
+				require.Greater(t, reference, maxInt32)
+			}
+
+			if reference >= minInt32-2 && reference <= minInt32+2 {
+				require.InDelta(t, minInt32, reference, 0)
+
+				// reference < minInt32 == false
+				require.GreaterOrEqual(t, reference, minInt32)
 			}
 
 			product, err := Pow(base, power)
 
+			// Converting reference to any integer type can and will overflow,
+			// so the comparison is done in float64
 			if reference > maxInt32 || reference < minInt32 {
 				require.Error(
 					t,
