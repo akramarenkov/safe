@@ -15,7 +15,7 @@ var (
 // Adds two integers and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Add[Type constraints.Integer](first Type, second Type) (Type, error) {
+func Add[Type constraints.Integer](first, second Type) (Type, error) {
 	sum := first + second
 
 	// When adding or subtracting two integers, only one times overflow is possible
@@ -45,7 +45,7 @@ func Add[Type constraints.Integer](first Type, second Type) (Type, error) {
 // Slightly faster than the Add function.
 //
 // In case of overflow, an error is returned.
-func AddU[Type constraints.Unsigned](first Type, second Type) (Type, error) {
+func AddU[Type constraints.Unsigned](first, second Type) (Type, error) {
 	sum := first + second
 
 	// When adding or subtracting two integers, only one times overflow is possible
@@ -61,7 +61,7 @@ func AddU[Type constraints.Unsigned](first Type, second Type) (Type, error) {
 // has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Sub[Type constraints.Integer](minuend Type, subtrahend Type) (Type, error) {
+func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 	diff := minuend - subtrahend
 
 	// When adding or subtracting two integers, only one times overflow is possible
@@ -86,7 +86,7 @@ func Sub[Type constraints.Integer](minuend Type, subtrahend Type) (Type, error) 
 // Slightly faster than the Sub function.
 //
 // In case of overflow, an error is returned.
-func SubU[Type constraints.Unsigned](minuend Type, subtrahend Type) (Type, error) {
+func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
 	diff := minuend - subtrahend
 
 	// When adding or subtracting two integers, only one times overflow is possible
@@ -101,7 +101,7 @@ func SubU[Type constraints.Unsigned](minuend Type, subtrahend Type) (Type, error
 // Multiplies two integers and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Mul[Type constraints.Integer](first Type, second Type) (Type, error) {
+func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	if second == 0 {
 		return 0, nil
 	}
@@ -136,7 +136,7 @@ func Mul[Type constraints.Integer](first Type, second Type) (Type, error) {
 // The divisor is also checked for equality to zero.
 //
 // In case of overflow or the equality of the divisor to zero, an error is returned.
-func Div[Type constraints.Integer](dividend Type, divisor Type) (Type, error) {
+func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
 	}
@@ -194,9 +194,7 @@ func NegateS[Type constraints.Signed](number Type) (Type, error) {
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func IToI[TypeTo constraints.Integer, TypeFrom constraints.Integer](
-	number TypeFrom,
-) (TypeTo, error) {
+func IToI[TypeTo, TypeFrom constraints.Integer](number TypeFrom) (TypeTo, error) {
 	converted := TypeTo(number)
 
 	switch {

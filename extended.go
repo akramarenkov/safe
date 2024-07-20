@@ -12,7 +12,7 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 // Adds three integers and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func AddT[Type constraints.Integer](first Type, second Type, third Type) (Type, error) {
+func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
 	interim, err := Add(first, second)
 	if err == nil {
 		sum, err := Add(interim, third)
@@ -58,24 +58,20 @@ func AddUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) 
 	return sum, nil
 }
 
-// Subtracts three integers (subtrahend from minuend) and determines whether an overflow
-// has occurred or not.
+// Subtracts three integers (subtrahend, deductible from minuend) and determines whether
+// an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func SubT[Type constraints.Integer](
-	minuend Type,
-	subtrahend Type,
-	secondSubtrahend Type,
-) (Type, error) {
+func SubT[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type, error) {
 	interim, err := Sub(minuend, subtrahend)
 	if err == nil {
-		diff, err := Sub(interim, secondSubtrahend)
+		diff, err := Sub(interim, deductible)
 		if err == nil {
 			return diff, nil
 		}
 	}
 
-	interim, err = Sub(minuend, secondSubtrahend)
+	interim, err = Sub(minuend, deductible)
 	if err == nil {
 		diff, err := Sub(interim, subtrahend)
 		if err == nil {
@@ -83,7 +79,7 @@ func SubT[Type constraints.Integer](
 		}
 	}
 
-	interim, err = Add(subtrahend, secondSubtrahend)
+	interim, err = Add(subtrahend, deductible)
 	if err == nil {
 		return Sub(minuend, interim)
 	}
@@ -115,7 +111,7 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 // Multiplies three integers and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func MulT[Type constraints.Integer](first Type, second Type, third Type) (Type, error) {
+func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
 	interim, err := Mul(first, second)
 	if err == nil {
 		product, err := Mul(interim, third)
@@ -208,9 +204,7 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 // Raises 10 to a power and determines whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func Pow10[Type constraints.Integer, TypePower constraints.Integer](
-	power TypePower,
-) (Type, error) {
+func Pow10[Type, TypePower constraints.Integer](power TypePower) (Type, error) {
 	if power < 0 {
 		return 0, nil
 	}
@@ -228,10 +222,7 @@ func Pow10[Type constraints.Integer, TypePower constraints.Integer](
 // Straightforward and slow implementation. Be careful.
 //
 // In case of overflow, an error is returned.
-func Pow[Type constraints.Integer, TypePower constraints.Integer](
-	base Type,
-	power TypePower,
-) (Type, error) {
+func Pow[Type, TypePower constraints.Integer](base Type, power TypePower) (Type, error) {
 	if power == 0 {
 		return 1, nil
 	}
