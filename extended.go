@@ -190,7 +190,7 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 	}
 
 	// Paired minus ones cancel each other out
-	if minusOnes%2 == 0 {
+	if isEven(minusOnes) {
 		return quotient, nil
 	}
 
