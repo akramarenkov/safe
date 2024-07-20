@@ -638,7 +638,7 @@ func TestPow(t *testing.T) {
 	successful := 0
 
 	// Is used int32 because in its value range float64 does not lose the precision of
-	// the integer part
+	// the integer part and comparison of reference and tested values ​​can be done simply
 	maxInt32 := float64(math.MaxInt32)
 	minInt32 := float64(math.MinInt32)
 
@@ -647,8 +647,10 @@ func TestPow(t *testing.T) {
 			reference := math.Pow(float64(base), float64(power))
 			require.False(t, math.IsNaN(reference))
 
-			// It is separately checked that in areas close to the maximum/minimum int32
-			// values, the overflow conditions are satisfied correctly
+			// To ensure that overflow conditions are satisfied correctly when
+			// obtaining reference values ​​with non-zero fractional parts and close
+			// to maximum/minimum int32 values, reference values ​​in these areas
+			// are checked separately
 			if reference >= maxInt32-2 && reference <= maxInt32+2 {
 				require.InDelta(t, maxInt32+1, reference, 0)
 
