@@ -1,15 +1,7 @@
 package safe
 
 import (
-	"errors"
-
 	"golang.org/x/exp/constraints"
-)
-
-var (
-	ErrDivisionByZero = errors.New("division by zero")
-	ErrNaN            = errors.New("number is NaN")
-	ErrOverflow       = errors.New("integer overflow")
 )
 
 // Adds two integers and determines whether an overflow has occurred or not.
