@@ -11,7 +11,54 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 	1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
 }
 
+// Adds up multiple integers and determines whether an overflow has occurred or not.
+//
+// Slower than the Add function.
+//
+// In case of overflow or missing arguments, an error is returned.
+func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
+	if len(addends) == 0 {
+		return 0, ErrMissinArguments
+	}
+
+	slices.Sort(addends)
+
+	sum := addends[0]
+
+	remainder := addends[1:]
+
+	lower := 0
+	higher := len(remainder) - 1
+
+	pick := func(id int) Type {
+		if isEven(id) {
+			addend := remainder[higher]
+			higher--
+
+			return addend
+		}
+
+		addend := remainder[lower]
+		lower++
+
+		return addend
+	}
+
+	for id := range len(remainder) {
+		interim, err := Add(sum, pick(id))
+		if err != nil {
+			return 0, err
+		}
+
+		sum = interim
+	}
+
+	return sum, nil
+}
+
 // Adds three integers and determines whether an overflow has occurred or not.
+//
+// Faster than the AddM function.
 //
 // In case of overflow, an error is returned.
 func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
@@ -42,7 +89,7 @@ func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Adds up multiple unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Slower than the AddU function.
+// Slower than the AddU function, faster than the AddM function.
 //
 // In case of overflow, an error is returned.
 func AddUM[Type constraints.Unsigned](first Type, addends ...Type) (Type, error) {

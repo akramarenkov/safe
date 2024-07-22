@@ -7,19 +7,51 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAddT(t *testing.T) {
-	testAddTInt(t)
-	testAddTUint(t, AddT)
+func TestAddM(t *testing.T) {
+	_, err := AddM[int]()
+	require.Error(t, err)
+
+	sum, err := AddM(1)
+	require.NoError(t, err)
+	require.Equal(t, 1, sum)
+
+	sum, err = AddM(1, 2)
+	require.NoError(t, err)
+	require.Equal(t, 3, sum)
+
+	sum, err = AddM(1, 2, 3)
+	require.NoError(t, err)
+	require.Equal(t, 6, sum)
+
+	sum, err = AddM(1, 2, 3, 4)
+	require.NoError(t, err)
+	require.Equal(t, 10, sum)
+
+	add := func(first int8, second int8, third int8) (int8, error) {
+		return AddM(first, second, third)
+	}
+
+	addu := func(first uint8, second uint8, third uint8) (uint8, error) {
+		return AddM(first, second, third)
+	}
+
+	testAddMInt(t, add)
+	testAddMUint(t, addu)
 }
 
-func testAddTInt(t *testing.T) {
+func TestAddT(t *testing.T) {
+	testAddMInt(t, AddT)
+	testAddMUint(t, AddT)
+}
+
+func testAddMInt(t *testing.T, add func(int8, int8, int8) (int8, error)) {
 	faults := 0
 	successful := 0
 
 	for first := math.MinInt8; first <= math.MaxInt8; first++ {
 		for second := math.MinInt8; second <= math.MaxInt8; second++ {
 			for third := math.MinInt8; third <= math.MaxInt8; third++ {
-				sum, err := AddT(int8(first), int8(second), int8(third))
+				sum, err := add(int8(first), int8(second), int8(third))
 
 				reference := first + second + third
 
@@ -70,7 +102,7 @@ func testAddTInt(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func testAddTUint(t *testing.T, add func(uint8, uint8, uint8) (uint8, error)) {
+func testAddMUint(t *testing.T, add func(uint8, uint8, uint8) (uint8, error)) {
 	faults := 0
 	successful := 0
 
@@ -137,7 +169,7 @@ func TestAddUM(t *testing.T) {
 		return AddUM(first, second, third)
 	}
 
-	testAddTUint(t, add)
+	testAddMUint(t, add)
 }
 
 func TestSubT(t *testing.T) {
@@ -278,7 +310,7 @@ func TestSubUM(t *testing.T) {
 }
 
 func TestMulM(t *testing.T) {
-	_, err := MulM[int8]()
+	_, err := MulM[int]()
 	require.Error(t, err)
 
 	mul := func(first int8, second int8, third int8) (int8, error) {
@@ -740,7 +772,7 @@ func TestPow(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func BenchmarkAddTReference(b *testing.B) {
+func BenchmarkAddMReference(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
@@ -750,6 +782,44 @@ func BenchmarkAddTReference(b *testing.B) {
 				for third := -3; third <= 3; third++ {
 					sum = first + second + third
 				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddM(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				for third := -3; third <= 3; third++ {
+					sum, _ = AddM(first, second, third)
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddM2(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				sum, _ = AddM(first, second)
 			}
 		}
 	}
@@ -807,7 +877,7 @@ func BenchmarkAddUM2(b *testing.B) {
 	for range b.N {
 		for first := uint(0); first <= 6; first++ {
 			for second := uint(0); second <= 6; second++ {
-				sum, _ = AddUM(first, second, 0)
+				sum, _ = AddUM(first, second)
 			}
 		}
 	}
