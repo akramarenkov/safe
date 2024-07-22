@@ -42,14 +42,14 @@ func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Adds up multiple unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Slower than a function with two arguments.
+// Slower than the AddU function.
 //
 // In case of overflow, an error is returned.
-func AddUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) {
+func AddUM[Type constraints.Unsigned](first Type, addends ...Type) (Type, error) {
 	sum := first
 
-	for _, next := range others {
-		interim, err := AddU(sum, next)
+	for _, addend := range addends {
+		interim, err := AddU(sum, addend)
 		if err != nil {
 			return 0, err
 		}
@@ -89,10 +89,10 @@ func SubT[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 	return 0, ErrOverflow
 }
 
-// Subtracts multiple unsigned integers (subtrahend from minuend) and determines whether
-// an overflow has occurred or not.
+// Subtracts multiple unsigned integers (subtrahends from minuend) and determines
+// whether an overflow has occurred or not.
 //
-// Slower than a function with two arguments.
+// Slower than the SubU function.
 //
 // In case of overflow, an error is returned.
 func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
@@ -112,7 +112,7 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 
 // Multiplies multiple integers and determines whether an overflow has occurred or not.
 //
-// Slower than a function with two arguments.
+// Slower than the Mul function.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
@@ -197,20 +197,20 @@ func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Multiplies multiple unsigned integers and determines whether an overflow has
 // occurred or not.
 //
-// Slower than a function with two arguments.
+// Slower than the MulU function and faster than the MulM function.
 //
 // In case of overflow, an error is returned.
-func MulUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) {
+func MulUM[Type constraints.Unsigned](first Type, factors ...Type) (Type, error) {
 	product := first
 
-	for _, next := range others {
-		if next == 0 {
+	for _, factor := range factors {
+		if factor == 0 {
 			return 0, nil
 		}
 	}
 
-	for _, next := range others {
-		interim, err := Mul(product, next)
+	for _, factor := range factors {
+		interim, err := Mul(product, factor)
 		if err != nil {
 			return 0, err
 		}
@@ -228,7 +228,7 @@ func MulUM[Type constraints.Unsigned](first Type, others ...Type) (Type, error) 
 //
 // Slower than a function with two arguments.
 //
-// In case of overflow or the equality of the divisors to zero, an error is returned.
+// In case of overflow or divisors equal to zero, an error is returned.
 func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, error) {
 	quotient := dividend
 
