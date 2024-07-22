@@ -935,55 +935,55 @@ func TestIToF(t *testing.T) {
 }
 
 func testIToF32(t *testing.T) {
-	_, loss := IToF[float32](-1 << 24)
-	require.False(t, loss)
+	_, err := IToF[float32](-1 << 24)
+	require.NoError(t, err)
 
-	_, loss = IToF[float32](1 << 24)
-	require.False(t, loss)
+	_, err = IToF[float32](1 << 24)
+	require.NoError(t, err)
 
-	_, loss = IToF[float32](-1<<24 - 1)
-	require.True(t, loss)
+	_, err = IToF[float32](-1<<24 - 1)
+	require.Error(t, err)
 
-	_, loss = IToF[float32](1<<24 + 1)
-	require.True(t, loss)
+	_, err = IToF[float32](1<<24 + 1)
+	require.Error(t, err)
 
-	_, loss = IToF[float32](math.MinInt32)
-	require.False(t, loss)
+	_, err = IToF[float32](math.MinInt32)
+	require.NoError(t, err)
 
-	_, loss = IToF[float32](math.MaxInt32)
-	require.True(t, loss)
+	_, err = IToF[float32](math.MaxInt32)
+	require.Error(t, err)
 
-	_, loss = IToF[float32](uint32(math.MaxUint32))
-	require.True(t, loss)
+	_, err = IToF[float32](uint32(math.MaxUint32))
+	require.Error(t, err)
 }
 
 func testIToF64(t *testing.T) {
-	_, loss := IToF[float64](math.MinInt32)
-	require.False(t, loss)
+	_, err := IToF[float64](math.MinInt32)
+	require.NoError(t, err)
 
-	_, loss = IToF[float64](math.MaxInt32)
-	require.False(t, loss)
+	_, err = IToF[float64](math.MaxInt32)
+	require.NoError(t, err)
 
-	_, loss = IToF[float64](int64(-1 << 53))
-	require.False(t, loss)
+	_, err = IToF[float64](int64(-1 << 53))
+	require.NoError(t, err)
 
-	_, loss = IToF[float64](int64(1 << 53))
-	require.False(t, loss)
+	_, err = IToF[float64](int64(1 << 53))
+	require.NoError(t, err)
 
-	_, loss = IToF[float64](int64(-1<<53 - 1))
-	require.True(t, loss)
+	_, err = IToF[float64](int64(-1<<53 - 1))
+	require.Error(t, err)
 
-	_, loss = IToF[float64](int64(1<<53 + 1))
-	require.True(t, loss)
+	_, err = IToF[float64](int64(1<<53 + 1))
+	require.Error(t, err)
 
-	_, loss = IToF[float64](int64(math.MinInt64))
-	require.False(t, loss)
+	_, err = IToF[float64](int64(math.MinInt64))
+	require.NoError(t, err)
 
-	_, loss = IToF[float64](int64(math.MaxInt64))
-	require.True(t, loss)
+	_, err = IToF[float64](int64(math.MaxInt64))
+	require.Error(t, err)
 
-	_, loss = IToF[float64](uint64(math.MaxUint64))
-	require.True(t, loss)
+	_, err = IToF[float64](uint64(math.MaxUint64))
+	require.Error(t, err)
 }
 
 func TestFToI(t *testing.T) {

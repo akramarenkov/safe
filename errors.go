@@ -7,4 +7,5 @@ var (
 	ErrMissinArguments = errors.New("missing arguments")
 	ErrNaN             = errors.New("number is NaN")
 	ErrOverflow        = errors.New("integer overflow")
+	ErrPrecisionLoss   = errors.New("loss of precision")
 )

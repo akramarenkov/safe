@@ -17,7 +17,7 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 	// unsigned numbers, see add.svg. For signed numbers it turns out a little more
 	// complicated as indicated in the conditions below
 
-	// When adding positive and negative number, overflow is impossible
+	// When adding positive and negative numbers, overflow is impossible
 	switch {
 	case first > 0 && second > 0:
 		if sum < first {
@@ -127,7 +127,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 //
 // The divisor is also checked for equality to zero.
 //
-// In case of overflow or the equality of the divisor to zero, an error is returned.
+// In case of overflow or divisor equal to zero, an error is returned.
 func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
@@ -240,12 +240,16 @@ func UToS[Sgn constraints.Signed, Uns constraints.Unsigned](number Uns) (Sgn, er
 //
 // Loss of precision can lead to overflow when converting back to an integer number.
 //
-// Returns true if precision is lost.
-func IToF[Flt constraints.Float, Int constraints.Integer](number Int) (Flt, bool) {
+// In case of precision is lost, an error is returned.
+func IToF[Flt constraints.Float, Int constraints.Integer](number Int) (Flt, error) {
 	converted := Flt(number)
 	reverted := Int(converted)
 
-	return converted, number != reverted
+	if number != reverted {
+		return 0, ErrPrecisionLoss
+	}
+
+	return converted, nil
 }
 
 // Converts a floating point number to an integer and determines whether an overflow
