@@ -740,12 +740,38 @@ func TestPow(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func BenchmarkAddT(b *testing.B) {
+func BenchmarkAddTReference(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
-	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
-		sum, _ = AddT(b.N, 3, 3)
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				for third := -3; third <= 3; third++ {
+					sum = first + second + third
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddT(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				for third := -3; third <= 3; third++ {
+					sum, _ = AddT(first, second, third)
+				}
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -755,11 +781,35 @@ func BenchmarkAddT(b *testing.B) {
 }
 
 func BenchmarkAddUM(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
 	sum := uint(0)
 
-	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
-		sum, _ = AddUM(uint(b.N), 3, 3)
+		for first := uint(0); first <= 6; first++ {
+			for second := uint(0); second <= 6; second++ {
+				for third := uint(0); third <= 6; third++ {
+					sum, _ = AddUM(first, second, third)
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddUM2(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := uint(0)
+
+	for range b.N {
+		for first := uint(0); first <= 6; first++ {
+			for second := uint(0); second <= 6; second++ {
+				sum, _ = AddUM(first, second, 0)
+			}
+		}
 	}
 
 	b.StopTimer()

@@ -1133,11 +1133,15 @@ func BenchmarkIdle(b *testing.B) {
 }
 
 func BenchmarkAddReference(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
-	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
-		sum = b.N + 3
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				sum = first + second
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1147,11 +1151,15 @@ func BenchmarkAddReference(b *testing.B) {
 }
 
 func BenchmarkAdd(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
-	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
-		sum, _ = Add(b.N, 3)
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				sum, _ = Add(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1161,11 +1169,15 @@ func BenchmarkAdd(b *testing.B) {
 }
 
 func BenchmarkAddU(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
 	sum := uint(0)
 
-	// b.N, sum and require is used to prevent compiler optimizations
 	for range b.N {
-		sum, _ = AddU(uint(b.N), 3)
+		for first := uint(0); first <= 6; first++ {
+			for second := uint(0); second <= 6; second++ {
+				sum, _ = AddU(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
