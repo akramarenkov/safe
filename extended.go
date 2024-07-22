@@ -197,7 +197,7 @@ func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Multiplies multiple unsigned integers and determines whether an overflow has
 // occurred or not.
 //
-// Slower than the MulU function and faster than the MulM function.
+// Faster than the MulM function.
 //
 // In case of overflow, an error is returned.
 func MulUM[Type constraints.Unsigned](first Type, factors ...Type) (Type, error) {
@@ -226,7 +226,7 @@ func MulUM[Type constraints.Unsigned](first Type, factors ...Type) (Type, error)
 //
 // The divisors is also checked for equality to zero.
 //
-// Slower than a function with two arguments.
+// Slower than the Div function.
 //
 // In case of overflow or divisors equal to zero, an error is returned.
 func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, error) {
