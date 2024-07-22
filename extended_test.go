@@ -277,19 +277,30 @@ func TestSubUM(t *testing.T) {
 	testSubTUint(t, sub)
 }
 
-func TestMulT(t *testing.T) {
-	testMulTInt(t)
-	testMulTUint(t, MulT)
+func TestMulM(t *testing.T) {
+	_, err := MulM[int8]()
+	require.Error(t, err)
+
+	mul := func(first int8, second int8, third int8) (int8, error) {
+		return MulM(first, second, third)
+	}
+
+	mulu := func(first uint8, second uint8, third uint8) (uint8, error) {
+		return MulM(first, second, third)
+	}
+
+	testMulMInt(t, mul)
+	testMulMUint(t, mulu)
 }
 
-func testMulTInt(t *testing.T) {
+func testMulMInt(t *testing.T, mul func(int8, int8, int8) (int8, error)) {
 	faults := 0
 	successful := 0
 
 	for first := math.MinInt8; first <= math.MaxInt8; first++ {
 		for second := math.MinInt8; second <= math.MaxInt8; second++ {
 			for third := math.MinInt8; third <= math.MaxInt8; third++ {
-				product, err := MulT(int8(first), int8(second), int8(third))
+				product, err := mul(int8(first), int8(second), int8(third))
 
 				reference := first * second * third
 
@@ -340,7 +351,7 @@ func testMulTInt(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
+func testMulMUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 	faults := 0
 	successful := 0
 
@@ -398,6 +409,11 @@ func testMulTUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 	require.NotZero(t, successful)
 }
 
+func TestMulT(t *testing.T) {
+	testMulMInt(t, MulT)
+	testMulMUint(t, MulT)
+}
+
 func TestMulUM(t *testing.T) {
 	product, err := MulUM(uint(math.MaxUint))
 	require.NoError(t, err)
@@ -407,7 +423,7 @@ func TestMulUM(t *testing.T) {
 		return MulUM(first, second, third)
 	}
 
-	testMulTUint(t, mul)
+	testMulMUint(t, mul)
 }
 
 func TestDivM(t *testing.T) {
@@ -786,6 +802,20 @@ func BenchmarkMulT(b *testing.B) {
 	// b.N, product and require is used to prevent compiler optimizations
 	for range b.N {
 		product, _ = MulT(b.N, 3, 3)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
+}
+
+func BenchmarkMulM(b *testing.B) {
+	product := 0
+
+	// b.N, product and require is used to prevent compiler optimizations
+	for range b.N {
+		product, _ = MulM(b.N, 3, 3)
 	}
 
 	b.StopTimer()

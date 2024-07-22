@@ -1,6 +1,8 @@
 package safe
 
 import (
+	"slices"
+
 	"golang.org/x/exp/constraints"
 )
 
@@ -108,7 +110,63 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 	return diff, nil
 }
 
+// Multiplies multiple integers and determines whether an overflow has occurred or not.
+//
+// Slower than a function with two arguments.
+//
+// In case of overflow or missing arguments, an error is returned.
+func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
+	if len(factors) == 0 {
+		return 0, ErrMissinArguments
+	}
+
+	slices.SortFunc(factors, cmpMulM)
+
+	for _, factor := range factors {
+		if factor == 0 {
+			return 0, nil
+		}
+	}
+
+	product := factors[0]
+
+	for _, factor := range factors[1:] {
+		interim, err := Mul(product, factor)
+		if err != nil {
+			return 0, err
+		}
+
+		product = interim
+	}
+
+	return product, nil
+}
+
+func cmpMulM[Type constraints.Integer](first, second Type) int {
+	if first < 0 && second < 0 {
+		switch {
+		case first > second:
+			return -1
+		case first < second:
+			return 1
+		}
+
+		return 0
+	}
+
+	switch {
+	case first < second:
+		return -1
+	case first > second:
+		return 1
+	}
+
+	return 0
+}
+
 // Multiplies three integers and determines whether an overflow has occurred or not.
+//
+// Faster than the MulM function.
 //
 // In case of overflow, an error is returned.
 func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
