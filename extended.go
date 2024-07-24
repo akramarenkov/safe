@@ -21,31 +21,37 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return 0, ErrMissinArguments
 	}
 
+	const partsNumber = 2
+
 	slices.Sort(addends)
 
-	sum := addends[0]
-
-	remainder := addends[1:]
+	sum := Type(0)
 
 	lower := 0
-	higher := len(remainder) - 1
+	higher := len(addends) - 1
 
-	pick := func(id int) Type {
-		if isEven(id) {
-			addend := remainder[higher]
-			higher--
+	amount := len(addends) / partsNumber
+	remainder := len(addends) % partsNumber
 
-			return addend
+	for range amount {
+		interim, err := Add(addends[lower], addends[higher])
+		if err != nil {
+			return 0, err
 		}
 
-		addend := remainder[lower]
 		lower++
+		higher--
 
-		return addend
+		interim, err = Add(sum, interim)
+		if err != nil {
+			return 0, err
+		}
+
+		sum = interim
 	}
 
-	for id := range len(remainder) {
-		interim, err := Add(sum, pick(id))
+	if remainder != 0 {
+		interim, err := Add(sum, addends[amount])
 		if err != nil {
 			return 0, err
 		}
