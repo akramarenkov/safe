@@ -812,7 +812,7 @@ func BenchmarkAddM(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddM2(b *testing.B) {
+func BenchmarkAddM2Args(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
@@ -870,7 +870,7 @@ func BenchmarkAddUM(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddUM2(b *testing.B) {
+func BenchmarkAddUM2Args(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := uint(0)
 
