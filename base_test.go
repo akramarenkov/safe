@@ -5,237 +5,181 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/inspect"
+
 	"github.com/stretchr/testify/require"
 )
 
 func TestAdd(t *testing.T) {
 	testAddInt(t)
-	testAddUint(t, Add)
-}
-
-func TestAddU(t *testing.T) {
-	testAddUint(t, AddU)
+	testAddUint(t)
 }
 
 func testAddInt(t *testing.T) {
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 2,
 
-	for first := math.MinInt8; first <= math.MaxInt8; first++ {
-		for second := math.MinInt8; second <= math.MaxInt8; second++ {
-			sum, err := Add(int8(first), int8(second))
-
-			reference := first + second
-
-			if reference > math.MaxInt8 || reference < math.MinInt8 {
-				require.Error(
-					t,
-					err,
-					"first: %v, second: %v, sum: %v, reference: %v",
-					first,
-					second,
-					sum,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"first: %v, second: %v, sum: %v, reference: %v",
-				first,
-				second,
-				sum,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(sum),
-				"first: %v, second: %v",
-				first,
-				second,
-			)
-		}
+		Inspected: func(args ...int8) (int8, error) {
+			return Add(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
-func testAddUint(t *testing.T, add func(uint8, uint8) (uint8, error)) {
-	faults := 0
-	successful := 0
+func testAddUint(t *testing.T) {
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
 
-	for first := 0; first <= math.MaxUint8; first++ {
-		for second := 0; second <= math.MaxUint8; second++ {
-			sum, err := add(uint8(first), uint8(second))
-
-			reference := first + second
-
-			if reference > math.MaxUint8 {
-				require.Error(
-					t,
-					err,
-					"first: %v, second: %v, sum: %v, reference: %v",
-					first,
-					second,
-					sum,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"first: %v, second: %v, sum: %v, reference: %v",
-				first,
-				second,
-				sum,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(sum),
-				"first: %v, second: %v",
-				first,
-				second,
-			)
-		}
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Add(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func TestAddU(t *testing.T) {
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return AddU(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestSub(t *testing.T) {
 	testSubInt(t)
-	testSubUint(t, Sub)
-}
-
-func TestSubU(t *testing.T) {
-	testSubUint(t, SubU)
+	testSubUint(t)
 }
 
 func testSubInt(t *testing.T) {
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 2,
 
-	for minuend := math.MinInt8; minuend <= math.MaxInt8; minuend++ {
-		for subtrahend := math.MinInt8; subtrahend <= math.MaxInt8; subtrahend++ {
-			diff, err := Sub(int8(minuend), int8(subtrahend))
-
-			reference := minuend - subtrahend
-
-			if reference > math.MaxInt8 || reference < math.MinInt8 {
-				require.Error(
-					t,
-					err,
-					"minuend: %v, subtrahend: %v, diff: %v, reference: %v",
-					minuend,
-					subtrahend,
-					diff,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"minuend: %v, subtrahend: %v, diff: %v, reference: %v",
-				minuend,
-				subtrahend,
-				diff,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(diff),
-				"minuend: %v, subtrahend: %v",
-				minuend,
-				subtrahend,
-			)
-		}
+		Inspected: func(args ...int8) (int8, error) {
+			return Sub(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
-func testSubUint(t *testing.T, sub func(uint8, uint8) (uint8, error)) {
-	faults := 0
-	successful := 0
+func testSubUint(t *testing.T) {
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
 
-	for minuend := 0; minuend <= math.MaxUint8; minuend++ {
-		for subtrahend := 0; subtrahend <= math.MaxUint8; subtrahend++ {
-			diff, err := sub(uint8(minuend), uint8(subtrahend))
-
-			reference := minuend - subtrahend
-
-			if reference < 0 {
-				require.Error(
-					t,
-					err,
-					"minuend: %v, subtrahend: %v, diff: %v, reference: %v",
-					minuend,
-					subtrahend,
-					diff,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"minuend: %v, subtrahend: %v, diff: %v, reference: %v",
-				minuend,
-				subtrahend,
-				diff,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(diff),
-				"minuend: %v, subtrahend: %v",
-				minuend,
-				subtrahend,
-			)
-		}
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Sub(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func TestSubU(t *testing.T) {
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return SubU(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestMul(t *testing.T) {
@@ -244,109 +188,57 @@ func TestMul(t *testing.T) {
 }
 
 func testMulInt(t *testing.T) {
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 2,
 
-	for first := math.MinInt8; first <= math.MaxInt8; first++ {
-		for second := math.MinInt8; second <= math.MaxInt8; second++ {
-			product, err := Mul(int8(first), int8(second))
-
-			reference := first * second
-
-			if reference > math.MaxInt8 || reference < math.MinInt8 {
-				require.Error(
-					t,
-					err,
-					"first: %v, second: %v, product: %v, reference: %v",
-					first,
-					second,
-					product,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"first: %v, second: %v, product: %v, reference: %v",
-				first,
-				second,
-				product,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(product),
-				"first: %v, second: %v",
-				first,
-				second,
-			)
-		}
+		Inspected: func(args ...int8) (int8, error) {
+			return Mul(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testMulUint(t *testing.T) {
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
 
-	for first := 0; first <= math.MaxUint8; first++ {
-		for second := 0; second <= math.MaxUint8; second++ {
-			product, err := Mul(uint8(first), uint8(second))
-
-			reference := first * second
-
-			if reference > math.MaxUint8 {
-				require.Error(
-					t,
-					err,
-					"first: %v, second: %v, product: %v, reference: %v",
-					first,
-					second,
-					product,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"first: %v, second: %v, product: %v, reference: %v",
-				first,
-				second,
-				product,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(product),
-				"first: %v, second: %v",
-				first,
-				second,
-			)
-		}
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Mul(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestDiv(t *testing.T) {
@@ -355,185 +247,151 @@ func TestDiv(t *testing.T) {
 }
 
 func testDivInt(t *testing.T) {
-	zeros := 0
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 2,
 
-	for dividend := math.MinInt8; dividend <= math.MaxInt8; dividend++ {
-		for divisor := math.MinInt8; divisor <= math.MaxInt8; divisor++ {
-			quotient, err := Div(int8(dividend), int8(divisor))
-
-			if divisor == 0 {
-				require.Error(t, err, "dividend: %v, divisor: %v", dividend, divisor)
-
-				zeros++
-
-				continue
+		Inspected: func(args ...int8) (int8, error) {
+			return Div(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 {
+				return 0, ErrDivisionByZero
 			}
 
-			reference := dividend / divisor
-
-			if reference > math.MaxInt8 || reference < math.MinInt8 {
-				require.Error(
-					t,
-					err,
-					"dividend: %v, divisor: %v, quotient: %v, reference: %v",
-					dividend,
-					divisor,
-					quotient,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"dividend: %v, divisor: %v, quotient: %v, reference: %v",
-				dividend,
-				divisor,
-				quotient,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(quotient),
-				"dividend: %v, divisor: %v",
-				dividend,
-				divisor,
-			)
-		}
+			return args[0] / args[1], nil
+		},
 	}
 
-	require.NotZero(t, zeros)
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
 }
 
 func testDivUint(t *testing.T) {
-	zeros := 0
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
 
-	for dividend := 0; dividend <= math.MaxUint8; dividend++ {
-		for divisor := 0; divisor <= math.MaxUint8; divisor++ {
-			quotient, err := Div(uint8(dividend), uint8(divisor))
-
-			if divisor == 0 {
-				require.Error(t, err, "dividend: %v, divisor: %v", dividend, divisor)
-
-				zeros++
-
-				continue
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Div(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 {
+				return 0, ErrDivisionByZero
 			}
 
-			reference := dividend / divisor
-
-			if reference > math.MaxUint8 {
-				require.Error(
-					t,
-					err,
-					"dividend: %v, divisor: %v, quotient: %v, reference: %v",
-					dividend,
-					divisor,
-					quotient,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"dividend: %v, divisor: %v, quotient: %v, reference: %v",
-				dividend,
-				divisor,
-				quotient,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				reference,
-				int(quotient),
-				"dividend: %v, divisor: %v",
-				dividend,
-				divisor,
-			)
-		}
+			return args[0] / args[1], nil
+		},
 	}
 
-	require.NotZero(t, zeros)
-	require.Zero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
 }
 
 func TestNegate(t *testing.T) {
-	testNegateInt(t, Negate)
-	testNegateInt(t, NegateS)
+	testNegateInt(t)
 	testNegateUint(t)
 }
 
-func testNegateInt(t *testing.T, negate func(int8) (int8, error)) {
-	faults := 0
-	successful := 0
+func testNegateInt(t *testing.T) {
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 1,
 
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		negated, err := negate(int8(number))
-
-		reference := -number
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, negated: %v, reference: %v",
-				number,
-				negated,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, negated: %v, reference: %v",
-			number,
-			negated,
-			reference,
-		)
-
-		require.Equal(t, reference, int(negated), "number: %v", number)
+		Inspected: func(args ...int8) (int8, error) {
+			return Negate(args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return -args[0], nil
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testNegateUint(t *testing.T) {
-	for number := 0; number <= math.MaxUint8; number++ {
-		negated, err := Negate(uint8(number))
-		require.Error(t, err, "number: %v, negated: %v", number, negated)
-		require.Equal(t, 0, int(negated), "number: %v", number)
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Negate(args[0])
+		},
+		Reference: func(...int64) (int64, error) {
+			return 0, ErrOverflow
+		},
 	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+}
+
+func TestNegateS(t *testing.T) {
+	opts := inspect.Opts[int8]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return NegateS(args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return -args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestIToI(t *testing.T) {
@@ -1128,7 +986,8 @@ func testFToIUint(t *testing.T, step float64) {
 }
 
 func BenchmarkIdle(b *testing.B) {
-	for range b.N { //nolint:revive
+	for range b.N {
+		_ = b.N
 	}
 }
 
