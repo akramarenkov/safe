@@ -2,6 +2,7 @@ package safe
 
 import (
 	"math"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -439,6 +440,13 @@ func testMulMUint(t *testing.T, mul func(uint8, uint8, uint8) (uint8, error)) {
 
 	require.NotZero(t, faults)
 	require.NotZero(t, successful)
+}
+
+func TestCmpMulM(t *testing.T) {
+	factors := []int{15, 0, 27, -1, -5}
+
+	slices.SortFunc(factors, cmpMulM)
+	require.Equal(t, []int{-1, -5, 0, 15, 27}, factors)
 }
 
 func TestMulT(t *testing.T) {
