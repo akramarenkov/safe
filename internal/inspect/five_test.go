@@ -15,7 +15,7 @@ func TestIsValid5(t *testing.T) {
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return first + second + third + fourth + fifth, nil
 		},
-		Reference5: func(first, second, third, fourth, fifth int64) (int64, error) {
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
 			return first + second + third + fourth + fifth, nil
 		},
 	}
@@ -31,7 +31,7 @@ func TestIsValid5(t *testing.T) {
 	require.Error(t, opts.IsValid())
 
 	opts = Opts5[int8]{
-		Reference5: func(first, second, third, fourth, fifth int64) (int64, error) {
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
 			return first + second + third + fourth + fifth, nil
 		},
 	}
@@ -66,8 +66,8 @@ func testDo5Int(t *testing.T) {
 	}
 
 	opts := Opts5[int8]{
-		Inspected:  inspected,
-		Reference5: reference,
+		Inspected: inspected,
+		Reference: reference,
 	}
 
 	result, err := opts.Do()
@@ -102,8 +102,8 @@ func testDo5Uint(t *testing.T) {
 	}
 
 	opts := Opts5[uint8]{
-		Inspected:  inspected,
-		Reference5: reference,
+		Inspected: inspected,
+		Reference: reference,
 	}
 
 	result, err := opts.Do()
@@ -180,8 +180,8 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	}
 
 	opts := Opts5[int8]{
-		Inspected:  errorExpected,
-		Reference5: reference,
+		Inspected: errorExpected,
+		Reference: reference,
 	}
 
 	result, err := opts.Do()
@@ -201,7 +201,7 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	require.Error(t, result.Conclusion)
 
 	opts.Inspected = inspected
-	opts.Reference5 = referenceFault
+	opts.Reference = referenceFault
 
 	result, err = opts.Do()
 	require.NoError(t, err)
@@ -255,8 +255,8 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 	}
 
 	opts := Opts5[uint8]{
-		Inspected:  errorExpected,
-		Reference5: reference,
+		Inspected: errorExpected,
+		Reference: reference,
 	}
 
 	result, err := opts.Do()
@@ -276,7 +276,7 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 	require.Error(t, result.Conclusion)
 
 	opts.Inspected = inspected
-	opts.Reference5 = referenceFault
+	opts.Reference = referenceFault
 
 	result, err = opts.Do()
 	require.NoError(t, err)
@@ -305,8 +305,8 @@ func BenchmarkDo5(b *testing.B) {
 	}
 
 	opts := Opts5[int8]{
-		Inspected:  inspected,
-		Reference5: reference,
+		Inspected: inspected,
+		Reference: reference,
 	}
 
 	var (

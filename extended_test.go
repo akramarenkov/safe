@@ -176,7 +176,7 @@ func testAddM4Int(t *testing.T) {
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return AddM(first, second, third, fourth)
 		},
-		Reference4: func(first, second, third, fourth int64) (int64, error) {
+		Reference: func(first, second, third, fourth int64) (int64, error) {
 			return first + second + third + fourth, nil
 		},
 	}
@@ -201,7 +201,7 @@ func testAddM4Uint(t *testing.T) {
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return AddM(first, second, third, fourth)
 		},
-		Reference4: func(first, second, third, fourth int64) (int64, error) {
+		Reference: func(first, second, third, fourth int64) (int64, error) {
 			return first + second + third + fourth, nil
 		},
 	}

@@ -14,7 +14,7 @@ type Opts4[Type EightBits] struct {
 	// Inspected function with four arguments
 	Inspected func(first, second, third, fourth Type) (Type, error)
 	// Function with four arguments that returns a reference value
-	Reference4
+	Reference Reference4
 
 	// Minimum and maximum value for specified type
 	min int64
@@ -23,7 +23,7 @@ type Opts4[Type EightBits] struct {
 
 // Validates options. A reference and inspected functions must be specified.
 func (opts *Opts4[Type]) IsValid() error {
-	if opts.Reference4 == nil {
+	if opts.Reference == nil {
 		return ErrReferenceNotSpecified
 	}
 
@@ -115,7 +115,7 @@ func (opts *Opts4[Type]) loop(firsts chan int64) Result[Type] {
 		for second := opts.min; second <= opts.max; second++ {
 			for third := opts.min; third <= opts.max; third++ {
 				for fourth := opts.min; fourth <= opts.max; fourth++ {
-					reference, fault := opts.Reference4(first, second, third, fourth)
+					reference, fault := opts.Reference(first, second, third, fourth)
 
 					actual, err := opts.Inspected(
 						Type(first),
