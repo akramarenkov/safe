@@ -34,14 +34,11 @@ func TestAddM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 15, sum)
 
-	testAddM3Int(t)
-	testAddM3Uint(t)
-
-	testAddM4Int(t)
-	testAddM4Uint(t)
+	testAddMInt(t)
+	testAddMUint(t)
 }
 
-func testAddM3Int(t *testing.T) {
+func testAddMInt(t *testing.T) {
 	opts := inspect.Opts[int8]{
 		LoopsQuantity: 2,
 
@@ -89,7 +86,7 @@ func testAddM3Int(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddM3Uint(t *testing.T) {
+func testAddMUint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 2,
 
@@ -135,6 +132,11 @@ func testAddM3Uint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+}
+
+func TestAddM4(t *testing.T) {
+	testAddM4Int(t)
+	testAddM4Uint(t)
 }
 
 func testAddM4Int(t *testing.T) {
