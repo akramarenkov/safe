@@ -71,7 +71,7 @@ func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
 //
 // Slower than the AddU function, faster than the AddM function.
 //
-// In case of overflow, an error is returned.
+// In case of overflow or missing arguments, an error is returned.
 func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {
 	if len(addends) == 0 {
 		return 0, ErrMissinArguments
@@ -230,7 +230,7 @@ func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
 //
 // Faster than the MulM function.
 //
-// In case of overflow, an error is returned.
+// In case of overflow or missing arguments, an error is returned.
 func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	if len(factors) == 0 {
 		return 0, ErrMissinArguments
