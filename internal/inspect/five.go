@@ -28,7 +28,7 @@ func (opts *Opts5[Type]) IsValid() error {
 	}
 
 	if opts.Inspected == nil {
-		return ErrInpectedNotSpecified
+		return ErrInspectedNotSpecified
 	}
 
 	return nil
