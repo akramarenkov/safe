@@ -2,9 +2,11 @@ package safe
 
 import (
 	"math"
+	"os"
 	"slices"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 
 	"github.com/stretchr/testify/require"
@@ -14,32 +16,35 @@ func TestAddM(t *testing.T) {
 	_, err := AddM[int]()
 	require.Error(t, err)
 
-	sum, err := AddM(1)
-	require.NoError(t, err)
-	require.Equal(t, 1, sum)
-
-	sum, err = AddM(1, 2)
-	require.NoError(t, err)
-	require.Equal(t, 3, sum)
-
-	sum, err = AddM(1, 2, 3)
-	require.NoError(t, err)
-	require.Equal(t, 6, sum)
-
-	sum, err = AddM(1, 2, 3, 4)
-	require.NoError(t, err)
-	require.Equal(t, 10, sum)
-
-	sum, err = AddM(1, 2, 3, 4, 5)
-	require.NoError(t, err)
-	require.Equal(t, 15, sum)
-
 	testAddMInt(t)
 	testAddMUint(t)
 }
 
 func testAddMInt(t *testing.T) {
 	opts := inspect.Opts[int8]{
+		LoopsQuantity: 1,
+
+		Inspected: AddM[int8],
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+
+	opts = inspect.Opts[int8]{
 		LoopsQuantity: 2,
 
 		Inspected: AddM[int8],
@@ -48,7 +53,7 @@ func testAddMInt(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err = opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -88,6 +93,29 @@ func testAddMInt(t *testing.T) {
 
 func testAddMUint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 1,
+
+		Inspected: AddM[uint8],
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+
+	opts = inspect.Opts[uint8]{
 		LoopsQuantity: 2,
 
 		Inspected: AddM[uint8],
@@ -96,7 +124,7 @@ func testAddMUint(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err = opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -135,6 +163,10 @@ func testAddMUint(t *testing.T) {
 }
 
 func TestAddM4(t *testing.T) {
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	testAddM4Int(t)
 	testAddM4Uint(t)
 }
