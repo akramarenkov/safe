@@ -247,16 +247,13 @@ func testAddTUint(t *testing.T) {
 }
 
 func TestAddUM(t *testing.T) {
-	sum, err := AddUM(uint(math.MaxUint))
-	require.NoError(t, err)
-	require.Equal(t, uint(math.MaxUint), sum)
+	_, err := AddUM[uint]()
+	require.Error(t, err)
 
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return AddUM(args[0], args[1], args[2])
-		},
+		Inspected: AddUM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -379,9 +376,7 @@ func testMulMInt(t *testing.T) {
 	opts := inspect.Opts[int8]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return MulM(args[0], args[1], args[2])
-		},
+		Inspected: MulM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},
@@ -406,9 +401,7 @@ func testMulMUint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return MulM(args[0], args[1], args[2])
-		},
+		Inspected: MulM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},
@@ -496,16 +489,13 @@ func testMulTUint(t *testing.T) {
 }
 
 func TestMulUM(t *testing.T) {
-	product, err := MulUM(uint(math.MaxUint))
-	require.NoError(t, err)
-	require.Equal(t, uint(math.MaxUint), product)
+	_, err := MulUM[uint]()
+	require.Error(t, err)
 
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return MulUM(args[0], args[1], args[2])
-		},
+		Inspected: MulUM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},

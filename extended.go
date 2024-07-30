@@ -21,9 +21,9 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return 0, ErrMissinArguments
 	}
 
-	slices.Sort(addends)
-
 	for len(addends) != 1 {
+		slices.Sort(addends)
+
 		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
 			return 0, err
@@ -31,8 +31,6 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 
 		addends[0] = interim
 		addends = addends[:len(addends)-1]
-
-		slices.Sort(addends)
 	}
 
 	return addends[0], nil
@@ -74,10 +72,14 @@ func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Slower than the AddU function, faster than the AddM function.
 //
 // In case of overflow, an error is returned.
-func AddUM[Type constraints.Unsigned](first Type, addends ...Type) (Type, error) {
-	sum := first
+func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {
+	if len(addends) == 0 {
+		return 0, ErrMissinArguments
+	}
 
-	for _, addend := range addends {
+	sum := addends[0]
+
+	for _, addend := range addends[1:] {
 		interim, err := AddU(sum, addend)
 		if err != nil {
 			return 0, err
@@ -229,8 +231,13 @@ func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Faster than the MulM function.
 //
 // In case of overflow, an error is returned.
-func MulUM[Type constraints.Unsigned](first Type, factors ...Type) (Type, error) {
-	product := first
+func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
+	if len(factors) == 0 {
+		return 0, ErrMissinArguments
+	}
+
+	product := factors[0]
+	factors = factors[1:]
 
 	for _, factor := range factors {
 		if factor == 0 {
