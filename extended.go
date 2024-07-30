@@ -21,45 +21,21 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return 0, ErrMissinArguments
 	}
 
-	const partsNumber = 2
-
 	slices.Sort(addends)
 
-	sum := Type(0)
-
-	lower := 0
-	higher := len(addends) - 1
-
-	amount := len(addends) / partsNumber
-	remainder := len(addends) % partsNumber
-
-	for range amount {
-		interim, err := Add(addends[lower], addends[higher])
+	for len(addends) != 1 {
+		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
 			return 0, err
 		}
 
-		lower++
-		higher--
+		addends[0] = interim
+		addends = addends[:len(addends)-1]
 
-		interim, err = Add(sum, interim)
-		if err != nil {
-			return 0, err
-		}
-
-		sum = interim
+		slices.Sort(addends)
 	}
 
-	if remainder != 0 {
-		interim, err := Add(sum, addends[amount])
-		if err != nil {
-			return 0, err
-		}
-
-		sum = interim
-	}
-
-	return sum, nil
+	return addends[0], nil
 }
 
 // Adds three integers and determines whether an overflow has occurred or not.

@@ -30,19 +30,120 @@ func TestAddM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 10, sum)
 
-	testAddMInt(t)
-	testAddMUint(t)
+	sum, err = AddM(1, 2, 3, 4, 5)
+	require.NoError(t, err)
+	require.Equal(t, 15, sum)
+
+	testAddM3Int(t)
+	testAddM3Uint(t)
+
+	testAddM4Int(t)
+	testAddM4Uint(t)
 }
 
-func testAddMInt(t *testing.T) {
+func testAddM3Int(t *testing.T) {
 	opts := inspect.Opts[int8]{
+		LoopsQuantity: 2,
+
+		Inspected: AddM[int8],
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+
+	opts = inspect.Opts[int8]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return AddM(args[0], args[1], args[2])
-		},
+		Inspected: AddM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func testAddM3Uint(t *testing.T) {
+	opts := inspect.Opts[uint8]{
+		LoopsQuantity: 2,
+
+		Inspected: AddM[uint8],
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+
+	opts = inspect.Opts[uint8]{
+		LoopsQuantity: 3,
+
+		Inspected: AddM[uint8],
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func testAddM4Int(t *testing.T) {
+	opts := inspect.Opts4[int8]{
+		Inspected: func(first, second, third, fourth int8) (int8, error) {
+			return AddM(first, second, third, fourth)
+		},
+		Reference4: func(first, second, third, fourth int64) (int64, error) {
+			return first + second + third + fourth, nil
 		},
 	}
 
@@ -61,15 +162,13 @@ func testAddMInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddMUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(args[0], args[1], args[2])
+func testAddM4Uint(t *testing.T) {
+	opts := inspect.Opts4[uint8]{
+		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
+			return AddM(first, second, third, fourth)
 		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] + args[1] + args[2], nil
+		Reference4: func(first, second, third, fourth int64) (int64, error) {
+			return first + second + third + fourth, nil
 		},
 	}
 
