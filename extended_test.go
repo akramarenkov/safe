@@ -162,16 +162,16 @@ func testAddMUint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestAddM4(t *testing.T) {
+func TestAddM4Args(t *testing.T) {
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testAddM4Int(t)
-	testAddM4Uint(t)
+	testAddM4ArgsInt(t)
+	testAddM4ArgsUint(t)
 }
 
-func testAddM4Int(t *testing.T) {
+func testAddM4ArgsInt(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return AddM(first, second, third, fourth)
@@ -196,7 +196,7 @@ func testAddM4Int(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddM4Uint(t *testing.T) {
+func testAddM4ArgsUint(t *testing.T) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return AddM(first, second, third, fourth)
@@ -221,16 +221,16 @@ func testAddM4Uint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestAddM5(t *testing.T) {
+func TestAddM5Args(t *testing.T) {
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testAddM5Int(t)
-	testAddM5Uint(t)
+	testAddM5ArgsInt(t)
+	testAddM5ArgsUint(t)
 }
 
-func testAddM5Int(t *testing.T) {
+func testAddM5ArgsInt(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return AddM(first, second, third, fourth, fifth)
@@ -255,7 +255,7 @@ func testAddM5Int(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddM5Uint(t *testing.T) {
+func testAddM5ArgsUint(t *testing.T) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return AddM(first, second, third, fourth, fifth)
