@@ -221,6 +221,65 @@ func testAddM4Uint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
+func TestAddM5(t *testing.T) {
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testAddM5Int(t)
+	testAddM5Uint(t)
+}
+
+func testAddM5Int(t *testing.T) {
+	opts := inspect.Opts5[int8]{
+		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
+			return AddM(first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first + second + third + fourth + fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func testAddM5Uint(t *testing.T) {
+	opts := inspect.Opts5[uint8]{
+		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
+			return AddM(first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first + second + third + fourth + fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
 func TestAddT(t *testing.T) {
 	testAddTInt(t)
 	testAddTUint(t)
@@ -774,7 +833,7 @@ func TestPow(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
-func BenchmarkAddMReference(b *testing.B) {
+func BenchmarkAdd3ArgsReference(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
@@ -794,7 +853,7 @@ func BenchmarkAddMReference(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddM(b *testing.B) {
+func BenchmarkAdd4ArgsReference(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
@@ -802,7 +861,9 @@ func BenchmarkAddM(b *testing.B) {
 		for first := -3; first <= 3; first++ {
 			for second := -3; second <= 3; second++ {
 				for third := -3; third <= 3; third++ {
-					sum, _ = AddM(first, second, third)
+					for fourth := -3; fourth <= 3; fourth++ {
+						sum = first + second + third + fourth
+					}
 				}
 			}
 		}
@@ -822,6 +883,48 @@ func BenchmarkAddM2Args(b *testing.B) {
 		for first := -3; first <= 3; first++ {
 			for second := -3; second <= 3; second++ {
 				sum, _ = AddM(first, second)
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddM3Args(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				for third := -3; third <= 3; third++ {
+					sum, _ = AddM(first, second, third)
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddM4Args(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			for second := -3; second <= 3; second++ {
+				for third := -3; third <= 3; third++ {
+					for fourth := -3; fourth <= 3; fourth++ {
+						sum, _ = AddM(first, second, third, fourth)
+					}
+				}
 			}
 		}
 	}
@@ -852,7 +955,25 @@ func BenchmarkAddT(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddUM(b *testing.B) {
+func BenchmarkAddUM2Args(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := uint(0)
+
+	for range b.N {
+		for first := uint(0); first <= 6; first++ {
+			for second := uint(0); second <= 6; second++ {
+				sum, _ = AddUM(first, second)
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddUM3Args(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := uint(0)
 
@@ -872,14 +993,18 @@ func BenchmarkAddUM(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddUM2Args(b *testing.B) {
+func BenchmarkAddUM4Args(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := uint(0)
 
 	for range b.N {
 		for first := uint(0); first <= 6; first++ {
 			for second := uint(0); second <= 6; second++ {
-				sum, _ = AddUM(first, second)
+				for third := uint(0); third <= 6; third++ {
+					for fourth := uint(0); fourth <= 6; fourth++ {
+						sum, _ = AddUM(first, second, third, fourth)
+					}
+				}
 			}
 		}
 	}
