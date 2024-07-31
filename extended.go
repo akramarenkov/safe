@@ -29,8 +29,8 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return AddT(addends[0], addends[1], addends[2])
 	}
 
-	for len(addends) != 1 {
-		slices.Sort(addends)
+	for len(addends) != 3 {
+		sortAddM(addends)
 
 		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
@@ -41,7 +41,15 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		addends = addends[:len(addends)-1]
 	}
 
-	return addends[0], nil
+	return AddT(addends[0], addends[1], addends[2])
+}
+
+func sortAddM[Type constraints.Integer](addends []Type) {
+	for i := 1; i < len(addends); i++ {
+		for j := i; j > 0 && addends[j] < addends[j-1]; j-- {
+			addends[j], addends[j-1] = addends[j-1], addends[j]
+		}
+	}
 }
 
 // Adds three integers and determines whether an overflow has occurred or not.
