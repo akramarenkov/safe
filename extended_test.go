@@ -833,6 +833,22 @@ func TestPow(t *testing.T) {
 	require.NotZero(t, successful)
 }
 
+func BenchmarkAdd1ArgsReference(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			sum = first
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
 func BenchmarkAdd3ArgsReference(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
@@ -866,6 +882,22 @@ func BenchmarkAdd4ArgsReference(b *testing.B) {
 					}
 				}
 			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddM1Args(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := 0
+
+	for range b.N {
+		for first := -3; first <= 3; first++ {
+			sum, _ = AddM(first)
 		}
 	}
 

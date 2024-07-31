@@ -17,8 +17,16 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
-	if len(addends) == 0 {
+	//nolint:mnd
+	switch len(addends) {
+	case 0:
 		return 0, ErrMissinArguments
+	case 1:
+		return addends[0], nil
+	case 2:
+		return Add(addends[0], addends[1])
+	case 3:
+		return AddT(addends[0], addends[1], addends[2])
 	}
 
 	for len(addends) != 1 {
