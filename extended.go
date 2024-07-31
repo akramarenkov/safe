@@ -25,8 +25,6 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return addends[0], nil
 	case 2:
 		return Add(addends[0], addends[1])
-	case 3:
-		return AddT(addends[0], addends[1], addends[2])
 	}
 
 	for len(addends) != 3 {
