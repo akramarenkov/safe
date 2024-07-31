@@ -13,7 +13,7 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 
 // Adds up multiple integers and determines whether an overflow has occurred or not.
 //
-// Slower than the Add function.
+// Slower than the Add, AddT functions.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
