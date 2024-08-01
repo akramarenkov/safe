@@ -13,7 +13,7 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 
 // Adds up multiple integers and determines whether an overflow has occurred or not.
 //
-// Slower than the Add, AddT functions.
+// Slower than the Add, Add3 functions.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
@@ -39,7 +39,7 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		addends = addends[:len(addends)-1]
 	}
 
-	return AddT(addends[0], addends[1], addends[2])
+	return Add3(addends[0], addends[1], addends[2])
 }
 
 func sortAddM[Type constraints.Integer](addends []Type) {
@@ -55,7 +55,7 @@ func sortAddM[Type constraints.Integer](addends []Type) {
 // Faster than the AddM function.
 //
 // In case of overflow, an error is returned.
-func AddT[Type constraints.Integer](first, second, third Type) (Type, error) {
+func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	interim, err := Add(first, second)
 	if err == nil {
 		sum, err := Add(interim, third)
@@ -109,7 +109,7 @@ func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
-func SubT[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type, error) {
+func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type, error) {
 	interim, err := Sub(minuend, subtrahend)
 	if err == nil {
 		diff, err := Sub(interim, deductible)

@@ -185,7 +185,7 @@ func findLosslesslyPositive[TypeTo constraints.Float, TypeFrom constraints.Integ
 	base TypeFrom,
 	losslesslyLength TypeFrom,
 ) (TypeFrom, bool, bool, error) {
-	greatest, err := safe.AddT(base, losslesslyLength, 1)
+	greatest, err := safe.Add3(base, losslesslyLength, 1)
 	if err != nil {
 		return 0, false, false, ErrLosslesslyLengthTooLong
 	}
@@ -215,7 +215,7 @@ func findLosslesslyNegative[TypeTo constraints.Float, TypeFrom constraints.Integ
 	base TypeFrom,
 	losslesslyLength TypeFrom,
 ) (TypeFrom, bool, bool, error) {
-	leastest, err := safe.SubT(base, losslesslyLength, 1)
+	leastest, err := safe.Sub3(base, losslesslyLength, 1)
 	if err != nil {
 		return 0, false, false, ErrLosslesslyLengthTooLong
 	}

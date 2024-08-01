@@ -304,17 +304,17 @@ func testAddM5ArgsUint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestAddT(t *testing.T) {
-	testAddTInt(t)
-	testAddTUint(t)
+func TestAdd3(t *testing.T) {
+	testAdd3Int(t)
+	testAdd3Uint(t)
 }
 
-func testAddTInt(t *testing.T) {
+func testAdd3Int(t *testing.T) {
 	opts := inspect.Opts[int8]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return AddT(args[0], args[1], args[2])
+			return Add3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
@@ -336,12 +336,12 @@ func testAddTInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddTUint(t *testing.T) {
+func testAdd3Uint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return AddT(args[0], args[1], args[2])
+			return Add3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
@@ -391,17 +391,17 @@ func TestAddUM(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestSubT(t *testing.T) {
-	testSubTInt(t)
-	testSubTUint(t)
+func TestSub3(t *testing.T) {
+	testSub3Int(t)
+	testSub3Uint(t)
 }
 
-func testSubTInt(t *testing.T) {
+func testSub3Int(t *testing.T) {
 	opts := inspect.Opts[int8]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return SubT(args[0], args[1], args[2])
+			return Sub3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] - args[1] - args[2], nil
@@ -423,12 +423,12 @@ func testSubTInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testSubTUint(t *testing.T) {
+func testSub3Uint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return SubT(args[0], args[1], args[2])
+			return Sub3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] - args[1] - args[2], nil
@@ -991,7 +991,7 @@ func BenchmarkAddM4Args(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkAddT(b *testing.B) {
+func BenchmarkAdd3(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
@@ -999,7 +999,7 @@ func BenchmarkAddT(b *testing.B) {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					sum, _ = AddT(first, second, third)
+					sum, _ = Add3(first, second, third)
 				}
 			}
 		}
@@ -1129,7 +1129,7 @@ func BenchmarkSubReference4Args(b *testing.B) {
 	require.NotNil(b, diff)
 }
 
-func BenchmarkSubT(b *testing.B) {
+func BenchmarkSub3(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
@@ -1137,7 +1137,7 @@ func BenchmarkSubT(b *testing.B) {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					diff, _ = SubT(first, second, third)
+					diff, _ = Sub3(first, second, third)
 				}
 			}
 		}
