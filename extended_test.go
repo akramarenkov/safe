@@ -162,6 +162,18 @@ func testAddMUint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
+func TestAddM4ArgsShort(t *testing.T) {
+	sum, err := AddM[int8](-127, -128, 62, 82)
+	require.NoError(t, err)
+	require.Equal(t, int8(-111), sum)
+
+	_, err = AddM[int8](-117, -128, 69, -81)
+	require.Error(t, err)
+
+	_, err = AddM[int8](-117, -125, -113, -80)
+	require.Error(t, err)
+}
+
 func TestAddM4Args(t *testing.T) {
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
@@ -219,6 +231,18 @@ func testAddM4ArgsUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+}
+
+func TestAddM5ArgsShort(t *testing.T) {
+	sum, err := AddM[int8](-117, -128, -128, 126, 121)
+	require.NoError(t, err)
+	require.Equal(t, int8(-126), sum)
+
+	_, err = AddM[int8](-126, -128, -128, -6, 65)
+	require.Error(t, err)
+
+	_, err = AddM[int8](-127, -128, -128, -8, -123)
+	require.Error(t, err)
 }
 
 func TestAddM5Args(t *testing.T) {
