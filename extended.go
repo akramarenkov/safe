@@ -43,9 +43,9 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 }
 
 func sortAddM[Type constraints.Integer](addends []Type) {
-	for i := 1; i < len(addends); i++ {
-		for j := i; j > 0 && addends[j] < addends[j-1]; j-- {
-			addends[j], addends[j-1] = addends[j-1], addends[j]
+	for first := 1; first < len(addends); first++ {
+		for second := first; second > 0 && addends[second] < addends[second-1]; second-- {
+			addends[second], addends[second-1] = addends[second-1], addends[second]
 		}
 	}
 }
