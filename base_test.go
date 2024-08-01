@@ -10,6 +10,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	benchMinInt = -10
+	benchMaxInt = 10
+
+	benchMinUint = uint(0)
+	benchMaxUint = uint(20)
+
+	benchMinFloat = float64(benchMinInt)
+	benchMaxFloat = float64(benchMaxInt)
+)
+
 func TestAdd(t *testing.T) {
 	testAddInt(t)
 	testAddUint(t)
@@ -996,8 +1007,8 @@ func BenchmarkAddReference(b *testing.B) {
 	sum := 0
 
 	for range b.N {
-		for first := -3; first <= 3; first++ {
-			for second := -3; second <= 3; second++ {
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
 				sum = first + second
 			}
 		}
@@ -1014,8 +1025,8 @@ func BenchmarkAdd(b *testing.B) {
 	sum := 0
 
 	for range b.N {
-		for first := -3; first <= 3; first++ {
-			for second := -3; second <= 3; second++ {
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
 				sum, _ = Add(first, second)
 			}
 		}
@@ -1032,8 +1043,8 @@ func BenchmarkAddU(b *testing.B) {
 	sum := uint(0)
 
 	for range b.N {
-		for first := uint(0); first <= 6; first++ {
-			for second := uint(0); second <= 6; second++ {
+		for first := benchMinUint; first <= benchMaxUint; first++ {
+			for second := benchMinUint; second <= benchMaxUint; second++ {
 				sum, _ = AddU(first, second)
 			}
 		}
@@ -1046,11 +1057,15 @@ func BenchmarkAddU(b *testing.B) {
 }
 
 func BenchmarkSubReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
-	// b.N, diff and require is used to prevent compiler optimizations
 	for range b.N {
-		diff = b.N - 3
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				diff = first - second
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1060,11 +1075,15 @@ func BenchmarkSubReference(b *testing.B) {
 }
 
 func BenchmarkSub(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
-	// b.N, diff and require is used to prevent compiler optimizations
 	for range b.N {
-		diff, _ = Sub(b.N, 3)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				diff, _ = Sub(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1074,11 +1093,15 @@ func BenchmarkSub(b *testing.B) {
 }
 
 func BenchmarkSubU(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
 	diff := uint(0)
 
-	// b.N, diff and require is used to prevent compiler optimizations
 	for range b.N {
-		diff, _ = SubU(uint(b.N), 3)
+		for first := benchMinUint; first <= benchMaxUint; first++ {
+			for second := benchMinUint; second <= benchMaxUint; second++ {
+				diff, _ = SubU(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1088,11 +1111,15 @@ func BenchmarkSubU(b *testing.B) {
 }
 
 func BenchmarkMulReference(b *testing.B) {
+	// product and require is used to prevent compiler optimizations
 	product := 0
 
-	// b.N, product and require is used to prevent compiler optimizations
 	for range b.N {
-		product = b.N * 3
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				product = first * second
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1102,11 +1129,15 @@ func BenchmarkMulReference(b *testing.B) {
 }
 
 func BenchmarkMul(b *testing.B) {
+	// product and require is used to prevent compiler optimizations
 	product := 0
 
-	// b.N, product and require is used to prevent compiler optimizations
 	for range b.N {
-		product, _ = Mul(b.N, 3)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				product, _ = Mul(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1116,11 +1147,19 @@ func BenchmarkMul(b *testing.B) {
 }
 
 func BenchmarkDivReference(b *testing.B) {
+	// quotient and require is used to prevent compiler optimizations
 	quotient := 0
 
-	// b.N, quotient and require is used to prevent compiler optimizations
 	for range b.N {
-		quotient = b.N / 3
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				if second == 0 {
+					continue
+				}
+
+				quotient = first / second
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1130,11 +1169,15 @@ func BenchmarkDivReference(b *testing.B) {
 }
 
 func BenchmarkDiv(b *testing.B) {
+	// quotient and require is used to prevent compiler optimizations
 	quotient := 0
 
-	// b.N, quotient and require is used to prevent compiler optimizations
 	for range b.N {
-		quotient, _ = Div(b.N, 3)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			for second := benchMinInt; second <= benchMaxInt; second++ {
+				quotient, _ = Div(first, second)
+			}
+		}
 	}
 
 	b.StopTimer()
@@ -1144,11 +1187,13 @@ func BenchmarkDiv(b *testing.B) {
 }
 
 func BenchmarkNegateReference(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
-	// b.N, negated and require is used to prevent compiler optimizations
 	for range b.N {
-		negated = -b.N
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			negated = -first
+		}
 	}
 
 	b.StopTimer()
@@ -1158,11 +1203,13 @@ func BenchmarkNegateReference(b *testing.B) {
 }
 
 func BenchmarkNegate(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
-	// b.N, negated and require is used to prevent compiler optimizations
 	for range b.N {
-		negated, _ = Negate(b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			negated, _ = Negate(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1172,11 +1219,13 @@ func BenchmarkNegate(b *testing.B) {
 }
 
 func BenchmarkNegateS(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
-	// b.N, negated and require is used to prevent compiler optimizations
 	for range b.N {
-		negated, _ = NegateS(b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			negated, _ = NegateS(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1186,11 +1235,13 @@ func BenchmarkNegateS(b *testing.B) {
 }
 
 func BenchmarkIToIReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := uint(0)
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted = uint(b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			converted = uint(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1200,11 +1251,13 @@ func BenchmarkIToIReference(b *testing.B) {
 }
 
 func BenchmarkIToI(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := uint(0)
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = IToI[uint](b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			converted, _ = IToI[uint](first)
+		}
 	}
 
 	b.StopTimer()
@@ -1214,11 +1267,13 @@ func BenchmarkIToI(b *testing.B) {
 }
 
 func BenchmarkUToSReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted = int(uint(b.N))
+		for first := benchMinUint; first <= benchMaxUint; first++ {
+			converted = int(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1228,11 +1283,13 @@ func BenchmarkUToSReference(b *testing.B) {
 }
 
 func BenchmarkUToS(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = UToS[int](uint(b.N))
+		for first := benchMinUint; first <= benchMaxUint; first++ {
+			converted, _ = UToS[int](first)
+		}
 	}
 
 	b.StopTimer()
@@ -1242,11 +1299,13 @@ func BenchmarkUToS(b *testing.B) {
 }
 
 func BenchmarkIToFReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := float64(0)
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted = float64(b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			converted = float64(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1256,11 +1315,13 @@ func BenchmarkIToFReference(b *testing.B) {
 }
 
 func BenchmarkIToF(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := float64(0)
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = IToF[float64](b.N)
+		for first := benchMinInt; first <= benchMaxInt; first++ {
+			converted, _ = IToF[float64](first)
+		}
 	}
 
 	b.StopTimer()
@@ -1270,11 +1331,13 @@ func BenchmarkIToF(b *testing.B) {
 }
 
 func BenchmarkFToIReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted = int(float64(b.N))
+		for first := benchMinFloat; first <= benchMaxFloat; first++ {
+			converted = int(first)
+		}
 	}
 
 	b.StopTimer()
@@ -1284,11 +1347,13 @@ func BenchmarkFToIReference(b *testing.B) {
 }
 
 func BenchmarkFToI(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
-	// b.N, converted and require is used to prevent compiler optimizations
 	for range b.N {
-		converted, _ = FToI[int](float64(b.N))
+		for first := benchMinFloat; first <= benchMaxFloat; first++ {
+			converted, _ = FToI[int](first)
+		}
 	}
 
 	b.StopTimer()

@@ -103,7 +103,7 @@ func TestIsEven(t *testing.T) {
 	require.True(t, isEven(8))
 }
 
-func BenchmarkIsMinReference(b *testing.B) {
+func BenchmarkIsReference(b *testing.B) {
 	conclusion := false
 
 	// b.N, conclusion and require is used to prevent compiler optimizations
@@ -133,44 +133,12 @@ func BenchmarkIsMin(b *testing.B) {
 	require.NotNil(b, conclusion)
 }
 
-func BenchmarkIsMaxReference(b *testing.B) {
-	conclusion := false
-
-	// b.N, conclusion and require is used to prevent compiler optimizations
-	for range b.N {
-		if b.N == math.MaxInt {
-			conclusion = true
-		}
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, conclusion)
-}
-
 func BenchmarkIsMax(b *testing.B) {
 	conclusion := false
 
 	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = isMax(b.N)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, conclusion)
-}
-
-func BenchmarkIsMinusOneReference(b *testing.B) {
-	conclusion := false
-
-	// b.N, conclusion and require is used to prevent compiler optimizations
-	for range b.N {
-		if b.N == -1 {
-			conclusion = true
-		}
 	}
 
 	b.StopTimer()
