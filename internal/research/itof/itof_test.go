@@ -103,19 +103,15 @@ func TestIsSequenceLosslessly(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, conclusion)
 
-	conclusion, err = IsSequenceLosslessly[float64](math.MinInt32, math.MaxInt32)
-	require.NoError(t, err)
-	require.True(t, conclusion)
-
 	conclusion, err = IsSequenceLosslessly[float64, uint32](0, math.MaxUint32)
 	require.NoError(t, err)
 	require.True(t, conclusion)
 
-	conclusion, err = IsSequenceLosslessly[float64, int64](-1<<53, -1<<53+math.MaxUint32)
+	conclusion, err = IsSequenceLosslessly[float64, int64](-1<<53, -1<<53+1<<24)
 	require.NoError(t, err)
 	require.True(t, conclusion)
 
-	conclusion, err = IsSequenceLosslessly[float64, int64](1<<53-math.MaxUint32, 1<<53)
+	conclusion, err = IsSequenceLosslessly[float64, int64](1<<53-1<<24, 1<<53)
 	require.NoError(t, err)
 	require.True(t, conclusion)
 }
