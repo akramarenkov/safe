@@ -27,13 +27,23 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return Add(addends[0], addends[1])
 	}
 
-	for len(addends) != 3 {
-		sortAddM(addends)
+	unsorted := true
 
+	for len(addends) != 3 {
 		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
+			if unsorted {
+				unsorted = false
+
+				sortAddM(addends)
+
+				continue
+			}
+
 			return 0, err
 		}
+
+		unsorted = true
 
 		addends[0] = interim
 		addends = addends[:len(addends)-1]
