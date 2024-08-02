@@ -103,6 +103,17 @@ func TestIsEven(t *testing.T) {
 	require.True(t, isEven(8))
 }
 
+func TestCloneSlice(t *testing.T) {
+	expected := []int{0, 1, 2, 3, 4, 5}
+	original := []int{0, 1, 2, 3, 4, 5}
+
+	copied := cloneSlice(original)
+
+	require.Equal(t, expected, copied)
+	require.Equal(t, expected, original)
+	require.NotSame(t, original, copied)
+}
+
 func BenchmarkIsReference(b *testing.B) {
 	conclusion := false
 
@@ -173,4 +184,34 @@ func BenchmarkIsEven(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, conclusion)
+}
+
+func BenchmarkCloneSlice(b *testing.B) {
+	slice := make([]bool, 1<<6)
+
+	b.ResetTimer()
+
+	for range b.N {
+		slice = cloneSlice(slice)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, slice)
+}
+
+func BenchmarkCloneSliceAppend(b *testing.B) {
+	slice := make([]bool, 1<<6)
+
+	b.ResetTimer()
+
+	for range b.N {
+		slice = append([]bool(nil), slice...)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, slice)
 }

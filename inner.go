@@ -41,3 +41,13 @@ func isMinusOne[Type constraints.Integer](number Type) bool {
 func isEven[Type constraints.Integer](number Type) bool {
 	return number%2 == 0
 }
+
+// Creates a shallow copy of a slice. Slightly faster than append on small number of
+// elements.
+func cloneSlice[Type any](slice []Type) []Type {
+	copied := make([]Type, len(slice))
+
+	copy(copied, slice)
+
+	return copied
+}
