@@ -22,7 +22,7 @@ type Opts4[Type EightBits] struct {
 }
 
 // Validates options. A reference and inspected functions must be specified.
-func (opts *Opts4[Type]) IsValid() error {
+func (opts Opts4[Type]) IsValid() error {
 	if opts.Reference == nil {
 		return ErrReferenceNotSpecified
 	}
@@ -35,7 +35,7 @@ func (opts *Opts4[Type]) IsValid() error {
 }
 
 // Performs inspection.
-func (opts *Opts4[Type]) Do() (Result[Type], error) {
+func (opts Opts4[Type]) Do() (Result[Type], error) {
 	if err := opts.IsValid(); err != nil {
 		return Result[Type]{}, err
 	}
@@ -48,7 +48,7 @@ func (opts *Opts4[Type]) Do() (Result[Type], error) {
 func (opts *Opts4[Type]) main() Result[Type] {
 	parallelization := runtime.NumCPU()
 
-	// so the buffer size is chosen for simplicity: so that all goroutines can
+	// buffer size is chosen for simplicity: so that all goroutines can
 	// definitely write the result and not block on writing even without reading
 	// these results
 	results := make(chan Result[Type], parallelization)
@@ -57,7 +57,7 @@ func (opts *Opts4[Type]) main() Result[Type] {
 	wg := &sync.WaitGroup{}
 	defer wg.Wait()
 
-	// so the buffer size is chosen for simplicity: so that the goroutine can
+	// buffer size is chosen for simplicity: so that the goroutine can
 	// definitely write all the first numbers and not block on writing even without
 	// reading these first numbers
 	//
