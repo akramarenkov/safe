@@ -175,14 +175,14 @@ func testAddMUint(t *testing.T) {
 }
 
 func TestAddM4ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](false, -127, -128, 62, 82)
+	sum, err := AddM[int8](true, -127, -128, 62, 82)
 	require.NoError(t, err)
 	require.Equal(t, int8(-111), sum)
 
-	_, err = AddM[int8](false, -117, -128, 69, -81)
+	_, err = AddM[int8](true, -117, -128, 69, -81)
 	require.Error(t, err)
 
-	_, err = AddM[int8](false, -117, -125, -113, -80)
+	_, err = AddM[int8](true, -117, -125, -113, -80)
 	require.Error(t, err)
 }
 
@@ -255,14 +255,14 @@ func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 }
 
 func TestAddM5ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](false, -117, -128, -128, 126, 121)
+	sum, err := AddM[int8](true, -117, -128, -128, 126, 121)
 	require.NoError(t, err)
 	require.Equal(t, int8(-126), sum)
 
-	_, err = AddM[int8](false, -126, -128, -128, -6, 65)
+	_, err = AddM[int8](true, -126, -128, -128, -6, 65)
 	require.Error(t, err)
 
-	_, err = AddM[int8](false, -127, -128, -128, -8, -123)
+	_, err = AddM[int8](true, -127, -128, -128, -8, -123)
 	require.Error(t, err)
 }
 
