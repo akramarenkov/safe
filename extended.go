@@ -13,10 +13,15 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 
 // Adds up multiple integers and determines whether an overflow has occurred or not.
 //
-// Slower than the Add, Add3 functions.
+// The function sorts and modifies the input arguments. By default, a copy of the input
+// arguments is not created and, if a slice is passed, it will be modified. If a slice
+// is passed as an input argument and it should not be modified, then the unmodify
+// argument must be set to true. In other cases, unmodify can be left as false.
+//
+// Slower than the Add, Add3 functions. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
-func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
+func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error) {
 	//nolint:mnd
 	switch len(addends) {
 	case 0:
@@ -27,23 +32,44 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 		return Add(addends[0], addends[1])
 	}
 
-	unsorted := true
+	copied := false
+	sorted := false
+
+	clone := func() {
+		if copied || !unmodify {
+			return
+		}
+
+		copied = true
+
+		addends = cloneSlice(addends)
+	}
+
+	sort := func() bool {
+		if sorted {
+			return false
+		}
+
+		sorted = true
+
+		sortAddM(addends)
+
+		return true
+	}
 
 	for len(addends) != 3 {
 		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
-			if unsorted {
-				unsorted = false
+			clone()
 
-				sortAddM(addends)
-
+			if proceed := sort(); proceed {
 				continue
 			}
 
 			return 0, err
 		}
 
-		unsorted = true
+		sorted = false
 
 		addends[0] = interim
 		addends = addends[:len(addends)-1]

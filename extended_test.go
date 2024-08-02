@@ -13,7 +13,7 @@ import (
 )
 
 func TestAddM(t *testing.T) {
-	_, err := AddM[int]()
+	_, err := AddM[int](false)
 	require.Error(t, err)
 
 	testAddMInt(t)
@@ -24,7 +24,9 @@ func testAddMInt(t *testing.T) {
 	opts := inspect.Opts[int8]{
 		LoopsQuantity: 1,
 
-		Inspected: AddM[int8],
+		Inspected: func(args ...int8) (int8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -47,7 +49,9 @@ func testAddMInt(t *testing.T) {
 	opts = inspect.Opts[int8]{
 		LoopsQuantity: 2,
 
-		Inspected: AddM[int8],
+		Inspected: func(args ...int8) (int8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
 		},
@@ -70,7 +74,9 @@ func testAddMInt(t *testing.T) {
 	opts = inspect.Opts[int8]{
 		LoopsQuantity: 3,
 
-		Inspected: AddM[int8],
+		Inspected: func(args ...int8) (int8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -95,7 +101,9 @@ func testAddMUint(t *testing.T) {
 	opts := inspect.Opts[uint8]{
 		LoopsQuantity: 1,
 
-		Inspected: AddM[uint8],
+		Inspected: func(args ...uint8) (uint8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -118,7 +126,9 @@ func testAddMUint(t *testing.T) {
 	opts = inspect.Opts[uint8]{
 		LoopsQuantity: 2,
 
-		Inspected: AddM[uint8],
+		Inspected: func(args ...uint8) (uint8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
 		},
@@ -141,7 +151,9 @@ func testAddMUint(t *testing.T) {
 	opts = inspect.Opts[uint8]{
 		LoopsQuantity: 3,
 
-		Inspected: AddM[uint8],
+		Inspected: func(args ...uint8) (uint8, error) {
+			return AddM(false, args...)
+		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -163,14 +175,14 @@ func testAddMUint(t *testing.T) {
 }
 
 func TestAddM4ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](-127, -128, 62, 82)
+	sum, err := AddM[int8](false, -127, -128, 62, 82)
 	require.NoError(t, err)
 	require.Equal(t, int8(-111), sum)
 
-	_, err = AddM[int8](-117, -128, 69, -81)
+	_, err = AddM[int8](false, -117, -128, 69, -81)
 	require.Error(t, err)
 
-	_, err = AddM[int8](-117, -125, -113, -80)
+	_, err = AddM[int8](false, -117, -125, -113, -80)
 	require.Error(t, err)
 }
 
@@ -179,14 +191,23 @@ func TestAddM4Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testAddM4ArgsInt(t)
-	testAddM4ArgsUint(t)
+	testAddM4ArgsInt(t, false)
+	testAddM4ArgsUint(t, false)
 }
 
-func testAddM4ArgsInt(t *testing.T) {
+func TestAddM4ArgsUnmodify(t *testing.T) {
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testAddM4ArgsInt(t, true)
+	testAddM4ArgsUint(t, true)
+}
+
+func testAddM4ArgsInt(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return AddM(first, second, third, fourth)
+			return AddM(unmodify, first, second, third, fourth)
 		},
 		Reference: func(first, second, third, fourth int64) (int64, error) {
 			return first + second + third + fourth, nil
@@ -208,10 +229,10 @@ func testAddM4ArgsInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddM4ArgsUint(t *testing.T) {
+func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
-			return AddM(first, second, third, fourth)
+			return AddM(unmodify, first, second, third, fourth)
 		},
 		Reference: func(first, second, third, fourth int64) (int64, error) {
 			return first + second + third + fourth, nil
@@ -234,14 +255,14 @@ func testAddM4ArgsUint(t *testing.T) {
 }
 
 func TestAddM5ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](-117, -128, -128, 126, 121)
+	sum, err := AddM[int8](false, -117, -128, -128, 126, 121)
 	require.NoError(t, err)
 	require.Equal(t, int8(-126), sum)
 
-	_, err = AddM[int8](-126, -128, -128, -6, 65)
+	_, err = AddM[int8](false, -126, -128, -128, -6, 65)
 	require.Error(t, err)
 
-	_, err = AddM[int8](-127, -128, -128, -8, -123)
+	_, err = AddM[int8](false, -127, -128, -128, -8, -123)
 	require.Error(t, err)
 }
 
@@ -250,14 +271,23 @@ func TestAddM5Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testAddM5ArgsInt(t)
-	testAddM5ArgsUint(t)
+	testAddM5ArgsInt(t, false)
+	testAddM5ArgsUint(t, false)
 }
 
-func testAddM5ArgsInt(t *testing.T) {
+func TestAddM5ArgsUnmodify(t *testing.T) {
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testAddM5ArgsInt(t, true)
+	testAddM5ArgsUint(t, true)
+}
+
+func testAddM5ArgsInt(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return AddM(first, second, third, fourth, fifth)
+			return AddM(unmodify, first, second, third, fourth, fifth)
 		},
 		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
 			return first + second + third + fourth + fifth, nil
@@ -279,10 +309,10 @@ func testAddM5ArgsInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testAddM5ArgsUint(t *testing.T) {
+func testAddM5ArgsUint(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
-			return AddM(first, second, third, fourth, fifth)
+			return AddM(unmodify, first, second, third, fourth, fifth)
 		},
 		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
 			return first + second + third + fourth + fifth, nil
@@ -921,7 +951,7 @@ func BenchmarkAddM1Args(b *testing.B) {
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
-			sum, _ = AddM(first)
+			sum, _ = AddM(false, first)
 		}
 	}
 
@@ -938,7 +968,7 @@ func BenchmarkAddM2Args(b *testing.B) {
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
-				sum, _ = AddM(first, second)
+				sum, _ = AddM(false, first, second)
 			}
 		}
 	}
@@ -957,7 +987,7 @@ func BenchmarkAddM3Args(b *testing.B) {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					sum, _ = AddM(first, second, third)
+					sum, _ = AddM(false, first, second, third)
 				}
 			}
 		}
@@ -978,7 +1008,7 @@ func BenchmarkAddM4Args(b *testing.B) {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
 					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						sum, _ = AddM(first, second, third, fourth)
+						sum, _ = AddM(false, first, second, third, fourth)
 					}
 				}
 			}
