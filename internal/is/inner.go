@@ -41,3 +41,12 @@ func MinusOne[Type constraints.Integer](number Type) bool {
 func Even[Type constraints.Integer](number Type) bool {
 	return number%2 == 0
 }
+
+// Determines whether the type is signed or unsigned.
+func Signed[Type constraints.Integer]() bool {
+	number := Type(0)
+
+	number--
+
+	return number < 0
+}

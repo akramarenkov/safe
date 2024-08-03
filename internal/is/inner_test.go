@@ -103,6 +103,11 @@ func TestEven(t *testing.T) {
 	require.True(t, Even(8))
 }
 
+func TestSigned(t *testing.T) {
+	require.True(t, Signed[int]())
+	require.False(t, Signed[uint]())
+}
+
 func BenchmarkReference(b *testing.B) {
 	conclusion := false
 
@@ -167,6 +172,20 @@ func BenchmarkEven(b *testing.B) {
 	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = Even(b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, conclusion)
+}
+
+func BenchmarkSigned(b *testing.B) {
+	// conclusion and require is used to prevent compiler optimizations
+	conclusion := false
+
+	for range b.N {
+		conclusion = Signed[int]()
 	}
 
 	b.StopTimer()
