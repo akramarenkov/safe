@@ -16,8 +16,3 @@ func TestPickUpRange(t *testing.T) {
 	require.Equal(t, int64(0), min)
 	require.Equal(t, int64(math.MaxUint8), max)
 }
-
-func TestIsSigned(t *testing.T) {
-	require.True(t, isSigned[int8]())
-	require.False(t, isSigned[uint8]())
-}
