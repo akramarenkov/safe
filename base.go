@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"github.com/akramarenkov/safe/internal/is"
 	"golang.org/x/exp/constraints"
 )
 
@@ -107,7 +108,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a
 	// simple check for equality of the second -1 fails, therefore second is checked
 	// for a negative value (is slightly faster than isMinusOne)
-	if isMin(first) && second < 0 {
+	if is.Min(first) && second < 0 {
 		return 0, ErrOverflow
 	}
 
@@ -142,7 +143,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a simple
 	// check for equality of the divisor -1 fails, therefore divisor is checked for a
 	// negative value (is slightly faster than isMinusOne)
-	if isMin(quotient) && divisor < 0 {
+	if is.Min(quotient) && divisor < 0 {
 		return 0, ErrOverflow
 	}
 
@@ -153,7 +154,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func Negate[Type constraints.Integer](number Type) (Type, error) {
-	if isMin(number) {
+	if is.Min(number) {
 		return 0, ErrOverflow
 	}
 
@@ -175,7 +176,7 @@ func Negate[Type constraints.Integer](number Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func NegateS[Type constraints.Signed](number Type) (Type, error) {
-	if isMin(number) {
+	if is.Min(number) {
 		return 0, ErrOverflow
 	}
 

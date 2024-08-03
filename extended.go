@@ -3,6 +3,8 @@ package safe
 import (
 	"slices"
 
+	"github.com/akramarenkov/safe/internal/clone"
+	"github.com/akramarenkov/safe/internal/is"
 	"golang.org/x/exp/constraints"
 )
 
@@ -42,7 +44,7 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 
 		copied = true
 
-		addends = cloneSlice(addends)
+		addends = clone.Slice(addends)
 	}
 
 	sort := func() bool {
@@ -325,7 +327,7 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 			return 0, ErrDivisionByZero
 		}
 
-		if isMinusOne(divisor) {
+		if is.MinusOne(divisor) {
 			minusOnes++
 			continue
 		}
@@ -334,11 +336,11 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 	}
 
 	// Paired minus ones cancel each other out
-	if isEven(minusOnes) {
+	if is.Even(minusOnes) {
 		return quotient, nil
 	}
 
-	if isMin(quotient) {
+	if is.Min(quotient) {
 		return 0, ErrOverflow
 	}
 
@@ -384,8 +386,8 @@ func Pow[Type, TypePower constraints.Integer](base Type, power TypePower) (Type,
 	}
 
 	if power < 0 {
-		if isMinusOne(base) {
-			if isEven(power) {
+		if is.MinusOne(base) {
+			if is.Even(power) {
 				return 1, nil
 			}
 
