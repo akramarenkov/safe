@@ -2,6 +2,7 @@ package clone
 
 import (
 	"testing"
+	"unsafe"
 
 	"github.com/stretchr/testify/require"
 )
@@ -14,7 +15,7 @@ func Test(t *testing.T) {
 
 	require.Equal(t, expected, copied)
 	require.Equal(t, expected, original)
-	require.NotSame(t, original, copied)
+	require.NotSame(t, unsafe.SliceData(original), unsafe.SliceData(copied))
 }
 
 func Benchmark(b *testing.B) {
