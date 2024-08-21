@@ -123,7 +123,7 @@ func testDoUint(t *testing.T) {
 }
 
 func TestArgs(t *testing.T) {
-	quantity := uint(0)
+	quantity := uint64(0)
 
 	expected := make([]int8, 3)
 
@@ -147,13 +147,33 @@ func TestArgs(t *testing.T) {
 	}
 }
 
+// checks that the arguments change as if they were incremented by nested loops.
 func testArgs[Type EightBits](
 	t *testing.T,
-	quantity uint,
+	quantity uint64,
 	expected []Type,
 	args ...Type,
-) uint {
+) uint64 {
+	// uint64 contains eight uint8
+	const maxLoopsLevels = 8
+
+	// duplication of conditions is done for performance reasons
+	if len(expected) > maxLoopsLevels {
+		require.LessOrEqual(t, len(expected), maxLoopsLevels)
+	}
+
+	// duplication of conditions is done for performance reasons
+	if len(args) > maxLoopsLevels {
+		require.LessOrEqual(t, len(args), maxLoopsLevels)
+	}
+
+	// duplication of conditions is done for performance reasons
+	if len(args) != len(expected) {
+		require.Equal(t, len(args), len(expected))
+	}
+
 	for id := range args {
+		// duplication of conditions is done for performance reasons
 		if args[id] != expected[id] {
 			require.Equal(t, expected[id], args[id])
 		}
@@ -162,8 +182,13 @@ func testArgs[Type EightBits](
 	quantity++
 
 	for id := range expected {
-		multiplicity := uint(1 << (8 * (len(expected) - id - 1)))
+		// highest byte corresponds to the first argument, lowest byte
+		// corresponds to the last argument
+		multiplicity := uint64(1 << (8 * (len(expected) - id - 1)))
 
+		// if the condition is met, it means that all bits of all bytes lower
+		// than the current one are set to 0 i.e. there was an overflow into the
+		// current byte and the corresponding argument should have increased
 		if quantity%multiplicity == 0 {
 			expected[id]++
 		}
@@ -193,7 +218,7 @@ func TestDoArgs(t *testing.T) {
 func testDoArgsInt(t *testing.T) {
 	const levels = 3
 
-	quantity := uint(0)
+	quantity := uint64(0)
 
 	expected := make([]int8, levels)
 
@@ -225,7 +250,7 @@ func testDoArgsInt(t *testing.T) {
 func testDoArgsUint(t *testing.T) {
 	const levels = 3
 
-	quantity := uint(0)
+	quantity := uint64(0)
 
 	expected := make([]uint8, levels)
 
@@ -437,7 +462,7 @@ func TestLoop(t *testing.T) {
 func testLoopInt(t *testing.T) {
 	const levels = 3
 
-	quantity := uint(0)
+	quantity := uint64(0)
 
 	expected := make([]int8, levels)
 
@@ -457,7 +482,7 @@ func testLoopInt(t *testing.T) {
 func testLoopUint(t *testing.T) {
 	const levels = 3
 
-	quantity := uint(0)
+	quantity := uint64(0)
 
 	expected := make([]uint8, levels)
 
