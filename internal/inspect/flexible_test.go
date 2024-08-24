@@ -244,7 +244,7 @@ func testDoArgsInt(t *testing.T) {
 
 	_, err := opts.Do()
 	require.NoError(t, err)
-	require.Equal(t, uint(1<<(8*levels)), quantity)
+	require.Equal(t, uint64(1<<(8*levels)), quantity)
 }
 
 func testDoArgsUint(t *testing.T) {
@@ -276,7 +276,7 @@ func testDoArgsUint(t *testing.T) {
 
 	_, err := opts.Do()
 	require.NoError(t, err)
-	require.Equal(t, uint(1<<(8*levels)), quantity)
+	require.Equal(t, uint64(1<<(8*levels)), quantity)
 }
 
 func TestDoError(t *testing.T) {
@@ -371,7 +371,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 	inspected := func(args ...uint8) (uint8, error) {
 		reference := int64(args[0]) + int64(args[1])
 
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
+		if reference > math.MaxUint8 || reference < 0 {
 			return 0, safe.ErrOverflow
 		}
 
