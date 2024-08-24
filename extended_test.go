@@ -195,6 +195,26 @@ func TestAddMDataSet(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
+func TestAddMDataSetUnmodify(t *testing.T) {
+	inspected := func(args ...int8) (int8, error) {
+		return AddM(true, args...)
+	}
+
+	result, err := dataset.InspectFromFile("dataset/addm", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
 func TestAddMCollectDataSet(t *testing.T) {
 	if os.Getenv(consts.EnvCollectDataSet) == "" {
 		t.SkipNow()
