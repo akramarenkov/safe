@@ -40,7 +40,7 @@ func (opts Opts4[Type]) Do() (Result[Type], error) {
 		return Result[Type]{}, err
 	}
 
-	opts.min, opts.max = pickUpRange[Type]()
+	opts.min, opts.max = PickUpRange[Type]()
 
 	return opts.main(), nil
 }
@@ -128,7 +128,6 @@ func (opts *Opts4[Type]) loop(firsts chan int64) Result[Type] {
 						if err == nil {
 							result.Actual = actual
 							result.Conclusion = ErrErrorExpected
-							result.Reference = reference
 
 							result.Args = append(
 								[]Type(nil),

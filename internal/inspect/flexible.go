@@ -40,7 +40,7 @@ func (opts *Opts[Type]) Do() (Result[Type], error) {
 		return Result[Type]{}, err
 	}
 
-	opts.min, opts.max = pickUpRange[Type]()
+	opts.min, opts.max = PickUpRange[Type]()
 
 	return opts.main(), nil
 }
@@ -67,7 +67,6 @@ func (opts *Opts[Type]) main() Result[Type] {
 			if err == nil {
 				result.Actual = actual
 				result.Conclusion = ErrErrorExpected
-				result.Reference = reference
 
 				result.Args = append([]Type(nil), args...)
 
@@ -134,7 +133,7 @@ func loop[Type EightBits](level uint, do func(args ...Type) bool, args ...Type) 
 
 	args = append(args, 0)
 
-	begin, end := pickUpRange[Type]()
+	begin, end := PickUpRange[Type]()
 
 	for number := begin; number <= end; number++ {
 		args[len(args)-1] = Type(number)

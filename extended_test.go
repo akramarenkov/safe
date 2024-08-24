@@ -8,6 +8,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/dataset"
 
 	"github.com/stretchr/testify/require"
 )
@@ -174,16 +175,50 @@ func testAddMUint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestAddM4ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](true, -127, -128, 62, 82)
+func TestAddMDataSet(t *testing.T) {
+	inspected := func(args ...int8) (int8, error) {
+		return AddM(false, args...)
+	}
+
+	result, err := dataset.InspectFromFile("dataset/addm", inspected)
 	require.NoError(t, err)
-	require.Equal(t, int8(-111), sum)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
 
-	_, err = AddM[int8](true, -117, -128, 69, -81)
-	require.Error(t, err)
+func TestAddMCollectDataSet(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataSet) == "" {
+		t.SkipNow()
+	}
 
-	_, err = AddM[int8](true, -117, -125, -113, -80)
-	require.Error(t, err)
+	reference := func(args ...int64) (int64, error) {
+		reference := int64(0)
+
+		for _, arg := range args {
+			reference += arg
+		}
+
+		return reference, nil
+	}
+
+	collector := dataset.Collector[int8]{
+		ArgsQuantity:               6,
+		NotOverflowedItemsQuantity: 1 << 15,
+		OverflowedItemsQuantity:    1 << 15,
+		Reference:                  reference,
+	}
+
+	err := collector.CollectToFile("dataset/addm")
+	require.NoError(t, err)
 }
 
 func TestAddM4Args(t *testing.T) {
@@ -252,18 +287,6 @@ func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
-}
-
-func TestAddM5ArgsShort(t *testing.T) {
-	sum, err := AddM[int8](true, -117, -128, -128, 126, 121)
-	require.NoError(t, err)
-	require.Equal(t, int8(-126), sum)
-
-	_, err = AddM[int8](true, -126, -128, -128, -6, 65)
-	require.Error(t, err)
-
-	_, err = AddM[int8](true, -127, -128, -128, -8, -123)
-	require.Error(t, err)
 }
 
 func TestAddM5Args(t *testing.T) {
@@ -791,7 +814,7 @@ func testPow10Diff(t *testing.T) {
 		current, err := Pow10[uint64](power)
 		require.NoError(t, err, "power: %v", power)
 
-		require.Equal(t, uint64(10), current/previous, "power: %v", power)
+		require.Equal(t, uint64(consts.DecimalBase), current/previous, "power: %v", power)
 		require.Equal(t, uint64(0), current%previous, "power: %v", power)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/akramarenkov/safe/internal/is"
 )
 
-func pickUpRange[Type EightBits]() (int64, int64) {
+func PickUpRange[Type EightBits]() (int64, int64) {
 	if is.Signed[Type]() {
 		return math.MinInt8, math.MaxInt8
 	}

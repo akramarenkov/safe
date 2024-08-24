@@ -6,6 +6,7 @@ import (
 	"golang.org/x/exp/constraints"
 
 	"github.com/akramarenkov/safe"
+	"github.com/akramarenkov/safe/internal/consts"
 )
 
 var (
@@ -57,7 +58,7 @@ func findLastLosslesslyPositive[TypeTo constraints.Float, TypeFrom constraints.I
 			continue
 		}
 
-		for multiplier := TypeFrom(1); multiplier <= 10; multiplier++ {
+		for multiplier := TypeFrom(1); multiplier <= consts.DecimalBase; multiplier++ {
 			current, err := safe.Mul(multiplier, exponent)
 			if err != nil {
 				// too large a number for a given integer type, try a smaller power
@@ -117,7 +118,7 @@ func findLastLosslesslyNegative[TypeTo constraints.Float, TypeFrom constraints.I
 			continue
 		}
 
-		for multiplier := TypeFrom(1); multiplier <= 10; multiplier++ {
+		for multiplier := TypeFrom(1); multiplier <= consts.DecimalBase; multiplier++ {
 			current, err := safe.Mul(multiplier, exponent)
 			if err != nil {
 				// too large a number for a given integer type, try a smaller power
