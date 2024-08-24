@@ -49,25 +49,11 @@ func TestDo(t *testing.T) {
 }
 
 func testDoInt(t *testing.T) {
-	inspected := func(args ...int8) (int8, error) {
-		reference := int64(args[0]) + int64(args[1]) + int64(args[2])
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(args ...int64) (int64, error) {
-		return args[0] + args[1] + args[2], nil
-	}
-
 	opts := Opts[int8]{
 		LoopsQuantity: 3,
 
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected3Int,
+		Reference: testReference3,
 	}
 
 	result, err := opts.Do()
@@ -86,25 +72,11 @@ func testDoInt(t *testing.T) {
 }
 
 func testDoUint(t *testing.T) {
-	inspected := func(args ...uint8) (uint8, error) {
-		reference := int64(args[0]) + int64(args[1]) + int64(args[2])
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
-	reference := func(args ...int64) (int64, error) {
-		return args[0] + args[1] + args[2], nil
-	}
-
 	opts := Opts[uint8]{
 		LoopsQuantity: 3,
 
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected3Uint,
+		Reference: testReference3,
 	}
 
 	result, err := opts.Do()
@@ -294,16 +266,6 @@ func TestDoNegativeConclusion(t *testing.T) {
 }
 
 func testDoNegativeConclusionInt(t *testing.T) {
-	inspected := func(args ...int8) (int8, error) {
-		reference := int64(args[0]) + int64(args[1])
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
 	errorExpected := func(args ...int8) (int8, error) {
 		return args[0] + args[1], nil
 	}
@@ -328,10 +290,6 @@ func testDoNegativeConclusionInt(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(args ...int64) (int64, error) {
-		return args[0] + args[1], nil
-	}
-
 	referenceFault := func(args ...int64) (int64, error) {
 		return args[0] + args[1], safe.ErrOverflow
 	}
@@ -340,7 +298,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 		LoopsQuantity: 2,
 
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference2,
 	}
 
 	result, err := opts.Do()
@@ -359,7 +317,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected2Int
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -368,16 +326,6 @@ func testDoNegativeConclusionInt(t *testing.T) {
 }
 
 func testDoNegativeConclusionUint(t *testing.T) {
-	inspected := func(args ...uint8) (uint8, error) {
-		reference := int64(args[0]) + int64(args[1])
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
 	errorExpected := func(args ...uint8) (uint8, error) {
 		return args[0] + args[1], nil
 	}
@@ -402,10 +350,6 @@ func testDoNegativeConclusionUint(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(args ...int64) (int64, error) {
-		return args[0] + args[1], nil
-	}
-
 	referenceFault := func(args ...int64) (int64, error) {
 		return args[0] + args[1], safe.ErrOverflow
 	}
@@ -414,7 +358,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 		LoopsQuantity: 2,
 
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference2,
 	}
 
 	result, err := opts.Do()
@@ -433,7 +377,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected2Uint
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -544,25 +488,11 @@ func TestLoopStop(t *testing.T) {
 }
 
 func BenchmarkDo(b *testing.B) {
-	inspected := func(args ...int8) (int8, error) {
-		reference := int64(args[0]) + int64(args[1]) + int64(args[2])
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(args ...int64) (int64, error) {
-		return args[0] + args[1] + args[2], nil
-	}
-
 	opts := Opts[int8]{
 		LoopsQuantity: 3,
 
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected3Int,
+		Reference: testReference3,
 	}
 
 	var (
@@ -660,4 +590,52 @@ func BenchmarkLoopFixedArgsFixed(b *testing.B) {
 	b.StopTimer()
 
 	require.NotZero(b, quantity)
+}
+
+func testReference2(args ...int64) (int64, error) {
+	return args[0] + args[1], nil
+}
+
+func testReference3(args ...int64) (int64, error) {
+	return args[0] + args[1] + args[2], nil
+}
+
+func testInspected2Int(args ...int8) (int8, error) {
+	reference := int64(args[0]) + int64(args[1])
+
+	if reference > math.MaxInt8 || reference < math.MinInt8 {
+		return 0, safe.ErrOverflow
+	}
+
+	return int8(reference), nil
+}
+
+func testInspected2Uint(args ...uint8) (uint8, error) {
+	reference := int64(args[0]) + int64(args[1])
+
+	if reference > math.MaxUint8 || reference < 0 {
+		return 0, safe.ErrOverflow
+	}
+
+	return uint8(reference), nil
+}
+
+func testInspected3Int(args ...int8) (int8, error) {
+	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
+
+	if reference > math.MaxInt8 || reference < math.MinInt8 {
+		return 0, safe.ErrOverflow
+	}
+
+	return int8(reference), nil
+}
+
+func testInspected3Uint(args ...uint8) (uint8, error) {
+	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
+
+	if reference > math.MaxUint8 || reference < 0 {
+		return 0, safe.ErrOverflow
+	}
+
+	return uint8(reference), nil
 }

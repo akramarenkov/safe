@@ -50,24 +50,9 @@ func TestDo5(t *testing.T) {
 }
 
 func testDo5Int(t *testing.T) {
-	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, nil
-	}
-
 	opts := Opts5[int8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected5Int,
+		Reference: testReference5,
 	}
 
 	result, err := opts.Do()
@@ -86,24 +71,9 @@ func testDo5Int(t *testing.T) {
 }
 
 func testDo5Uint(t *testing.T) {
-	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, nil
-	}
-
 	opts := Opts5[uint8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected5Uint,
+		Reference: testReference5,
 	}
 
 	result, err := opts.Do()
@@ -134,17 +104,6 @@ func TestDo5NegativeConclusion(t *testing.T) {
 }
 
 func testDo5NegativeConclusionInt(t *testing.T) {
-	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
 	errorExpected := func(first, second, third, fourth, fifth int8) (int8, error) {
 		return first + second + third + fourth + fifth, nil
 	}
@@ -171,17 +130,13 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, nil
-	}
-
 	referenceFault := func(first, second, third, fourth, fifth int64) (int64, error) {
 		return first + second + third + fourth + fifth, safe.ErrOverflow
 	}
 
 	opts := Opts5[int8]{
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference5,
 	}
 
 	result, err := opts.Do()
@@ -200,7 +155,7 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected5Int
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -209,17 +164,6 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 }
 
 func testDo5NegativeConclusionUint(t *testing.T) {
-	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
 	errorExpected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
 		return first + second + third + fourth + fifth, nil
 	}
@@ -246,17 +190,13 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, nil
-	}
-
 	referenceFault := func(first, second, third, fourth, fifth int64) (int64, error) {
 		return first + second + third + fourth + fifth, safe.ErrOverflow
 	}
 
 	opts := Opts5[uint8]{
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference5,
 	}
 
 	result, err := opts.Do()
@@ -275,7 +215,7 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected5Uint
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -289,24 +229,9 @@ func BenchmarkDo5(b *testing.B) {
 		b.SkipNow()
 	}
 
-	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, nil
-	}
-
 	opts := Opts5[int8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected5Int,
+		Reference: testReference5,
 	}
 
 	var (
@@ -322,4 +247,30 @@ func BenchmarkDo5(b *testing.B) {
 
 	require.NoError(b, err)
 	require.NoError(b, result.Conclusion)
+}
+
+func testReference5(first, second, third, fourth, fifth int64) (int64, error) {
+	return first + second + third + fourth + fifth, nil
+}
+
+func testInspected5Int(first, second, third, fourth, fifth int8) (int8, error) {
+	reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
+		int64(fifth)
+
+	if reference > math.MaxInt8 || reference < math.MinInt8 {
+		return 0, safe.ErrOverflow
+	}
+
+	return int8(reference), nil
+}
+
+func testInspected5Uint(first, second, third, fourth, fifth uint8) (uint8, error) {
+	reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
+		int64(fifth)
+
+	if reference > math.MaxUint8 || reference < 0 {
+		return 0, safe.ErrOverflow
+	}
+
+	return uint8(reference), nil
 }

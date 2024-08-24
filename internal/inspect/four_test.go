@@ -43,23 +43,9 @@ func TestDo4(t *testing.T) {
 }
 
 func testDo4Int(t *testing.T) {
-	inspected := func(first, second, third, fourth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, nil
-	}
-
 	opts := Opts4[int8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected4Int,
+		Reference: testReference4,
 	}
 
 	result, err := opts.Do()
@@ -78,23 +64,9 @@ func testDo4Int(t *testing.T) {
 }
 
 func testDo4Uint(t *testing.T) {
-	inspected := func(first, second, third, fourth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, nil
-	}
-
 	opts := Opts4[uint8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected4Uint,
+		Reference: testReference4,
 	}
 
 	result, err := opts.Do()
@@ -125,16 +97,6 @@ func TestDo4NegativeConclusion(t *testing.T) {
 }
 
 func testDo4NegativeConclusionInt(t *testing.T) {
-	inspected := func(first, second, third, fourth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
 	errorExpected := func(first, second, third, fourth int8) (int8, error) {
 		return first + second + third + fourth, nil
 	}
@@ -159,17 +121,13 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, nil
-	}
-
 	referenceFault := func(first, second, third, fourth int64) (int64, error) {
 		return first + second + third + fourth, safe.ErrOverflow
 	}
 
 	opts := Opts4[int8]{
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference4,
 	}
 
 	result, err := opts.Do()
@@ -188,7 +146,7 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected4Int
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -197,16 +155,6 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 }
 
 func testDo4NegativeConclusionUint(t *testing.T) {
-	inspected := func(first, second, third, fourth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), nil
-	}
-
 	errorExpected := func(first, second, third, fourth uint8) (uint8, error) {
 		return first + second + third + fourth, nil
 	}
@@ -231,17 +179,13 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 		return 0, nil
 	}
 
-	reference := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, nil
-	}
-
 	referenceFault := func(first, second, third, fourth int64) (int64, error) {
 		return first + second + third + fourth, safe.ErrOverflow
 	}
 
 	opts := Opts4[uint8]{
 		Inspected: errorExpected,
-		Reference: reference,
+		Reference: testReference4,
 	}
 
 	result, err := opts.Do()
@@ -260,7 +204,7 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	opts.Inspected = inspected
+	opts.Inspected = testInspected4Uint
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -269,23 +213,9 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 }
 
 func BenchmarkDo4(b *testing.B) {
-	inspected := func(first, second, third, fourth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), nil
-	}
-
-	reference := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, nil
-	}
-
 	opts := Opts4[int8]{
-		Inspected: inspected,
-		Reference: reference,
+		Inspected: testInspected4Int,
+		Reference: testReference4,
 	}
 
 	var (
@@ -301,4 +231,28 @@ func BenchmarkDo4(b *testing.B) {
 
 	require.NoError(b, err)
 	require.NoError(b, result.Conclusion)
+}
+
+func testReference4(first, second, third, fourth int64) (int64, error) {
+	return first + second + third + fourth, nil
+}
+
+func testInspected4Int(first, second, third, fourth int8) (int8, error) {
+	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
+
+	if reference > math.MaxInt8 || reference < math.MinInt8 {
+		return 0, safe.ErrOverflow
+	}
+
+	return int8(reference), nil
+}
+
+func testInspected4Uint(first, second, third, fourth uint8) (uint8, error) {
+	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
+
+	if reference > math.MaxUint8 || reference < 0 {
+		return 0, safe.ErrOverflow
+	}
+
+	return uint8(reference), nil
 }
