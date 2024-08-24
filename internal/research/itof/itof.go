@@ -1,3 +1,5 @@
+// Internal package that research problems of converting integer values to floating
+// point values.
 package research
 
 import (

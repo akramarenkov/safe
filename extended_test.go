@@ -222,6 +222,7 @@ func TestAddMCollectDataSet(t *testing.T) {
 }
 
 func TestAddM4Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
@@ -231,6 +232,7 @@ func TestAddM4Args(t *testing.T) {
 }
 
 func TestAddM4ArgsUnmodify(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
@@ -290,6 +292,7 @@ func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 }
 
 func TestAddM5Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
@@ -299,6 +302,7 @@ func TestAddM5Args(t *testing.T) {
 }
 
 func TestAddM5ArgsUnmodify(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(consts.EnvEnableLongTest) == "" {
 		t.SkipNow()
 	}
