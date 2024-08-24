@@ -108,15 +108,8 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 		return first + second + third + fourth + fifth, nil
 	}
 
-	unexpectedError := func(first, second, third, fourth, fifth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), safe.ErrOverflow
+	unexpectedError := func(_, _, _, _, _ int8) (int8, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth int8) (int8, error) {
@@ -130,8 +123,8 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 		return 0, nil
 	}
 
-	referenceFault := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, safe.ErrOverflow
+	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	opts := Opts5[int8]{
@@ -168,15 +161,8 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 		return first + second + third + fourth + fifth, nil
 	}
 
-	unexpectedError := func(first, second, third, fourth, fifth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
-			int64(fifth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), safe.ErrOverflow
+	unexpectedError := func(_, _, _, _, _ uint8) (uint8, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth uint8) (uint8, error) {
@@ -190,8 +176,8 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 		return 0, nil
 	}
 
-	referenceFault := func(first, second, third, fourth, fifth int64) (int64, error) {
-		return first + second + third + fourth + fifth, safe.ErrOverflow
+	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	opts := Opts5[uint8]{

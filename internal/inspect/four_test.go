@@ -101,14 +101,8 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 		return first + second + third + fourth, nil
 	}
 
-	unexpectedError := func(first, second, third, fourth int8) (int8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
-		}
-
-		return int8(reference), safe.ErrOverflow
+	unexpectedError := func(_, _, _, _ int8) (int8, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth int8) (int8, error) {
@@ -121,8 +115,8 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 		return 0, nil
 	}
 
-	referenceFault := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, safe.ErrOverflow
+	referenceFault := func(_, _, _, _ int64) (int64, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	opts := Opts4[int8]{
@@ -159,14 +153,8 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 		return first + second + third + fourth, nil
 	}
 
-	unexpectedError := func(first, second, third, fourth uint8) (uint8, error) {
-		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
-
-		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
-		}
-
-		return uint8(reference), safe.ErrOverflow
+	unexpectedError := func(_, _, _, _ uint8) (uint8, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth uint8) (uint8, error) {
@@ -179,8 +167,8 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 		return 0, nil
 	}
 
-	referenceFault := func(first, second, third, fourth int64) (int64, error) {
-		return first + second + third + fourth, safe.ErrOverflow
+	referenceFault := func(_, _, _, _ int64) (int64, error) {
+		return 0, safe.ErrOverflow
 	}
 
 	opts := Opts4[uint8]{
