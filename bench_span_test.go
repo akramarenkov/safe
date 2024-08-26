@@ -20,3 +20,17 @@ func TestBenchSpanAdd(*testing.T) {
 		}
 	}
 }
+
+func benchSpanAddU() []uint8 {
+	return []uint8{255, 1, 2, 3}
+}
+
+func TestBenchSpanAddU(*testing.T) {
+	span := benchSpanAddU()
+
+	for _, first := range span {
+		for _, second := range span {
+			_, _ = AddU(first, second)
+		}
+	}
+}
