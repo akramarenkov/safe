@@ -1006,12 +1006,10 @@ func BenchmarkAddReference(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				sum = first + second
-			}
-		}
+		sum = b.N + b.N
 	}
 
 	b.StopTimer()
@@ -1024,9 +1022,76 @@ func BenchmarkAdd(b *testing.B) {
 	// sum and require is used to prevent compiler optimizations
 	sum := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		sum, _ = Add(b.N, b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := int8(0)
+
+	span := benchSpanAdd()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				one = first
+				two = second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkAddSpanReference(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := int8(0)
+
+	span := benchSpanAdd()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				sum = first + second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, sum)
+}
+
+func BenchmarkAddSpan(b *testing.B) {
+	// sum and require is used to prevent compiler optimizations
+	sum := int8(0)
+
+	span := benchSpanAdd()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				sum, _ = Add(first, second)
 			}
 		}
