@@ -1926,10 +1926,10 @@ func BenchmarkUToSReference(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			converted = int(first)
-		}
+		converted = int(uint(b.N))
 	}
 
 	b.StopTimer()
@@ -1942,9 +1942,83 @@ func BenchmarkUToS(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			converted, _ = UToS[int](first)
+		converted, _ = UToS[int](uint(b.N))
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkUToSSpanIdle(b *testing.B) {
+	// one and require is used to prevent compiler optimizations
+	one := uint8(0)
+	two := uint16(0)
+
+	u8, u16 := benchSpanUToS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range u8 {
+			one = number
+		}
+
+		for _, number := range u16 {
+			two = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkUToSSpanReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := int8(0)
+
+	u8, u16 := benchSpanUToS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range u8 {
+			converted = int8(number)
+		}
+
+		for _, number := range u16 {
+			converted = int8(number)
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkUToSSpan(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := int8(0)
+
+	u8, u16 := benchSpanUToS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range u8 {
+			converted, _ = UToS[int8](number)
+		}
+
+		for _, number := range u16 {
+			converted, _ = UToS[int8](number)
 		}
 	}
 

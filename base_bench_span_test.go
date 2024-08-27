@@ -138,3 +138,19 @@ func TestBenchSpanIToI(*testing.T) {
 		_, _ = IToI[uint8](number)
 	}
 }
+
+func benchSpanUToS() ([]uint8, []uint16) {
+	return []uint8{0, 1, 128, 129}, []uint16{256, 257}
+}
+
+func TestBenchSpanUToS(*testing.T) {
+	u8, u16 := benchSpanUToS()
+
+	for _, number := range u8 {
+		_, _ = UToS[int8](number)
+	}
+
+	for _, number := range u16 {
+		_, _ = UToS[int8](number)
+	}
+}
