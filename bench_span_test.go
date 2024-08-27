@@ -48,3 +48,17 @@ func TestBenchSpanSub(*testing.T) {
 		}
 	}
 }
+
+func benchSpanSubU() []uint8 {
+	return []uint8{255, 1, 2, 3}
+}
+
+func TestBenchSpanSubU(*testing.T) {
+	span := benchSpanSubU()
+
+	for _, first := range span {
+		for _, second := range span {
+			_, _ = SubU(first, second)
+		}
+	}
+}

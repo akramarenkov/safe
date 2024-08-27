@@ -1305,13 +1305,96 @@ func BenchmarkSubSpan(b *testing.B) {
 	require.NotNil(b, diff)
 }
 
+func BenchmarkSubUReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := uint(0)
+
+	b.ResetTimer()
+
+	for range b.N {
+		diff = uint(b.N) - 1
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
 func BenchmarkSubU(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := uint(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
+		diff, _ = SubU(uint(b.N), 1)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubUSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := uint8(0)
+	two := uint8(0)
+
+	span := benchSpanSubU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				one = first
+				two = second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkSubUSpanReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := uint8(0)
+
+	span := benchSpanSubU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				diff = first - second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubUSpan(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := uint8(0)
+
+	span := benchSpanSubU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				diff, _ = SubU(first, second)
 			}
 		}
