@@ -2032,10 +2032,10 @@ func BenchmarkIToFReference(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := float64(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			converted = float64(first)
-		}
+		converted = float64(b.N)
 	}
 
 	b.StopTimer()
@@ -2048,9 +2048,69 @@ func BenchmarkIToF(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := float64(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			converted, _ = IToF[float64](first)
+		converted, _ = IToF[float64](b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkIToFSpanIdle(b *testing.B) {
+	// one and require is used to prevent compiler optimizations
+	one := int64(0)
+
+	span := benchSpanIToF()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			one = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+}
+
+func BenchmarkIToFSpanReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := float64(0)
+
+	span := benchSpanIToF()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			converted = float64(number)
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkIToFSpan(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := float64(0)
+
+	span := benchSpanIToF()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			converted, _ = IToF[float64](number)
 		}
 	}
 

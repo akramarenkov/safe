@@ -154,3 +154,15 @@ func TestBenchSpanUToS(*testing.T) {
 		_, _ = UToS[int8](number)
 	}
 }
+
+func benchSpanIToF() []int64 {
+	return []int64{1, 2, 9007199254740993, 9007199254740995}
+}
+
+func TestBenchSpanIToF(*testing.T) {
+	span := benchSpanIToF()
+
+	for _, number := range span {
+		_, _ = IToF[float64](number)
+	}
+}
