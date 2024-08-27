@@ -90,3 +90,19 @@ func TestBenchSpanDiv(*testing.T) {
 		}
 	}
 }
+
+func benchSpanNegate() ([]int8, []uint8) {
+	return []int8{-128, 0, 1, 2}, []uint8{0, 1, 2}
+}
+
+func TestBenchSpanNegate(*testing.T) {
+	signed, unsigned := benchSpanNegate()
+
+	for _, number := range signed {
+		_, _ = Negate(number)
+	}
+
+	for _, number := range unsigned {
+		_, _ = Negate(number)
+	}
+}

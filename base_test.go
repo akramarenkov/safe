@@ -1616,10 +1616,10 @@ func BenchmarkNegateReference(b *testing.B) {
 	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			negated = -first
-		}
+		negated = -b.N
 	}
 
 	b.StopTimer()
@@ -1632,9 +1632,60 @@ func BenchmarkNegate(b *testing.B) {
 	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			negated, _ = Negate(first)
+		negated, _ = Negate(b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, negated)
+}
+
+func BenchmarkNegateSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := uint8(0)
+
+	signed, unsigned := benchSpanNegate()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range signed {
+			one = number
+		}
+
+		for _, number := range unsigned {
+			two = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkNegateSpanReference(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
+	negated := int8(0)
+	negatedU := uint8(0)
+
+	signed, unsigned := benchSpanNegate()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range signed {
+			negated = -number
+		}
+
+		for _, number := range unsigned {
+			negatedU = -number
 		}
 	}
 
@@ -1642,6 +1693,33 @@ func BenchmarkNegate(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, negated)
+	require.NotNil(b, negatedU)
+}
+
+func BenchmarkNegateSpan(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
+	negated := int8(0)
+	negatedU := uint8(0)
+
+	signed, unsigned := benchSpanNegate()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range signed {
+			negated, _ = Negate(number)
+		}
+
+		for _, number := range unsigned {
+			negatedU, _ = Negate(number)
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, negated)
+	require.NotNil(b, negatedU)
 }
 
 func BenchmarkNegateS(b *testing.B) {
