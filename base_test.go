@@ -1009,7 +1009,7 @@ func BenchmarkAddReference(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		sum = b.N + b.N
+		sum = b.N + 1
 	}
 
 	b.StopTimer()
@@ -1025,7 +1025,7 @@ func BenchmarkAdd(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		sum, _ = Add(b.N, b.N)
+		sum, _ = Add(b.N, 1)
 	}
 
 	b.StopTimer()
@@ -1110,7 +1110,7 @@ func BenchmarkAddUReference(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		sum = uint(b.N) + uint(b.N)
+		sum = uint(b.N) + 1
 	}
 
 	b.StopTimer()
@@ -1126,7 +1126,7 @@ func BenchmarkAddU(b *testing.B) {
 	b.ResetTimer()
 
 	for range b.N {
-		sum, _ = AddU(uint(b.N), uint(b.N))
+		sum, _ = AddU(uint(b.N), 1)
 	}
 
 	b.StopTimer()
@@ -1208,12 +1208,10 @@ func BenchmarkSubReference(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				diff = first - second
-			}
-		}
+		diff = b.N - 1
 	}
 
 	b.StopTimer()
@@ -1226,9 +1224,76 @@ func BenchmarkSub(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		diff, _ = Sub(b.N, 1)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := int8(0)
+
+	span := benchSpanSub()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				one = first
+				two = second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkSubSpanReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := int8(0)
+
+	span := benchSpanSub()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				diff = first - second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubSpan(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := int8(0)
+
+	span := benchSpanSub()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				diff, _ = Sub(first, second)
 			}
 		}
