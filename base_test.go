@@ -16,9 +16,6 @@ const (
 
 	benchMinUint = uint(0)
 	benchMaxUint = uint(20)
-
-	benchMinFloat = float64(benchMinInt)
-	benchMaxFloat = float64(benchMaxInt)
 )
 
 func TestAdd(t *testing.T) {
@@ -2124,10 +2121,10 @@ func BenchmarkFToIReference(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinFloat; first <= benchMaxFloat; first++ {
-			converted = int(first)
-		}
+		converted = int(float64(b.N))
 	}
 
 	b.StopTimer()
@@ -2140,9 +2137,69 @@ func BenchmarkFToI(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinFloat; first <= benchMaxFloat; first++ {
-			converted, _ = FToI[int](first)
+		converted, _ = FToI[int](float64(b.N))
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkFToISpanIdle(b *testing.B) {
+	// one and require is used to prevent compiler optimizations
+	one := float64(0)
+
+	span := benchSpanFToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			one = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+}
+
+func BenchmarkFToISpanReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := 0
+
+	span := benchSpanFToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			converted = int(number)
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkFToISpan(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := 0
+
+	span := benchSpanFToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			converted, _ = FToI[int](number)
 		}
 	}
 

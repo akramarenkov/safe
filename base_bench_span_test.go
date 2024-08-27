@@ -1,6 +1,7 @@
 package safe
 
 import (
+	"math"
 	"testing"
 )
 
@@ -164,5 +165,28 @@ func TestBenchSpanIToF(*testing.T) {
 
 	for _, number := range span {
 		_, _ = IToF[float64](number)
+	}
+}
+
+func benchSpanFToI() []float64 {
+	span := []float64{
+		math.NaN(),
+		math.NaN(),
+		1,
+		2,
+		18446744073709551616,
+		18446744073709551617,
+		-18446744073709551616,
+		-18446744073709551617,
+	}
+
+	return span
+}
+
+func TestBenchSpanFToI(*testing.T) {
+	span := benchSpanFToI()
+
+	for _, number := range span {
+		_, _ = FToI[int](number)
 	}
 }
