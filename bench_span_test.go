@@ -76,3 +76,17 @@ func TestBenchSpanMul(*testing.T) {
 		}
 	}
 }
+
+func benchSpanDiv() []int8 {
+	return []int8{0, -128, -1, -1, -1, 127}
+}
+
+func TestBenchSpanDiv(*testing.T) {
+	span := benchSpanDiv()
+
+	for _, first := range span {
+		for _, second := range span {
+			_, _ = Div(first, second)
+		}
+	}
+}

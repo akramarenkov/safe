@@ -1511,9 +1511,70 @@ func BenchmarkDivReference(b *testing.B) {
 	// quotient and require is used to prevent compiler optimizations
 	quotient := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		quotient = b.N / 2
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, quotient)
+}
+
+func BenchmarkDiv(b *testing.B) {
+	// quotient and require is used to prevent compiler optimizations
+	quotient := 0
+
+	b.ResetTimer()
+
+	for range b.N {
+		quotient, _ = Div(b.N, 2)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, quotient)
+}
+
+func BenchmarkDivSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := int8(0)
+
+	span := benchSpanDiv()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				one = first
+				two = second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkDivSpanReference(b *testing.B) {
+	// quotient and require is used to prevent compiler optimizations
+	quotient := int8(0)
+
+	span := benchSpanDiv()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				if second == 0 {
 					continue
 				}
@@ -1529,13 +1590,17 @@ func BenchmarkDivReference(b *testing.B) {
 	require.NotNil(b, quotient)
 }
 
-func BenchmarkDiv(b *testing.B) {
+func BenchmarkDivSpan(b *testing.B) {
 	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	quotient := int8(0)
+
+	span := benchSpanDiv()
+
+	b.ResetTimer()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		for _, first := range span {
+			for _, second := range span {
 				quotient, _ = Div(first, second)
 			}
 		}
