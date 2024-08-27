@@ -1726,9 +1726,69 @@ func BenchmarkNegateS(b *testing.B) {
 	// negated and require is used to prevent compiler optimizations
 	negated := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			negated, _ = NegateS(first)
+		negated, _ = NegateS(b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, negated)
+}
+
+func BenchmarkNegateSSpanIdle(b *testing.B) {
+	// one and require is used to prevent compiler optimizations
+	one := int8(0)
+
+	span := benchSpanNegateS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			one = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+}
+
+func BenchmarkNegateSSpanReference(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
+	negated := int8(0)
+
+	span := benchSpanNegateS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			negated = -number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, negated)
+}
+
+func BenchmarkNegateSSpan(b *testing.B) {
+	// negated and require is used to prevent compiler optimizations
+	negated := int8(0)
+
+	span := benchSpanNegateS()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range span {
+			negated, _ = NegateS(number)
 		}
 	}
 

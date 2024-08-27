@@ -106,3 +106,15 @@ func TestBenchSpanNegate(*testing.T) {
 		_, _ = Negate(number)
 	}
 }
+
+func benchSpanNegateS() []int8 {
+	return []int8{-128, -128, 0, 1}
+}
+
+func TestBenchSpanNegateS(*testing.T) {
+	span := benchSpanNegateS()
+
+	for _, number := range span {
+		_, _ = NegateS(number)
+	}
+}
