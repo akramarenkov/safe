@@ -1410,12 +1410,10 @@ func BenchmarkMulReference(b *testing.B) {
 	// product and require is used to prevent compiler optimizations
 	product := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				product = first * second
-			}
-		}
+		product = 2 * b.N
 	}
 
 	b.StopTimer()
@@ -1428,9 +1426,76 @@ func BenchmarkMul(b *testing.B) {
 	// product and require is used to prevent compiler optimizations
 	product := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		product, _ = Mul(2, b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
+}
+
+func BenchmarkMulSpanIdle(b *testing.B) {
+	// one, two and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := int8(0)
+
+	span := benchSpanMul()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				one = first
+				two = second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+}
+
+func BenchmarkMulSpanReference(b *testing.B) {
+	// product and require is used to prevent compiler optimizations
+	product := int8(0)
+
+	span := benchSpanMul()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				product = first * second
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, product)
+}
+
+func BenchmarkMulSpan(b *testing.B) {
+	// product and require is used to prevent compiler optimizations
+	product := int8(0)
+
+	span := benchSpanMul()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				product, _ = Mul(first, second)
 			}
 		}
