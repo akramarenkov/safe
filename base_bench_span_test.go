@@ -118,3 +118,23 @@ func TestBenchSpanNegateS(*testing.T) {
 		_, _ = NegateS(number)
 	}
 }
+
+func benchSpanIToI() ([]int8, []uint8, []uint16) {
+	return []int8{-2, -1, 1, 2}, []uint8{0, 1, 128, 129}, []uint16{256, 257}
+}
+
+func TestBenchSpanIToI(*testing.T) {
+	s8, u8, u16 := benchSpanIToI()
+
+	for _, number := range s8 {
+		_, _ = IToI[uint8](number)
+	}
+
+	for _, number := range u8 {
+		_, _ = IToI[int8](number)
+	}
+
+	for _, number := range u16 {
+		_, _ = IToI[uint8](number)
+	}
+}

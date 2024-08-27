@@ -1802,10 +1802,10 @@ func BenchmarkIToIReference(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := uint(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			converted = uint(first)
-		}
+		converted = uint(b.N)
 	}
 
 	b.StopTimer()
@@ -1818,9 +1818,70 @@ func BenchmarkIToI(b *testing.B) {
 	// converted and require is used to prevent compiler optimizations
 	converted := uint(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			converted, _ = IToI[uint](first)
+		converted, _ = IToI[uint](b.N)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+}
+
+func BenchmarkIToISpanIdle(b *testing.B) {
+	// one and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := uint8(0)
+	three := uint16(0)
+
+	s8, u8, u16 := benchSpanIToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range s8 {
+			one = number
+		}
+
+		for _, number := range u8 {
+			two = number
+		}
+
+		for _, number := range u16 {
+			three = number
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+	require.NotNil(b, three)
+}
+
+func BenchmarkIToISpanReference(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := int8(0)
+	convertedU := uint8(0)
+
+	s8, u8, u16 := benchSpanIToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range s8 {
+			convertedU = uint8(number)
+		}
+
+		for _, number := range u8 {
+			converted = int8(number)
+		}
+
+		for _, number := range u16 {
+			convertedU = uint8(number)
 		}
 	}
 
@@ -1828,6 +1889,37 @@ func BenchmarkIToI(b *testing.B) {
 
 	// meaningless check
 	require.NotNil(b, converted)
+	require.NotNil(b, convertedU)
+}
+
+func BenchmarkIToISpan(b *testing.B) {
+	// converted and require is used to prevent compiler optimizations
+	converted := int8(0)
+	convertedU := uint8(0)
+
+	s8, u8, u16 := benchSpanIToI()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, number := range s8 {
+			convertedU, _ = IToI[uint8](number)
+		}
+
+		for _, number := range u8 {
+			converted, _ = IToI[int8](number)
+		}
+
+		for _, number := range u16 {
+			convertedU, _ = IToI[uint8](number)
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, converted)
+	require.NotNil(b, convertedU)
 }
 
 func BenchmarkUToSReference(b *testing.B) {
