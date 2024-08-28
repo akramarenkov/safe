@@ -22,7 +22,7 @@ type Opts[Type EightBits] struct {
 }
 
 // Validates options. A reference and inspected functions must be specified.
-func (opts *Opts[Type]) IsValid() error {
+func (opts Opts[Type]) IsValid() error {
 	if opts.Reference == nil {
 		return ErrReferenceNotSpecified
 	}
@@ -35,7 +35,7 @@ func (opts *Opts[Type]) IsValid() error {
 }
 
 // Performs inspection.
-func (opts *Opts[Type]) Do() (Result[Type], error) {
+func (opts Opts[Type]) Do() (Result[Type], error) {
 	if err := opts.IsValid(); err != nil {
 		return Result[Type]{}, err
 	}
