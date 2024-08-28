@@ -482,7 +482,7 @@ func BenchmarkDo(b *testing.B) {
 	}
 
 	var (
-		result Result[int8]
+		result Result[int8, int8]
 		err    error
 	)
 

@@ -5,15 +5,25 @@ type EightBits interface {
 	~int8 | ~uint8
 }
 
+// Constraints by 16-bit integer types.
+type SixteenBits interface {
+	~int16 | ~uint16
+}
+
+// Constraints by up to 16-bit integer types.
+type UpToSixteenBits interface {
+	EightBits | SixteenBits
+}
+
 // Inspection result.
-type Result[Type EightBits] struct {
+type Result[TypeFrom, TypeTo UpToSixteenBits] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error
-	Actual Type
+	Actual TypeTo
 	// Arguments passed to the reference and inspected functions. Filled in case of a
 	// negative inspection conclusion
-	Args []Type
+	Args []TypeFrom
 	// Inspection conclusion. Filled in case of incorrect error return by the inspected
 	// function or discrepancy between the value returned by the inspected function
 	// and the reference value

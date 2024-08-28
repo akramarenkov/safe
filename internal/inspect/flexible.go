@@ -35,9 +35,9 @@ func (opts Opts[Type]) IsValid() error {
 }
 
 // Performs inspection.
-func (opts Opts[Type]) Do() (Result[Type], error) {
+func (opts Opts[Type]) Do() (Result[Type, Type], error) {
 	if err := opts.IsValid(); err != nil {
-		return Result[Type]{}, err
+		return Result[Type, Type]{}, err
 	}
 
 	opts.min, opts.max = PickUpRange[Type]()
@@ -45,8 +45,8 @@ func (opts Opts[Type]) Do() (Result[Type], error) {
 	return opts.main(), nil
 }
 
-func (opts *Opts[Type]) main() Result[Type] {
-	result := Result[Type]{}
+func (opts *Opts[Type]) main() Result[Type, Type] {
+	result := Result[Type, Type]{}
 
 	// Protection against changes from the inspected and reference functions
 	args8 := make([]Type, opts.LoopsQuantity)

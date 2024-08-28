@@ -35,9 +35,9 @@ func (opts Opts4[Type]) IsValid() error {
 }
 
 // Performs inspection.
-func (opts Opts4[Type]) Do() (Result[Type], error) {
+func (opts Opts4[Type]) Do() (Result[Type, Type], error) {
 	if err := opts.IsValid(); err != nil {
-		return Result[Type]{}, err
+		return Result[Type, Type]{}, err
 	}
 
 	opts.min, opts.max = PickUpRange[Type]()
@@ -45,13 +45,13 @@ func (opts Opts4[Type]) Do() (Result[Type], error) {
 	return opts.main(), nil
 }
 
-func (opts *Opts4[Type]) main() Result[Type] {
+func (opts *Opts4[Type]) main() Result[Type, Type] {
 	parallelization := runtime.NumCPU()
 
 	// buffer size is chosen for simplicity: so that all goroutines can
 	// definitely write the result and not block on writing even without reading
 	// these results
-	results := make(chan Result[Type], parallelization)
+	results := make(chan Result[Type, Type], parallelization)
 	defer close(results)
 
 	wg := &sync.WaitGroup{}
@@ -86,7 +86,7 @@ func (opts *Opts4[Type]) main() Result[Type] {
 	close(firsts)
 
 	received := 0
-	result := Result[Type]{}
+	result := Result[Type, Type]{}
 
 	for interim := range results {
 		received++
@@ -108,8 +108,8 @@ func (opts *Opts4[Type]) main() Result[Type] {
 }
 
 //nolint:gocognit // When the complexity decreases, the performance drops by half.
-func (opts *Opts4[Type]) loop(firsts chan int64) Result[Type] {
-	result := Result[Type]{}
+func (opts *Opts4[Type]) loop(firsts chan int64) Result[Type, Type] {
+	result := Result[Type, Type]{}
 
 	for first := range firsts {
 		for second := opts.min; second <= opts.max; second++ {

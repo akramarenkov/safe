@@ -220,7 +220,7 @@ func BenchmarkDo5(b *testing.B) {
 	}
 
 	var (
-		result Result[int8]
+		result Result[int8, int8]
 		err    error
 	)
 
