@@ -413,297 +413,143 @@ func TestIToI(t *testing.T) {
 }
 
 func testIToIU8ToS8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := 0; number <= math.MaxUint8; number++ {
-		converted, err := IToI[int8](uint8(number))
-
-		reference := number
-
-		if reference > math.MaxInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number uint8) (int8, error) {
+		return IToI[int8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIS8ToU8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		converted, err := IToI[uint8](int8(number))
-
-		reference := number
-
-		if reference < 0 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number int8) (uint8, error) {
+		return IToI[uint8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIS8ToU16(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
-		converted, err := IToI[uint16](int8(number))
-
-		reference := number
-
-		if reference < 0 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number int8) (uint16, error) {
+		return IToI[uint16](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIU16ToS8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := IToI[int8](uint16(number))
-
-		reference := number
-
-		if reference > math.MaxInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number uint16) (int8, error) {
+		return IToI[int8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIU16ToU8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := IToI[uint8](uint16(number))
-
-		reference := number
-
-		if reference > math.MaxUint8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number uint16) (uint8, error) {
+		return IToI[uint8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIS16ToS8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := math.MinInt16; number <= math.MaxInt16; number++ {
-		converted, err := IToI[int8](int16(number))
-
-		reference := number
-
-		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number int16) (int8, error) {
+		return IToI[int8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testIToIS16ToU8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := math.MinInt16; number <= math.MaxInt16; number++ {
-		converted, err := IToI[uint8](int16(number))
-
-		reference := number
-
-		if reference > math.MaxUint8 || reference < 0 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number int16) (uint8, error) {
+		return IToI[uint8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestUToS(t *testing.T) {
@@ -712,87 +558,43 @@ func TestUToS(t *testing.T) {
 }
 
 func testUToS8To8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := 0; number <= math.MaxUint8; number++ {
-		converted, err := UToS[int8](uint8(number))
-
-		reference := number
-
-		if reference > math.MaxInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number uint8) (int8, error) {
+		return UToS[int8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func testUToS16To8(t *testing.T) {
-	faults := 0
-	successful := 0
-
-	for number := 0; number <= math.MaxUint16; number++ {
-		converted, err := UToS[int8](uint16(number))
-
-		reference := number
-
-		if reference > math.MaxInt8 {
-			require.Error(
-				t,
-				err,
-				"number: %v, converted: %v, reference: %v",
-				number,
-				converted,
-				reference,
-			)
-
-			faults++
-
-			continue
-		}
-
-		successful++
-
-		require.NoError(
-			t,
-			err,
-			"number: %v, converted: %v, reference: %v",
-			number,
-			converted,
-			reference,
-		)
-
-		require.Equal(t, reference, int(converted), "number: %v", number)
+	inspected := func(number uint16) (int8, error) {
+		return UToS[int8](number)
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func TestIToF(t *testing.T) {
