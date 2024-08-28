@@ -15,7 +15,7 @@ func TestConversion(t *testing.T) {
 		return uint8(number), nil
 	}
 
-	result, err := Conversion[int8, uint8](inspected)
+	result, err := Conversion(inspected)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -52,15 +52,15 @@ func TestConversionNegativeConclusion(t *testing.T) {
 		return 0, nil
 	}
 
-	result, err := Conversion[int8, uint8](errorExpected)
+	result, err := Conversion(errorExpected)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	result, err = Conversion[int8, uint8](unexpectedError)
+	result, err = Conversion(unexpectedError)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 
-	result, err = Conversion[int8, uint8](notEqual)
+	result, err = Conversion(notEqual)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 }
