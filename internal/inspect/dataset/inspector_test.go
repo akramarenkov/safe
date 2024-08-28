@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/akramarenkov/safe"
 	"github.com/akramarenkov/safe/internal/inspect"
 
 	"github.com/stretchr/testify/require"
@@ -175,21 +174,21 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	}
 
 	unexpectedError := func(...int8) (int8, error) {
-		return 0, safe.ErrOverflow
+		return 0, inspect.ErrOverflow
 	}
 
 	notEqual := func(args ...int8) (int8, error) {
 		reference := testReference8(args...)
 
 		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
+			return 0, inspect.ErrOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(...int64) (int64, error) {
-		return 0, safe.ErrOverflow
+		return 0, inspect.ErrOverflow
 	}
 
 	collect := func(reference inspect.Reference) {

@@ -5,7 +5,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/akramarenkov/safe"
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/stretchr/testify/require"
 )
@@ -109,7 +108,7 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _, _ int8) (int8, error) {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth int8) (int8, error) {
@@ -117,14 +116,14 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 			int64(fifth)
 
 		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, safe.ErrOverflow
+			return 0, ErrOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	opts := Opts5[int8]{
@@ -162,7 +161,7 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _, _ uint8) (uint8, error) {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth uint8) (uint8, error) {
@@ -170,14 +169,14 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 			int64(fifth)
 
 		if reference > math.MaxUint8 || reference < 0 {
-			return 0, safe.ErrOverflow
+			return 0, ErrOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	opts := Opts5[uint8]{
@@ -244,7 +243,7 @@ func testInspected5Int(first, second, third, fourth, fifth int8) (int8, error) {
 		int64(fifth)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	return int8(reference), nil
@@ -255,7 +254,7 @@ func testInspected5Uint(first, second, third, fourth, fifth uint8) (uint8, error
 		int64(fifth)
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, safe.ErrOverflow
+		return 0, ErrOverflow
 	}
 
 	return uint8(reference), nil

@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/akramarenkov/safe"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/stretchr/testify/require"
@@ -109,7 +108,7 @@ func testInspectedInt(args ...int8) (int8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, safe.ErrOverflow
+		return 0, inspect.ErrOverflow
 	}
 
 	return int8(reference), nil
@@ -119,7 +118,7 @@ func testInspectedUint(args ...uint8) (uint8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, safe.ErrOverflow
+		return 0, inspect.ErrOverflow
 	}
 
 	return uint8(reference), nil

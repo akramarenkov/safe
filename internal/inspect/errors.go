@@ -9,3 +9,7 @@ var (
 	ErrReferenceNotSpecified = errors.New("reference function is not specified")
 	ErrUnexpectedError       = errors.New("received unexpected error")
 )
+
+var (
+	ErrOverflow = errors.New("overflow")
+)
