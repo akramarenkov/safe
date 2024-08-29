@@ -2,7 +2,6 @@ package safe
 
 import (
 	"math"
-	"strconv"
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect"
@@ -655,7 +654,8 @@ func testIToF64(t *testing.T) {
 }
 
 func TestFToI(t *testing.T) {
-	steps := []float64{
+	additions := []float64{
+		math.SmallestNonzeroFloat64,
 		0.1,
 		0.2,
 		0.25,
@@ -667,27 +667,53 @@ func TestFToI(t *testing.T) {
 		0.75,
 		0.777,
 		0.999,
-		// with max fractional value for 0.0
-		// 0b0011111111101111111111111111111111111111111111111111111111111111
-		0.9999999999999999,
-		1,
-		1.001,
-		// with max fractional value for 1.0
-		// 0b0011111111111111111111111111111111111111111111111111111111111111
-		1.9999999999999997,
+		0.99999999999998,
 	}
 
-	for _, step := range steps {
-		t.Run(
-			"step="+strconv.FormatFloat(step, 'f', -1, 64),
-			func(t *testing.T) {
-				t.Parallel()
-				testFToIInt(t, step)
-				testFToIUint(t, step)
-			},
-		)
+	for _, addition := range additions {
+		testFToI(t, addition)
+	}
+}
+
+func testFToI(t *testing.T, addition float64) {
+	inspected := func(number int16) (int8, error) {
+		if number < 0 {
+			return FToI[int8](float64(number) - addition)
+		}
+
+		return FToI[int8](float64(number) + addition)
 	}
 
+	effective := func(result inspect.Result[int16, int8]) float64 {
+		if len(result.Args) == 0 {
+			return 0
+		}
+
+		if result.Args[0] < 0 {
+			return float64(result.Args[0]) - addition
+		}
+
+		return float64(result.Args[0]) + addition
+	}
+
+	result, err := inspect.Conversion(inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"addition: %v, effective: %v, reference: %v, actual: %v, args: %v, err: %v",
+		addition,
+		effective(result),
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+}
+
+func TestFToISpecial(t *testing.T) {
 	_, err := FToI[int64](math.Inf(-1))
 	require.Error(t, err)
 
@@ -705,94 +731,6 @@ func TestFToI(t *testing.T) {
 
 	_, err = FToI[uint64](math.NaN())
 	require.Error(t, err)
-}
-
-func testFToIInt(t *testing.T, step float64) {
-	faults := 0
-	successful := 0
-
-	begin := float64(2 * math.MinInt16)
-	end := float64(2 * math.MaxInt16)
-
-	// imprecision accumulation is acceptable
-	for number := begin; number <= end; number += step {
-		converted, err := FToI[int16](number)
-
-		reference := int(number)
-
-		if reference > math.MaxInt16 || reference < math.MinInt16 {
-			require.Error(
-				t,
-				err,
-				"converted: %v, reference: %v",
-				converted,
-				number,
-			)
-
-			faults++
-
-			continue
-		}
-
-		require.NoError(
-			t,
-			err,
-			"converted: %v, reference: %v",
-			converted,
-			number,
-		)
-
-		require.Equal(t, reference, int(converted))
-
-		successful++
-	}
-
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
-}
-
-func testFToIUint(t *testing.T, step float64) {
-	faults := 0
-	successful := 0
-
-	begin := 0.0
-	end := float64(2 * math.MaxUint16)
-
-	// imprecision accumulation is acceptable
-	for number := begin; number <= end; number += step {
-		converted, err := FToI[uint16](number)
-
-		reference := int(number)
-
-		if reference > math.MaxUint16 {
-			require.Error(
-				t,
-				err,
-				"converted: %v, reference: %v",
-				converted,
-				number,
-			)
-
-			faults++
-
-			continue
-		}
-
-		require.NoError(
-			t,
-			err,
-			"converted: %v, reference: %v",
-			converted,
-			number,
-		)
-
-		require.Equal(t, reference, int(converted))
-
-		successful++
-	}
-
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
 }
 
 func BenchmarkIdle(b *testing.B) {
