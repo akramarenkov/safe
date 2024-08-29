@@ -22,7 +22,7 @@ func TestAddM(t *testing.T) {
 }
 
 func testAddMInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -47,7 +47,7 @@ func testAddMInt(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 
-	opts = inspect.Opts[int8]{
+	opts = inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -72,7 +72,7 @@ func testAddMInt(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 
-	opts = inspect.Opts[int8]{
+	opts = inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -99,7 +99,7 @@ func testAddMInt(t *testing.T) {
 }
 
 func testAddMUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -124,7 +124,7 @@ func testAddMUint(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 
-	opts = inspect.Opts[uint8]{
+	opts = inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -149,7 +149,7 @@ func testAddMUint(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 
-	opts = inspect.Opts[uint8]{
+	opts = inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -387,7 +387,7 @@ func TestAdd3(t *testing.T) {
 }
 
 func testAdd3Int(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -414,7 +414,7 @@ func testAdd3Int(t *testing.T) {
 }
 
 func testAdd3Uint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -444,7 +444,7 @@ func TestAddUM(t *testing.T) {
 	_, err := AddUM[uint]()
 	require.Error(t, err)
 
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: AddUM[uint8],
@@ -474,7 +474,7 @@ func TestSub3(t *testing.T) {
 }
 
 func testSub3Int(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -501,7 +501,7 @@ func testSub3Int(t *testing.T) {
 }
 
 func testSub3Uint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -532,7 +532,7 @@ func TestSubUM(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint(math.MaxUint), diff)
 
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -567,7 +567,7 @@ func TestMulM(t *testing.T) {
 }
 
 func testMulMInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: MulM[int8],
@@ -592,7 +592,7 @@ func testMulMInt(t *testing.T) {
 }
 
 func testMulMUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: MulM[uint8],
@@ -629,7 +629,7 @@ func TestMulT(t *testing.T) {
 }
 
 func testMulTInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -656,7 +656,7 @@ func testMulTInt(t *testing.T) {
 }
 
 func testMulTUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -686,7 +686,7 @@ func TestMulUM(t *testing.T) {
 	_, err := MulUM[uint]()
 	require.Error(t, err)
 
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: MulUM[uint8],
@@ -720,7 +720,7 @@ func TestDivM(t *testing.T) {
 }
 
 func testDivMInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -752,7 +752,7 @@ func testDivMInt(t *testing.T) {
 }
 
 func testDivMUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {

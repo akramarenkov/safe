@@ -19,7 +19,7 @@ type Collector[Type inspect.EightBits] struct {
 	// Quantity of dataset items which produce overflow of inspected function
 	OverflowedItemsQuantity int
 	// Function that returns a reference value
-	Reference inspect.Reference
+	Reference
 	// Writer associated with dataset storage
 	Writer io.Writer
 	// List of fillers that fill arguments of inspected and reference functions with
@@ -82,7 +82,7 @@ func (clctr Collector[Type]) Collect() error {
 
 	clctr = clctr.normalize()
 
-	clctr.min, clctr.max = inspect.PickUpRange[Type]()
+	clctr.min, clctr.max = inspect.PickUpRange[Type, int64]()
 
 	clctr.args = make([]Type, clctr.ArgsQuantity)
 	clctr.args64 = make([]int64, clctr.ArgsQuantity)
@@ -159,7 +159,7 @@ func (clctr *Collector[Type]) writeItem() error {
 // Writes dataset item to specified writer.
 func WriteItem[Type inspect.EightBits](
 	writer io.Writer,
-	reference inspect.Reference,
+	reference Reference,
 	args ...Type,
 ) error {
 	buffer := make([]byte, calcMaxItemLength(len(args)))
@@ -176,7 +176,7 @@ func WriteItem[Type inspect.EightBits](
 func writeItem[Type inspect.EightBits](
 	writer io.Writer,
 	buffer []byte,
-	reference inspect.Reference,
+	reference Reference,
 	args []Type,
 	args64 []int64,
 ) error {

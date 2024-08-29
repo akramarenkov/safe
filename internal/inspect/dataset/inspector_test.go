@@ -191,7 +191,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 		return 0, inspect.ErrOverflow
 	}
 
-	collect := func(reference inspect.Reference) {
+	collect := func(reference Reference) {
 		buffer.Reset()
 
 		for first := math.MinInt8; first <= math.MaxInt8; first++ {

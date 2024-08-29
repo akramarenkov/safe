@@ -10,13 +10,23 @@ type SixteenBits interface {
 	~int16 | ~uint16
 }
 
-// Constraints by up to 16-bit integer types.
-type UpToSixteenBits interface {
-	EightBits | SixteenBits
+// Constraints by 32-bit integer types.
+type ThirtyTwoBits interface {
+	~int32 | ~uint32
+}
+
+// Constraints by up to 32-bit integer types.
+type UpTo32Bits interface {
+	EightBits | SixteenBits | ThirtyTwoBits
+}
+
+// Constraints by 64-bit integer and floating point types.
+type SixtyFourBits interface {
+	~int64 | ~float64
 }
 
 // Inspection result.
-type Result[TypeFrom, TypeTo UpToSixteenBits] struct {
+type Result[TypeFrom, TypeTo UpTo32Bits, TypeRef SixtyFourBits] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error
@@ -39,7 +49,7 @@ type Result[TypeFrom, TypeTo UpToSixteenBits] struct {
 	Overflows int
 	// Value returned by the reference function. Filled in case of a negative inspection
 	// conclusion
-	Reference int64
+	Reference TypeRef
 	// Number of correct error returns by the inspected function if the reference
 	// function returns an error
 	ReferenceFaults int

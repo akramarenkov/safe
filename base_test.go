@@ -23,7 +23,7 @@ func TestAdd(t *testing.T) {
 }
 
 func testAddInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -50,7 +50,7 @@ func testAddInt(t *testing.T) {
 }
 
 func testAddUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -77,7 +77,7 @@ func testAddUint(t *testing.T) {
 }
 
 func TestAddU(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -109,7 +109,7 @@ func TestSub(t *testing.T) {
 }
 
 func testSubInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -136,7 +136,7 @@ func testSubInt(t *testing.T) {
 }
 
 func testSubUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -163,7 +163,7 @@ func testSubUint(t *testing.T) {
 }
 
 func TestSubU(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -195,7 +195,7 @@ func TestMul(t *testing.T) {
 }
 
 func testMulInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -222,7 +222,7 @@ func testMulInt(t *testing.T) {
 }
 
 func testMulUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -254,7 +254,7 @@ func TestDiv(t *testing.T) {
 }
 
 func testDivInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -286,7 +286,7 @@ func testDivInt(t *testing.T) {
 }
 
 func testDivUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -323,7 +323,7 @@ func TestNegate(t *testing.T) {
 }
 
 func testNegateInt(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -350,7 +350,7 @@ func testNegateInt(t *testing.T) {
 }
 
 func testNegateUint(t *testing.T) {
-	opts := inspect.Opts[uint8]{
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -375,7 +375,7 @@ func testNegateUint(t *testing.T) {
 }
 
 func TestNegateS(t *testing.T) {
-	opts := inspect.Opts[int8]{
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -412,11 +412,18 @@ func TestIToI(t *testing.T) {
 }
 
 func testIToIU8ToS8(t *testing.T) {
-	inspected := func(number uint8) (int8, error) {
-		return IToI[int8](number)
+	opts := inspect.Opts[uint8, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (int8, error) {
+			return IToI[int8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -432,11 +439,18 @@ func testIToIU8ToS8(t *testing.T) {
 }
 
 func testIToIS8ToU8(t *testing.T) {
-	inspected := func(number int8) (uint8, error) {
-		return IToI[uint8](number)
+	opts := inspect.Opts[int8, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (uint8, error) {
+			return IToI[uint8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -452,11 +466,18 @@ func testIToIS8ToU8(t *testing.T) {
 }
 
 func testIToIS8ToU16(t *testing.T) {
-	inspected := func(number int8) (uint16, error) {
-		return IToI[uint16](number)
+	opts := inspect.Opts[int8, uint16, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (uint16, error) {
+			return IToI[uint16](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -472,11 +493,18 @@ func testIToIS8ToU16(t *testing.T) {
 }
 
 func testIToIU16ToS8(t *testing.T) {
-	inspected := func(number uint16) (int8, error) {
-		return IToI[int8](number)
+	opts := inspect.Opts[uint16, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint16) (int8, error) {
+			return IToI[int8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -492,11 +520,18 @@ func testIToIU16ToS8(t *testing.T) {
 }
 
 func testIToIU16ToU8(t *testing.T) {
-	inspected := func(number uint16) (uint8, error) {
-		return IToI[uint8](number)
+	opts := inspect.Opts[uint16, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint16) (uint8, error) {
+			return IToI[uint8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -512,11 +547,18 @@ func testIToIU16ToU8(t *testing.T) {
 }
 
 func testIToIS16ToS8(t *testing.T) {
-	inspected := func(number int16) (int8, error) {
-		return IToI[int8](number)
+	opts := inspect.Opts[int16, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int16) (int8, error) {
+			return IToI[int8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -532,11 +574,18 @@ func testIToIS16ToS8(t *testing.T) {
 }
 
 func testIToIS16ToU8(t *testing.T) {
-	inspected := func(number int16) (uint8, error) {
-		return IToI[uint8](number)
+	opts := inspect.Opts[int16, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int16) (uint8, error) {
+			return IToI[uint8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -557,11 +606,18 @@ func TestUToS(t *testing.T) {
 }
 
 func testUToS8To8(t *testing.T) {
-	inspected := func(number uint8) (int8, error) {
-		return UToS[int8](number)
+	opts := inspect.Opts[uint8, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (int8, error) {
+			return UToS[int8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -577,11 +633,18 @@ func testUToS8To8(t *testing.T) {
 }
 
 func testUToS16To8(t *testing.T) {
-	inspected := func(number uint16) (int8, error) {
-		return UToS[int8](number)
+	opts := inspect.Opts[uint16, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint16) (int8, error) {
+			return UToS[int8](args[0])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
 	}
 
-	result, err := inspect.Conversion(inspected)
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -676,15 +739,7 @@ func TestFToI(t *testing.T) {
 }
 
 func testFToI(t *testing.T, addition float64) {
-	inspected := func(number int16) (int8, error) {
-		if number < 0 {
-			return FToI[int8](float64(number) - addition)
-		}
-
-		return FToI[int8](float64(number) + addition)
-	}
-
-	effective := func(result inspect.Result[int16, int8]) float64 {
+	effective := func(result inspect.Result[int16, int8, int64]) float64 {
 		if len(result.Args) == 0 {
 			return 0
 		}
@@ -696,7 +751,22 @@ func testFToI(t *testing.T, addition float64) {
 		return float64(result.Args[0]) + addition
 	}
 
-	result, err := inspect.Conversion(inspected)
+	opts := inspect.Opts[int16, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int16) (int8, error) {
+			if args[0] < 0 {
+				return FToI[int8](float64(args[0]) - addition)
+			}
+
+			return FToI[int8](float64(args[0]) + addition)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,

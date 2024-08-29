@@ -30,7 +30,7 @@ type Inspector[Type inspect.EightBits] struct {
 	items *reusable.Buffer[[]byte]
 
 	// Result of inspecting
-	result inspect.Result[Type, Type]
+	result inspect.Result[Type, Type, int64]
 }
 
 // Validates options. A inspected function and reader must be specified.
@@ -50,10 +50,10 @@ func (insp Inspector[Type]) IsValid() error {
 func InspectFromFile[Type inspect.EightBits](
 	path string,
 	inspected func(args ...Type) (Type, error),
-) (inspect.Result[Type, Type], error) {
+) (inspect.Result[Type, Type, int64], error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return inspect.Result[Type, Type]{}, err
+		return inspect.Result[Type, Type, int64]{}, err
 	}
 
 	defer file.Close()
@@ -67,19 +67,19 @@ func InspectFromFile[Type inspect.EightBits](
 }
 
 // Performs inspecting.
-func (insp Inspector[Type]) Inspect() (inspect.Result[Type, Type], error) {
+func (insp Inspector[Type]) Inspect() (inspect.Result[Type, Type, int64], error) {
 	if err := insp.IsValid(); err != nil {
-		return inspect.Result[Type, Type]{}, err
+		return inspect.Result[Type, Type, int64]{}, err
 	}
 
-	insp.min, insp.max = inspect.PickUpRange[Type]()
+	insp.min, insp.max = inspect.PickUpRange[Type, int64]()
 
 	insp.args = reusable.New[Type](0)
 	insp.args8 = reusable.New[Type](0)
 	insp.items = reusable.New[[]byte](0)
 
 	if err := insp.main(); err != nil {
-		return inspect.Result[Type, Type]{}, err
+		return inspect.Result[Type, Type, int64]{}, err
 	}
 
 	return insp.result, nil

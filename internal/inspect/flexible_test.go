@@ -8,20 +8,20 @@ import (
 )
 
 func TestIsValid(t *testing.T) {
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		Inspected: func(...int8) (int8, error) { return 0, nil },
 		Reference: func(...int64) (int64, error) { return 0, nil },
 	}
 
 	require.NoError(t, opts.IsValid())
 
-	opts = Opts[int8]{
+	opts = Opts[int8, int8, int64]{
 		Inspected: func(...int8) (int8, error) { return 0, nil },
 	}
 
 	require.Error(t, opts.IsValid())
 
-	opts = Opts[int8]{
+	opts = Opts[int8, int8, int64]{
 		Reference: func(...int64) (int64, error) { return 0, nil },
 	}
 
@@ -47,7 +47,7 @@ func TestDo(t *testing.T) {
 }
 
 func testDoInt(t *testing.T) {
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: testInspected3Int,
@@ -70,7 +70,7 @@ func testDoInt(t *testing.T) {
 }
 
 func testDoUint(t *testing.T) {
-	opts := Opts[uint8]{
+	opts := Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: testInspected3Uint,
@@ -205,7 +205,7 @@ func testDoArgsInt(t *testing.T) {
 		return 0, nil
 	}
 
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: levels,
 
 		Inspected: inspected,
@@ -237,7 +237,7 @@ func testDoArgsUint(t *testing.T) {
 		return 0, nil
 	}
 
-	opts := Opts[uint8]{
+	opts := Opts[uint8, uint8, int64]{
 		LoopsQuantity: levels,
 
 		Inspected: inspected,
@@ -250,7 +250,7 @@ func testDoArgsUint(t *testing.T) {
 }
 
 func TestDoError(t *testing.T) {
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 	}
 
@@ -286,7 +286,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: errorExpected,
@@ -344,7 +344,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts[uint8]{
+	opts := Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: errorExpected,
@@ -413,7 +413,7 @@ func testLoopInt(t *testing.T) {
 		return false
 	}
 
-	stop := loop(levels, do)
+	stop := loop[int64](levels, do)
 	require.False(t, stop)
 }
 
@@ -433,7 +433,7 @@ func testLoopUint(t *testing.T) {
 		return false
 	}
 
-	stop := loop(levels, do)
+	stop := loop[int64](levels, do)
 	require.False(t, stop)
 }
 
@@ -448,10 +448,10 @@ func TestLoopZero(t *testing.T) {
 		return false
 	}
 
-	stop := loop(0, do, 1)
+	stop := loop[int64](0, do, 1)
 	require.False(t, stop)
 
-	stop = loop(0, doU, 1)
+	stop = loop[int64](0, doU, 1)
 	require.False(t, stop)
 }
 
@@ -472,17 +472,17 @@ func TestLoopStop(t *testing.T) {
 		return args[1] == 1
 	}
 
-	stop := loop(2, do)
+	stop := loop[int64](2, do)
 	require.True(t, stop)
 	require.Equal(t, expected, actual)
 
-	stop = loop(2, doU)
+	stop = loop[int64](2, doU)
 	require.True(t, stop)
 	require.Equal(t, expectedU, actualU)
 }
 
 func BenchmarkDo(b *testing.B) {
-	opts := Opts[int8]{
+	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: testInspected3Int,
@@ -490,7 +490,7 @@ func BenchmarkDo(b *testing.B) {
 	}
 
 	var (
-		result Result[int8, int8]
+		result Result[int8, int8, int64]
 		err    error
 	)
 
@@ -518,7 +518,7 @@ func BenchmarkLoop(b *testing.B) {
 	}
 
 	for range b.N {
-		_ = loop(3, do)
+		_ = loop[int64](3, do)
 	}
 
 	b.StopTimer()
