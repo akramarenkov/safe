@@ -55,12 +55,15 @@ func TestConversionNegativeConclusion(t *testing.T) {
 	result, err := Conversion(errorExpected)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	result, err = Conversion(unexpectedError)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	result, err = Conversion(notEqual)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }

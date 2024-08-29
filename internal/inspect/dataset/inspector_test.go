@@ -211,6 +211,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	result, err := inspector.Inspect()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	collect(testReference)
 
@@ -219,6 +220,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	result, err = inspector.Inspect()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	collect(testReference)
 
@@ -227,6 +229,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	result, err = inspector.Inspect()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	collect(referenceFault)
 
@@ -235,6 +238,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	result, err = inspector.Inspect()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }
 
 func TestInspectorFileError(t *testing.T) {

@@ -126,18 +126,21 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 	result, err := opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = unexpectedError
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = notEqual
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = testInspected4Int
 	opts.Reference = referenceFault
@@ -145,6 +148,7 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }
 
 func testDo4NegativeConclusionUint(t *testing.T) {
@@ -178,18 +182,21 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 	result, err := opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = unexpectedError
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = notEqual
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = testInspected4Uint
 	opts.Reference = referenceFault
@@ -197,6 +204,7 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }
 
 func BenchmarkDo4(b *testing.B) {

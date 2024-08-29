@@ -296,18 +296,21 @@ func testDoNegativeConclusionInt(t *testing.T) {
 	result, err := opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = unexpectedError
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = notEqual
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = testInspected2Int
 	opts.Reference = referenceFault
@@ -315,6 +318,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }
 
 func testDoNegativeConclusionUint(t *testing.T) {
@@ -350,18 +354,21 @@ func testDoNegativeConclusionUint(t *testing.T) {
 	result, err := opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = unexpectedError
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = notEqual
 
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 
 	opts.Inspected = testInspected2Uint
 	opts.Reference = referenceFault
@@ -369,6 +376,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 	result, err = opts.Do()
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
+	require.NotZero(t, len(result.Args))
 }
 
 func TestLoop(t *testing.T) {
