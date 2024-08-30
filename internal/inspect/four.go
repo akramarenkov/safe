@@ -3,6 +3,8 @@ package inspect
 import (
 	"runtime"
 	"sync"
+
+	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
 // Function with four arguments that returns a reference value.
@@ -10,7 +12,7 @@ type Reference4 func(first, second, third, fourth int64) (int64, error)
 
 // Options of inspecting function with four arguments. A reference and inspected
 // functions must be specified.
-type Opts4[Type EightBits] struct {
+type Opts4[Type types.USI8] struct {
 	// Inspected function with four arguments
 	Inspected func(first, second, third, fourth Type) (Type, error)
 	// Function with four arguments that returns a reference value
@@ -35,23 +37,23 @@ func (opts Opts4[Type]) IsValid() error {
 }
 
 // Performs inspection.
-func (opts Opts4[Type]) Do() (Result[Type, Type, int64], error) {
+func (opts Opts4[Type]) Do() (types.Result[Type, Type, int64], error) {
 	if err := opts.IsValid(); err != nil {
-		return Result[Type, Type, int64]{}, err
+		return types.Result[Type, Type, int64]{}, err
 	}
 
-	opts.min, opts.max = PickUpRange[Type, int64]()
+	opts.min, opts.max = PickUpSpan[Type, int64]()
 
 	return opts.main(), nil
 }
 
-func (opts *Opts4[Type]) main() Result[Type, Type, int64] {
+func (opts *Opts4[Type]) main() types.Result[Type, Type, int64] {
 	parallelization := runtime.NumCPU()
 
 	// buffer size is chosen for simplicity: so that all goroutines can
 	// definitely write the result and not block on writing even without reading
 	// these results
-	results := make(chan Result[Type, Type, int64], parallelization)
+	results := make(chan types.Result[Type, Type, int64], parallelization)
 	defer close(results)
 
 	wg := &sync.WaitGroup{}
@@ -86,7 +88,7 @@ func (opts *Opts4[Type]) main() Result[Type, Type, int64] {
 	close(firsts)
 
 	received := 0
-	result := Result[Type, Type, int64]{}
+	result := types.Result[Type, Type, int64]{}
 
 	for interim := range results {
 		received++
@@ -108,8 +110,8 @@ func (opts *Opts4[Type]) main() Result[Type, Type, int64] {
 }
 
 //nolint:gocognit // When the complexity decreases, the performance drops by half.
-func (opts *Opts4[Type]) loop(firsts chan int64) Result[Type, Type, int64] {
-	result := Result[Type, Type, int64]{}
+func (opts *Opts4[Type]) loop(firsts chan int64) types.Result[Type, Type, int64] {
+	result := types.Result[Type, Type, int64]{}
 
 	for first := range firsts {
 		for second := opts.min; second <= opts.max; second++ {

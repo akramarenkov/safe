@@ -10,11 +10,12 @@ import (
 	"github.com/akramarenkov/reusable"
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
 // Options of inspecting. A inspected function and reader must be specified.
-type Inspector[Type inspect.EightBits] struct {
+type Inspector[Type types.USI8] struct {
 	// Inspected function
 	Inspected func(args ...Type) (Type, error)
 	// Reader associated with dataset source
@@ -25,12 +26,12 @@ type Inspector[Type inspect.EightBits] struct {
 	max int64
 
 	// Buffers used to decrease allocations
-	args  *reusable.Buffer[Type]
-	args8 *reusable.Buffer[Type]
-	items *reusable.Buffer[[]byte]
+	args    *reusable.Buffer[Type]
+	argsDup *reusable.Buffer[Type]
+	items   *reusable.Buffer[[]byte]
 
 	// Result of inspecting
-	result inspect.Result[Type, Type, int64]
+	result types.Result[Type, Type, int64]
 }
 
 // Validates options. A inspected function and reader must be specified.
@@ -47,13 +48,13 @@ func (insp Inspector[Type]) IsValid() error {
 }
 
 // Performs inspecting with dataset from file.
-func InspectFromFile[Type inspect.EightBits](
+func InspectFromFile[Type types.USI8](
 	path string,
 	inspected func(args ...Type) (Type, error),
-) (inspect.Result[Type, Type, int64], error) {
+) (types.Result[Type, Type, int64], error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return inspect.Result[Type, Type, int64]{}, err
+		return types.Result[Type, Type, int64]{}, err
 	}
 
 	defer file.Close()
@@ -67,19 +68,19 @@ func InspectFromFile[Type inspect.EightBits](
 }
 
 // Performs inspecting.
-func (insp Inspector[Type]) Inspect() (inspect.Result[Type, Type, int64], error) {
+func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 	if err := insp.IsValid(); err != nil {
-		return inspect.Result[Type, Type, int64]{}, err
+		return types.Result[Type, Type, int64]{}, err
 	}
 
-	insp.min, insp.max = inspect.PickUpRange[Type, int64]()
+	insp.min, insp.max = inspect.PickUpSpan[Type, int64]()
 
 	insp.args = reusable.New[Type](0)
-	insp.args8 = reusable.New[Type](0)
+	insp.argsDup = reusable.New[Type](0)
 	insp.items = reusable.New[[]byte](0)
 
 	if err := insp.main(); err != nil {
-		return inspect.Result[Type, Type, int64]{}, err
+		return types.Result[Type, Type, int64]{}, err
 	}
 
 	return insp.result, nil
@@ -135,7 +136,7 @@ func (insp *Inspector[Type]) convItems(items [][]byte) (bool, int64, []Type, err
 	return fault, reference, args, nil
 }
 
-func parseArg[Type inspect.EightBits](item string) (Type, error) {
+func parseArg[Type types.USI8](item string) (Type, error) {
 	if is.Signed[Type]() {
 		arg, err := strconv.ParseInt(item, consts.DecimalBase, 8)
 		if err != nil {
@@ -155,11 +156,9 @@ func parseArg[Type inspect.EightBits](item string) (Type, error) {
 
 func (insp *Inspector[Type]) process(fault bool, reference int64, args ...Type) bool {
 	// Protection against changes args from the inspected function
-	copy(insp.args8.Get(len(args)), args)
+	copy(insp.argsDup.Get(len(args)), args)
 
-	args8 := insp.args8.Get(0)
-
-	actual, err := insp.Inspected(args8...)
+	actual, err := insp.Inspected(insp.argsDup.Get(0)...)
 
 	if fault {
 		if err == nil {

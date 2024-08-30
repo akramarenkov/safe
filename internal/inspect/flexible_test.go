@@ -2,8 +2,12 @@ package inspect
 
 import (
 	"math"
+	"os"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/consts"
+	"github.com/akramarenkov/safe/internal/inspect/incrementor"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,21 +33,8 @@ func TestIsValid(t *testing.T) {
 }
 
 func TestDo(t *testing.T) {
-	t.Run(
-		"int",
-		func(t *testing.T) {
-			t.Parallel()
-			testDoInt(t)
-		},
-	)
-
-	t.Run(
-		"uint",
-		func(t *testing.T) {
-			t.Parallel()
-			testDoUint(t)
-		},
-	)
+	testDoInt(t)
+	testDoUint(t)
 }
 
 func testDoInt(t *testing.T) {
@@ -92,169 +83,36 @@ func testDoUint(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestArgs(t *testing.T) {
-	quantity := uint64(0)
-
-	expected := make([]int8, 3)
-
-	for id := range expected {
-		expected[id] = math.MinInt8
-	}
-
-	for first := math.MinInt8; first <= math.MaxInt8; first++ {
-		for second := math.MinInt8; second <= math.MaxInt8; second++ {
-			for third := math.MinInt8; third <= math.MaxInt8; third++ {
-				quantity = testArgs(
-					t,
-					quantity,
-					expected,
-					int8(first),
-					int8(second),
-					int8(third),
-				)
-			}
-		}
-	}
-}
-
-// checks that the arguments change as if they were incremented by nested loops.
-func testArgs[Type EightBits](
-	t *testing.T,
-	quantity uint64,
-	expected []Type,
-	args ...Type,
-) uint64 {
-	// uint64 contains eight uint8
-	const maxLoopsLevels = 8
-
-	// duplication of conditions is done for performance reasons
-	if len(expected) > maxLoopsLevels {
-		require.LessOrEqual(t, len(expected), maxLoopsLevels)
-	}
-
-	// duplication of conditions is done for performance reasons
-	if len(args) > maxLoopsLevels {
-		require.LessOrEqual(t, len(args), maxLoopsLevels)
-	}
-
-	// duplication of conditions is done for performance reasons
-	if len(args) != len(expected) {
-		require.Equal(t, len(args), len(expected))
-	}
-
-	for id := range args {
-		// duplication of conditions is done for performance reasons
-		if args[id] != expected[id] {
-			require.Equal(t, expected[id], args[id])
-		}
-	}
-
-	quantity++
-
-	for id := range expected {
-		// highest byte corresponds to the first argument, lowest byte
-		// corresponds to the last argument
-		multiplicity := uint64(1 << (8 * (len(expected) - id - 1)))
-
-		// if the condition is met, it means that all bits of all bytes lower
-		// than the current one are set to 0 i.e. there was an overflow into the
-		// current byte and the corresponding argument should have increased
-		if quantity%multiplicity == 0 {
-			expected[id]++
-		}
-	}
-
-	return quantity
-}
-
-func TestDoArgs(t *testing.T) {
-	t.Run(
-		"int",
-		func(t *testing.T) {
-			t.Parallel()
-			testDoArgsInt(t)
-		},
-	)
-
-	t.Run(
-		"uint",
-		func(t *testing.T) {
-			t.Parallel()
-			testDoArgsUint(t)
-		},
-	)
-}
-
-func testDoArgsInt(t *testing.T) {
-	const levels = 3
-
-	quantity := uint64(0)
-
-	expected := make([]int8, levels)
-
-	for id := range expected {
-		expected[id] = math.MinInt8
-	}
-
-	inspected := func(args ...int8) (int8, error) {
-		quantity = testArgs(t, quantity, expected, args...)
-		return 0, nil
-	}
-
-	reference := func(...int64) (int64, error) {
-		return 0, nil
-	}
-
-	opts := Opts[int8, int8, int64]{
-		LoopsQuantity: levels,
-
-		Inspected: inspected,
-		Reference: reference,
-	}
-
-	_, err := opts.Do()
-	require.NoError(t, err)
-	require.Equal(t, uint64(1<<(8*levels)), quantity)
-}
-
-func testDoArgsUint(t *testing.T) {
-	const levels = 3
-
-	quantity := uint64(0)
-
-	expected := make([]uint8, levels)
-
-	for id := range expected {
-		expected[id] = 0
-	}
-
-	inspected := func(args ...uint8) (uint8, error) {
-		quantity = testArgs(t, quantity, expected, args...)
-		return 0, nil
-	}
-
-	reference := func(...int64) (int64, error) {
-		return 0, nil
-	}
-
-	opts := Opts[uint8, uint8, int64]{
-		LoopsQuantity: levels,
-
-		Inspected: inspected,
-		Reference: reference,
-	}
-
-	_, err := opts.Do()
-	require.NoError(t, err)
-	require.Equal(t, uint64(1<<(8*levels)), quantity)
-}
-
 func TestDoError(t *testing.T) {
 	opts := Opts[int8, int8, int64]{
-		LoopsQuantity: 2,
+		LoopsQuantity: 3,
 	}
 
 	_, err := opts.Do()
+	require.Error(t, err)
+
+	opts = Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+		Inspected:     testInspected3Int,
+		Reference:     testReference3,
+		Span: func() (int64, int64) {
+			return -129, 127
+		},
+	}
+
+	_, err = opts.Do()
+	require.Error(t, err)
+
+	opts = Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+		Inspected:     testInspected3Int,
+		Reference:     testReference3,
+		Span: func() (int64, int64) {
+			return -128, 128
+		},
+	}
+
+	_, err = opts.Do()
 	require.Error(t, err)
 }
 
@@ -380,60 +238,151 @@ func testDoNegativeConclusionUint(t *testing.T) {
 }
 
 func TestLoop(t *testing.T) {
-	t.Run(
-		"int",
-		func(t *testing.T) {
-			t.Parallel()
-			testLoopInt(t)
-		},
-	)
-
-	t.Run(
-		"uint",
-		func(t *testing.T) {
-			t.Parallel()
-			testLoopUint(t)
-		},
-	)
+	testLoopInt(t)
+	testLoopUint(t)
+	testLoopSpanInt(t)
+	testLoopSpanUint(t)
+	testLoopFloatU16(t)
 }
 
 func testLoopInt(t *testing.T) {
 	const levels = 3
 
-	quantity := uint64(0)
-
-	expected := make([]int8, levels)
-
-	for id := range expected {
-		expected[id] = math.MinInt8
-	}
+	incrementor, err := incrementor.New[int8](levels, math.MinInt8, math.MaxInt8)
+	require.NoError(t, err)
 
 	do := func(args ...int8) bool {
-		quantity = testArgs(t, quantity, expected, args...)
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
 		return false
 	}
 
-	stop := loop[int64](levels, do)
+	stop, err := loop[int64](levels, nil, do)
+	require.NoError(t, err)
 	require.False(t, stop)
 }
 
 func testLoopUint(t *testing.T) {
 	const levels = 3
 
-	quantity := uint64(0)
-
-	expected := make([]uint8, levels)
-
-	for id := range expected {
-		expected[id] = 0
-	}
+	incrementor, err := incrementor.New[uint8](levels, 0, math.MaxUint8)
+	require.NoError(t, err)
 
 	do := func(args ...uint8) bool {
-		quantity = testArgs(t, quantity, expected, args...)
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
 		return false
 	}
 
-	stop := loop[int64](levels, do)
+	stop, err := loop[int64](levels, nil, do)
+	require.NoError(t, err)
+	require.False(t, stop)
+}
+
+func testLoopSpanInt(t *testing.T) {
+	const (
+		levels = 3
+		begin  = -1
+		end    = 1
+	)
+
+	incrementor, err := incrementor.New[int8](levels, begin, end)
+	require.NoError(t, err)
+
+	do := func(args ...int8) bool {
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
+		return false
+	}
+
+	span := func() (int64, int64) {
+		return begin, end
+	}
+
+	stop, err := loop(levels, span, do)
+	require.NoError(t, err)
+	require.False(t, stop)
+}
+
+func testLoopSpanUint(t *testing.T) {
+	const (
+		levels = 3
+		begin  = 1
+		end    = 3
+	)
+
+	incrementor, err := incrementor.New[uint8](levels, begin, end)
+	require.NoError(t, err)
+
+	do := func(args ...uint8) bool {
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
+		return false
+	}
+
+	span := func() (int64, int64) {
+		return begin, end
+	}
+
+	stop, err := loop(levels, span, do)
+	require.NoError(t, err)
+	require.False(t, stop)
+}
+
+func testLoopFloatU16(t *testing.T) {
+	const levels = 1
+
+	incrementor, err := incrementor.New[uint16](levels, 0, math.MaxUint16)
+	require.NoError(t, err)
+
+	do := func(args ...uint16) bool {
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
+		return false
+	}
+
+	stop, err := loop[float64](levels, nil, do)
+	require.NoError(t, err)
+	require.False(t, stop)
+}
+
+func TestLoopFloatU32(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	const levels = 1
+
+	incrementor, err := incrementor.New[uint32](levels, 0, math.MaxUint32)
+	require.NoError(t, err)
+
+	do := func(args ...uint32) bool {
+		// duplication of conditions is done for performance reasons
+		if err := incrementor.Test(args...); err != nil {
+			require.NoError(t, err)
+		}
+
+		return false
+	}
+
+	stop, err := loop[float64](levels, nil, do)
+	require.NoError(t, err)
 	require.False(t, stop)
 }
 
@@ -448,10 +397,12 @@ func TestLoopZero(t *testing.T) {
 		return false
 	}
 
-	stop := loop[int64](0, do, 1)
+	stop, err := loop[int64](0, nil, do, 1)
+	require.NoError(t, err)
 	require.False(t, stop)
 
-	stop = loop[int64](0, doU, 1)
+	stop, err = loop[int64](0, nil, doU, 1)
+	require.NoError(t, err)
 	require.False(t, stop)
 }
 
@@ -472,11 +423,13 @@ func TestLoopStop(t *testing.T) {
 		return args[1] == 1
 	}
 
-	stop := loop[int64](2, do)
+	stop, err := loop[int64](2, nil, do)
+	require.NoError(t, err)
 	require.True(t, stop)
 	require.Equal(t, expected, actual)
 
-	stop = loop[int64](2, doU)
+	stop, err = loop[int64](2, nil, doU)
+	require.NoError(t, err)
 	require.True(t, stop)
 	require.Equal(t, expectedU, actualU)
 }
@@ -490,7 +443,7 @@ func BenchmarkDo(b *testing.B) {
 	}
 
 	var (
-		result Result[int8, int8, int64]
+		result types.Result[int8, int8, int64]
 		err    error
 	)
 
@@ -518,7 +471,7 @@ func BenchmarkLoop(b *testing.B) {
 	}
 
 	for range b.N {
-		_ = loop[int64](3, do)
+		_, _ = loop[int64](3, nil, do)
 	}
 
 	b.StopTimer()

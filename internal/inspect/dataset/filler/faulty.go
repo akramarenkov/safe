@@ -3,7 +3,7 @@ package filler
 import (
 	"errors"
 
-	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
 var (
@@ -11,10 +11,10 @@ var (
 )
 
 // Filler that always returns an error.
-type Faulty[Type inspect.EightBits] struct{}
+type Faulty[Type types.USI8] struct{}
 
 // Creates filler that always returns an error.
-func NewFaulty[Type inspect.EightBits]() *Faulty[Type] {
+func NewFaulty[Type types.USI8]() *Faulty[Type] {
 	return &Faulty[Type]{}
 }
 

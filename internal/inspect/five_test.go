@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/consts"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -228,7 +229,7 @@ func BenchmarkDo5(b *testing.B) {
 	}
 
 	var (
-		result Result[int8, int8, int64]
+		result types.Result[int8, int8, int64]
 		err    error
 	)
 

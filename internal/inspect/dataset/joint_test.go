@@ -8,6 +8,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -94,7 +95,7 @@ func testReference(args ...int64) (int64, error) {
 	return reference, nil
 }
 
-func testReference8[Type inspect.EightBits](args ...Type) int64 {
+func testReference8[Type types.USI8](args ...Type) int64 {
 	reference := int64(0)
 
 	for _, arg := range args {

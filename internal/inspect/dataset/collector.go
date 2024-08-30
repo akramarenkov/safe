@@ -8,10 +8,11 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
 // Options of collecting. A reference function and writer must be specified.
-type Collector[Type inspect.EightBits] struct {
+type Collector[Type types.USI8] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
 	// Quantity of dataset items which not produce overflow of inspected function
@@ -31,8 +32,9 @@ type Collector[Type inspect.EightBits] struct {
 	max int64
 
 	// Arguments buffers, used to decrease allocations
-	args   []Type
-	args64 []int64
+	args      []Type
+	args64    []int64
+	args64Dup []int64
 
 	// Dataset item buffer, used to decrease allocations
 	item []byte
@@ -82,10 +84,11 @@ func (clctr Collector[Type]) Collect() error {
 
 	clctr = clctr.normalize()
 
-	clctr.min, clctr.max = inspect.PickUpRange[Type, int64]()
+	clctr.min, clctr.max = inspect.PickUpSpan[Type, int64]()
 
 	clctr.args = make([]Type, clctr.ArgsQuantity)
 	clctr.args64 = make([]int64, clctr.ArgsQuantity)
+	clctr.args64Dup = make([]int64, clctr.ArgsQuantity)
 	clctr.item = make([]byte, calcMaxItemLength(clctr.ArgsQuantity))
 
 	return clctr.main()
@@ -131,7 +134,7 @@ func (clctr *Collector[Type]) isCollected() bool {
 }
 
 func (clctr *Collector[Type]) isUseArgs() bool {
-	reference, _ := clctr.Reference(clctr.args64...)
+	reference, _ := clctr.Reference(clctr.dupArgs64()...)
 
 	if reference > clctr.max || reference < clctr.min {
 		if clctr.OverflowedItemsQuantity <= 0 {
@@ -153,11 +156,17 @@ func (clctr *Collector[Type]) isUseArgs() bool {
 }
 
 func (clctr *Collector[Type]) writeItem() error {
-	return writeItem(clctr.Writer, clctr.item, clctr.Reference, clctr.args, clctr.args64)
+	return writeItem(clctr.Writer, clctr.item, clctr.Reference, clctr.args, clctr.dupArgs64())
+}
+
+// Protection against changes args64 from the reference function.
+func (clctr *Collector[Type]) dupArgs64() []int64 {
+	copy(clctr.args64Dup, clctr.args64)
+	return clctr.args64Dup
 }
 
 // Writes dataset item to specified writer.
-func WriteItem[Type inspect.EightBits](
+func WriteItem[Type types.USI8](
 	writer io.Writer,
 	reference Reference,
 	args ...Type,
@@ -173,7 +182,7 @@ func WriteItem[Type inspect.EightBits](
 	return writeItem(writer, buffer, reference, args, args64)
 }
 
-func writeItem[Type inspect.EightBits](
+func writeItem[Type types.USI8](
 	writer io.Writer,
 	buffer []byte,
 	reference Reference,

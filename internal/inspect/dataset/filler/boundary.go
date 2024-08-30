@@ -3,13 +3,13 @@ package filler
 import (
 	"math"
 
-	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
 // Fills arguments with values ​​equal to and close to the minimum and maximum values
 // ​​for the used type.
-type Boundary[Type inspect.EightBits] struct {
+type Boundary[Type types.USI8] struct {
 	boundaries []Type
 	completed  bool
 	indices    []int
@@ -17,7 +17,7 @@ type Boundary[Type inspect.EightBits] struct {
 
 // Creates filler that fill arguments with values ​​equal to and close to the minimum and
 // maximum values ​for the used type.
-func NewBoundary[Type inspect.EightBits]() *Boundary[Type] {
+func NewBoundary[Type types.USI8]() *Boundary[Type] {
 	bnd := &Boundary[Type]{
 		boundaries: getBoundaries[Type](),
 	}
@@ -85,7 +85,7 @@ func (bnd *Boundary[Type]) Reset() {
 	bnd.completed = false
 }
 
-func getBoundaries[Type inspect.EightBits]() []Type {
+func getBoundaries[Type types.USI8]() []Type {
 	const (
 		one = 1
 		two = 2

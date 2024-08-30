@@ -1,32 +1,32 @@
-package inspect
+package types
 
 // Constraints by 8-bit integer types.
-type EightBits interface {
+type USI8 interface {
 	~int8 | ~uint8
 }
 
 // Constraints by 16-bit integer types.
-type SixteenBits interface {
+type USI16 interface {
 	~int16 | ~uint16
 }
 
 // Constraints by 32-bit integer types.
-type ThirtyTwoBits interface {
+type USI32 interface {
 	~int32 | ~uint32
 }
 
 // Constraints by up to 32-bit integer types.
-type UpTo32Bits interface {
-	EightBits | SixteenBits | ThirtyTwoBits
+type UpToUSI32 interface {
+	USI8 | USI16 | USI32
 }
 
-// Constraints by 64-bit integer and floating point types.
-type SixtyFourBits interface {
+// Constraints by 64-bit signed integer and floating point types.
+type SIF64 interface {
 	~int64 | ~float64
 }
 
 // Inspection result.
-type Result[TypeFrom, TypeTo UpTo32Bits, TypeRef SixtyFourBits] struct {
+type Result[TypeFrom, TypeTo UpToUSI32, TypeRef SIF64] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error

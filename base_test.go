@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -739,7 +740,7 @@ func TestFToI(t *testing.T) {
 }
 
 func testFToI(t *testing.T, addition float64) {
-	effective := func(result inspect.Result[int16, int8, int64]) float64 {
+	effective := func(result types.Result[int16, int8, int64]) float64 {
 		if len(result.Args) == 0 {
 			return 0
 		}

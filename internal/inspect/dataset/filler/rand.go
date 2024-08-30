@@ -5,17 +5,17 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
 // Fills arguments with random values.
-type Rand[Type inspect.EightBits] struct {
+type Rand[Type types.USI8] struct {
 	maxRand *big.Int
 }
 
 // Creates filler that fill arguments with random values.
-func NewRand[Type inspect.EightBits]() *Rand[Type] {
+func NewRand[Type types.USI8]() *Rand[Type] {
 	rnd := &Rand[Type]{
 		maxRand: big.NewInt(math.MaxUint8 + 1),
 	}

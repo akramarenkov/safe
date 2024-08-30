@@ -3,19 +3,20 @@ package inspect
 import (
 	"math"
 
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
 // Picks up maximum and minimum values for specified type.
-func PickUpRange[Type UpTo32Bits, TypeRef SixtyFourBits]() (TypeRef, TypeRef) {
+func PickUpSpan[Type types.UpToUSI32, TypeRef types.SIF64]() (TypeRef, TypeRef) {
 	if is.Signed[Type]() {
-		return pickUpRangeSigned[Type, TypeRef]()
+		return pickUpSpanSigned[Type, TypeRef]()
 	}
 
-	return pickUpRangeUnsigned[Type, TypeRef]()
+	return pickUpSpanUnsigned[Type, TypeRef]()
 }
 
-func pickUpRangeSigned[Type UpTo32Bits, TypeRef SixtyFourBits]() (TypeRef, TypeRef) {
+func pickUpSpanSigned[Type types.UpToUSI32, TypeRef types.SIF64]() (TypeRef, TypeRef) {
 	reference := TypeRef(math.MaxInt32)
 
 	if TypeRef(Type(reference)) == math.MaxInt32 {
@@ -31,7 +32,7 @@ func pickUpRangeSigned[Type UpTo32Bits, TypeRef SixtyFourBits]() (TypeRef, TypeR
 	return math.MinInt8, math.MaxInt8
 }
 
-func pickUpRangeUnsigned[Type UpTo32Bits, TypeRef SixtyFourBits]() (TypeRef, TypeRef) {
+func pickUpSpanUnsigned[Type types.UpToUSI32, TypeRef types.SIF64]() (TypeRef, TypeRef) {
 	reference := TypeRef(math.MaxUint32)
 
 	if TypeRef(Type(reference)) == math.MaxUint32 {

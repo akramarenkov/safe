@@ -844,94 +844,36 @@ func testPow10Diff(t *testing.T) {
 }
 
 func TestPow(t *testing.T) {
-	faults := 0
-	successful := 0
+	opts := inspect.Opts[int32, int32, float64]{
+		LoopsQuantity: 2,
 
-	// Is used int32 because in its value range float64 does not lose the precision of
-	// the integer part and comparison of reference and tested values ​​can be done simply
-	maxInt32 := float64(math.MaxInt32)
-	minInt32 := float64(math.MinInt32)
-
-	for base := int32(math.MinInt8); base <= math.MaxInt8; base++ {
-		for power := int32(math.MinInt8); power <= math.MaxInt8; power++ {
-			reference := math.Pow(float64(base), float64(power))
+		Inspected: func(args ...int32) (int32, error) {
+			return Pow(args[0], args[1])
+		},
+		Reference: func(args ...float64) (float64, error) {
+			reference := math.Pow(args[0], args[1])
 			require.False(t, math.IsNaN(reference))
 
-			// To ensure that overflow conditions are satisfied correctly when
-			// obtaining reference values ​​with non-zero fractional parts and close
-			// to maximum/minimum int32 values, reference values ​​in these areas
-			// are checked separately
-			if reference >= maxInt32-2 && reference <= maxInt32+2 {
-				require.InDelta(t, maxInt32+1, reference, 0)
-
-				// reference > maxInt32 == true
-				require.Greater(t, reference, maxInt32)
-			}
-
-			if reference >= minInt32-2 && reference <= minInt32+2 {
-				require.InDelta(t, minInt32, reference, 0)
-
-				// reference < minInt32 == false
-				require.GreaterOrEqual(t, reference, minInt32)
-			}
-
-			product, err := Pow(base, power)
-
-			// Converting reference to any integer type can and will overflow,
-			// so the comparison is done in float64
-			if reference > maxInt32 || reference < minInt32 {
-				require.Error(
-					t,
-					err,
-					"base: %v, power: %v, product: %v, reference: %f",
-					base,
-					power,
-					product,
-					reference,
-				)
-
-				faults++
-
-				continue
-			}
-
-			successful++
-
-			require.NoError(
-				t,
-				err,
-				"base: %v, power: %v, product: %v, reference: %f",
-				base,
-				power,
-				product,
-				reference,
-			)
-
-			require.Equal(
-				t,
-				int32(reference),
-				product,
-				"base: %v, power: %v, reference: %f",
-				base,
-				power,
-				reference,
-			)
-
-			require.InDelta(
-				t,
-				reference,
-				float64(product),
-				0.5,
-				"base: %v, power: %v, product: %v",
-				base,
-				power,
-				product,
-			)
-		}
+			return reference, nil
+		},
+		Span: func() (float64, float64) {
+			return math.MinInt8, math.MaxInt8
+		},
 	}
 
-	require.NotZero(t, faults)
-	require.NotZero(t, successful)
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
 }
 
 func BenchmarkReference1Args(b *testing.B) {
