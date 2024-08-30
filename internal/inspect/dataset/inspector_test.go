@@ -33,24 +33,11 @@ func TestInspectorIsValid(t *testing.T) {
 }
 
 func TestInspector(t *testing.T) {
-	t.Run(
-		"int",
-		func(t *testing.T) {
-			t.Parallel()
-			TestInspectorInt(t)
-		},
-	)
-
-	t.Run(
-		"uint",
-		func(t *testing.T) {
-			t.Parallel()
-			TestInspectorUint(t)
-		},
-	)
+	testInspectorInt(t)
+	testInspectorUint(t)
 }
 
-func TestInspectorInt(t *testing.T) {
+func testInspectorInt(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := math.MinInt8; first <= math.MaxInt8; first++ {
@@ -79,7 +66,7 @@ func TestInspectorInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestInspectorUint(t *testing.T) {
+func testInspectorUint(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := 0; first <= math.MaxUint8; first++ {
@@ -114,11 +101,11 @@ func TestInspectorError(t *testing.T) {
 	_, err := inspector.Inspect()
 	require.Error(t, err)
 
-	TestInspectorConvertErrorInt(t)
-	TestInspectorConvertErrorUint(t)
+	testInspectorConvertErrorInt(t)
+	testInspectorConvertErrorUint(t)
 }
 
-func TestInspectorConvertErrorInt(t *testing.T) {
+func testInspectorConvertErrorInt(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	inspector := Inspector[int8]{
@@ -151,7 +138,7 @@ func TestInspectorConvertErrorInt(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestInspectorConvertErrorUint(t *testing.T) {
+func testInspectorConvertErrorUint(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	inspector := Inspector[uint8]{
