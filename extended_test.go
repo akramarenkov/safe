@@ -46,6 +46,7 @@ func testAddMInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 
 	opts = inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
@@ -71,6 +72,7 @@ func testAddMInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 
 	opts = inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
@@ -96,6 +98,7 @@ func testAddMInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testAddMUint(t *testing.T) {
@@ -123,6 +126,7 @@ func testAddMUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 
 	opts = inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
@@ -148,6 +152,7 @@ func testAddMUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 
 	opts = inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
@@ -173,6 +178,7 @@ func testAddMUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddMDataSet(t *testing.T) {
@@ -193,6 +199,7 @@ func TestAddMDataSet(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddMDataSetUnmodify(t *testing.T) {
@@ -213,6 +220,7 @@ func TestAddMDataSetUnmodify(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddMCollectDataSet(t *testing.T) {
@@ -284,6 +292,7 @@ func testAddM4ArgsInt(t *testing.T, unmodify bool) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testAddM4ArgsUint(t *testing.T, unmodify bool) {
@@ -309,6 +318,7 @@ func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddM5Args(t *testing.T) {
@@ -354,6 +364,7 @@ func testAddM5ArgsInt(t *testing.T, unmodify bool) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testAddM5ArgsUint(t *testing.T, unmodify bool) {
@@ -379,6 +390,7 @@ func testAddM5ArgsUint(t *testing.T, unmodify bool) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAdd3(t *testing.T) {
@@ -411,6 +423,7 @@ func testAdd3Int(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testAdd3Uint(t *testing.T) {
@@ -438,6 +451,7 @@ func testAdd3Uint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddUM(t *testing.T) {
@@ -466,6 +480,7 @@ func TestAddUM(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestSub3(t *testing.T) {
@@ -498,6 +513,7 @@ func testSub3Int(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testSub3Uint(t *testing.T) {
@@ -525,6 +541,7 @@ func testSub3Uint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestSubUM(t *testing.T) {
@@ -556,6 +573,7 @@ func TestSubUM(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestMulM(t *testing.T) {
@@ -589,6 +607,7 @@ func testMulMInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testMulMUint(t *testing.T) {
@@ -614,6 +633,7 @@ func testMulMUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestCmpMulM(t *testing.T) {
@@ -653,6 +673,7 @@ func testMulTInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testMulTUint(t *testing.T) {
@@ -680,6 +701,7 @@ func testMulTUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestMulUM(t *testing.T) {
@@ -708,6 +730,7 @@ func TestMulUM(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestDivM(t *testing.T) {
@@ -874,6 +897,7 @@ func TestPow(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func BenchmarkReference1Args(b *testing.B) {

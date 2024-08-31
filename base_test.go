@@ -48,6 +48,7 @@ func testAddInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testAddUint(t *testing.T) {
@@ -75,6 +76,7 @@ func testAddUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestAddU(t *testing.T) {
@@ -102,6 +104,7 @@ func TestAddU(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestSub(t *testing.T) {
@@ -134,6 +137,7 @@ func testSubInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testSubUint(t *testing.T) {
@@ -161,6 +165,7 @@ func testSubUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestSubU(t *testing.T) {
@@ -188,6 +193,7 @@ func TestSubU(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestMul(t *testing.T) {
@@ -220,6 +226,7 @@ func testMulInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testMulUint(t *testing.T) {
@@ -247,6 +254,7 @@ func testMulUint(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestDiv(t *testing.T) {
@@ -348,6 +356,7 @@ func testNegateInt(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testNegateUint(t *testing.T) {
@@ -400,6 +409,7 @@ func TestNegateS(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestIToI(t *testing.T) {
@@ -437,6 +447,7 @@ func testIToIU8ToS8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIS8ToU8(t *testing.T) {
@@ -464,6 +475,7 @@ func testIToIS8ToU8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIS8ToU16(t *testing.T) {
@@ -491,6 +503,7 @@ func testIToIS8ToU16(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIU16ToS8(t *testing.T) {
@@ -518,6 +531,7 @@ func testIToIU16ToS8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIU16ToU8(t *testing.T) {
@@ -545,6 +559,7 @@ func testIToIU16ToU8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIS16ToS8(t *testing.T) {
@@ -572,6 +587,7 @@ func testIToIS16ToS8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testIToIS16ToU8(t *testing.T) {
@@ -599,6 +615,7 @@ func testIToIS16ToU8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestUToS(t *testing.T) {
@@ -631,6 +648,7 @@ func testUToS8To8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func testUToS16To8(t *testing.T) {
@@ -658,6 +676,7 @@ func testUToS16To8(t *testing.T) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestIToF(t *testing.T) {
@@ -782,6 +801,7 @@ func testFToI(t *testing.T, addition float64) {
 	)
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }
 
 func TestFToISpecial(t *testing.T) {
