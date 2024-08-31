@@ -13,6 +13,34 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals
 	1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
 }
 
+// Adds three integers and determines whether an overflow has occurred or not.
+//
+// In case of overflow, an error is returned.
+func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
+	interim, err := Add(first, second)
+	if err == nil {
+		sum, err := Add(interim, third)
+		if err == nil {
+			return sum, nil
+		}
+	}
+
+	interim, err = Add(first, third)
+	if err == nil {
+		sum, err := Add(interim, second)
+		if err == nil {
+			return sum, nil
+		}
+	}
+
+	interim, err = Add(second, third)
+	if err == nil {
+		return Add(first, interim)
+	}
+
+	return 0, ErrOverflow
+}
+
 // Adds up multiple integers and determines whether an overflow has occurred or not.
 //
 // The function sorts and modifies the input arguments. By default, a copy of the input
@@ -86,36 +114,6 @@ func sortAddM[Type constraints.Integer](addends []Type) {
 			addends[second], addends[second-1] = addends[second-1], addends[second]
 		}
 	}
-}
-
-// Adds three integers and determines whether an overflow has occurred or not.
-//
-// Faster than the AddM function.
-//
-// In case of overflow, an error is returned.
-func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
-	interim, err := Add(first, second)
-	if err == nil {
-		sum, err := Add(interim, third)
-		if err == nil {
-			return sum, nil
-		}
-	}
-
-	interim, err = Add(first, third)
-	if err == nil {
-		sum, err := Add(interim, second)
-		if err == nil {
-			return sum, nil
-		}
-	}
-
-	interim, err = Add(second, third)
-	if err == nil {
-		return Add(first, interim)
-	}
-
-	return 0, ErrOverflow
 }
 
 // Adds up multiple unsigned integers and determines whether an overflow has occurred or
