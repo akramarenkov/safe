@@ -79,3 +79,48 @@ func TestBenchSpanAddUM(*testing.T) {
 		}
 	}
 }
+
+func benchSpanSub3() []int8 {
+	return []int8{127, 126, -128, -127}
+}
+
+func TestBenchSpanSub3(*testing.T) {
+	span := benchSpanSub3()
+
+	for _, first := range span {
+		for _, second := range span {
+			for _, third := range span {
+				_, _ = Sub3(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanSubUM() []uint8 {
+	return []uint8{255, 1, 2, 3}
+}
+
+func TestBenchSpanSubUM(*testing.T) {
+	span := benchSpanSubUM()
+
+	for _, first := range span {
+		for _, second := range span {
+			for _, third := range span {
+				for _, fourth := range span {
+					for _, fifth := range span {
+						for _, sixth := range span {
+							_, _ = SubUM(
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}

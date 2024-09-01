@@ -1383,40 +1383,14 @@ func BenchmarkAddUMSpan(b *testing.B) {
 	require.NotNil(b, sum)
 }
 
-func BenchmarkSubReference3Args(b *testing.B) {
+func BenchmarkSub3Reference(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					diff = first - second - third
-				}
-			}
-		}
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
-}
-
-func BenchmarkSubReference4Args(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := 0
+	b.ResetTimer()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						diff = first - second - third - fourth
-					}
-				}
-			}
-		}
+		diff = b.N - 2 - 1
 	}
 
 	b.StopTimer()
@@ -1429,11 +1403,61 @@ func BenchmarkSub3(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := 0
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					diff, _ = Sub3(first, second, third)
+		diff, _ = Sub3(b.N, 2, 1)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSub3SpanIdle(b *testing.B) {
+	// one, two, three and require is used to prevent compiler optimizations
+	one := int8(0)
+	two := int8(0)
+	three := int8(0)
+
+	span := benchSpanSub3()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					one = first
+					two = second
+					three = third
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+	require.NotNil(b, three)
+}
+
+func BenchmarkSub3SpanReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := int8(0)
+
+	span := benchSpanSub3()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					diff = first - second - third
 				}
 			}
 		}
@@ -1445,13 +1469,21 @@ func BenchmarkSub3(b *testing.B) {
 	require.NotNil(b, diff)
 }
 
-func BenchmarkSubUM1Args(b *testing.B) {
+func BenchmarkSub3Span(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
-	diff := uint(0)
+	diff := int8(0)
+
+	span := benchSpanSub3()
+
+	b.ResetTimer()
 
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			diff, _ = SubUM(first)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					diff, _ = Sub3(first, second, third)
+				}
+			}
 		}
 	}
 
@@ -1465,9 +1497,29 @@ func BenchmarkSubUM2Args(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
 	diff := uint(0)
 
+	b.ResetTimer()
+
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
+		diff, _ = SubUM(uint(b.N), 1)
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, diff)
+}
+
+func BenchmarkSubUM2ArgsSpan(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := uint8(0)
+
+	span := benchSpanSubU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
 				diff, _ = SubUM(first, second)
 			}
 		}
@@ -1479,15 +1531,70 @@ func BenchmarkSubUM2Args(b *testing.B) {
 	require.NotNil(b, diff)
 }
 
-func BenchmarkSubUM3Args(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := uint(0)
+func BenchmarkSubUMSpanIdle(b *testing.B) {
+	// one, two ... six and require is used to prevent compiler optimizations
+	one := uint8(0)
+	two := uint8(0)
+	three := uint8(0)
+	four := uint8(0)
+	five := uint8(0)
+	six := uint8(0)
+
+	span := benchSpanSubUM()
+
+	b.ResetTimer()
 
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
-				for third := benchMinUint; third <= benchMaxUint; third++ {
-					diff, _ = SubUM(first, second, third)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								one = first
+								two = second
+								three = third
+								four = fourth
+								five = fifth
+								six = sixth
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	b.StopTimer()
+
+	// meaningless check
+	require.NotNil(b, one)
+	require.NotNil(b, two)
+	require.NotNil(b, three)
+	require.NotNil(b, four)
+	require.NotNil(b, five)
+	require.NotNil(b, six)
+}
+
+func BenchmarkSubUMSpanReference(b *testing.B) {
+	// diff and require is used to prevent compiler optimizations
+	diff := uint8(0)
+
+	span := benchSpanSubUM()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								diff = first + second + third + fourth + fifth + sixth
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1499,16 +1606,31 @@ func BenchmarkSubUM3Args(b *testing.B) {
 	require.NotNil(b, diff)
 }
 
-func BenchmarkSubUM4Args(b *testing.B) {
+func BenchmarkSubUMSpan(b *testing.B) {
 	// diff and require is used to prevent compiler optimizations
-	diff := uint(0)
+	diff := uint8(0)
+
+	span := benchSpanSubUM()
+
+	b.ResetTimer()
 
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
-				for third := benchMinUint; third <= benchMaxUint; third++ {
-					for fourth := benchMinUint; fourth <= benchMaxUint; fourth++ {
-						diff, _ = SubUM(first, second, third, fourth)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								diff, _ = SubUM(
+									first,
+									second,
+									third,
+									fourth,
+									fifth,
+									sixth,
+								)
+							}
+						}
 					}
 				}
 			}
