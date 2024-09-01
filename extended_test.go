@@ -901,217 +901,103 @@ func TestPow(t *testing.T) {
 }
 
 func BenchmarkAdd3Reference(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
+	result := int8(0)
 
-	b.ResetTimer()
+	span := benchSpanAdd3()
 
 	for range b.N {
-		sum = b.N + b.N + 1
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					result = first + second + third
+				}
+			}
+		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAdd3(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
+	result := int8(0)
 
-	b.ResetTimer()
-
-	for range b.N {
-		sum, _ = Add3(b.N, b.N, 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAdd3SpanIdle(b *testing.B) {
 	span := benchSpanAdd3()
-
-	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
 				for _, third := range span {
-					_ = first
-					_ = second
-					_ = third
-				}
-			}
-		}
-	}
-}
-
-func BenchmarkAdd3SpanReference(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
-
-	span := benchSpanAdd3()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					sum = first + second + third
+					result, _ = Add3(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAdd3Span(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
-
-	span := benchSpanAdd3()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					sum, _ = Add3(first, second, third)
-				}
-			}
-		}
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAddM2Args(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
-
-	b.ResetTimer()
-
-	for range b.N {
-		sum, _ = AddM(false, b.N, 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAddM2ArgsSpan(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
+	result := int8(0)
 
 	span := benchSpanAdd()
 
-	b.ResetTimer()
-
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
-				sum, _ = AddM(false, first, second)
+				result, _ = AddM(false, first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAddM3Args(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
-
-	b.ResetTimer()
-
-	for range b.N {
-		sum, _ = AddM(false, b.N, b.N, 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAddM3ArgsSpan(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
+	result := int8(0)
 
 	span := benchSpanAdd3()
 
-	b.ResetTimer()
-
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
 				for _, third := range span {
-					sum, _ = AddM(false, first, second, third)
+					result, _ = AddM(false, first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAddMReference(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
+	result := int8(0)
 
-	b.ResetTimer()
+	span := benchSpanAddM()
 
 	for range b.N {
-		sum = b.N + b.N + b.N + b.N + b.N + 1
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								result = first + second + third + fourth + fifth + sixth
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAddM(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := 0
+	result := int8(0)
 
-	b.ResetTimer()
-
-	for range b.N {
-		sum, _ = AddM(false, b.N, b.N, b.N, b.N, b.N, 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAddMSpanIdle(b *testing.B) {
 	span := benchSpanAddM()
-
-	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range span {
@@ -1120,67 +1006,7 @@ func BenchmarkAddMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								_ = first
-								_ = second
-								_ = third
-								_ = fourth
-								_ = fifth
-								_ = sixth
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func BenchmarkAddMSpanReference(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
-
-	span := benchSpanAddM()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					for _, fourth := range span {
-						for _, fifth := range span {
-							for _, sixth := range span {
-								sum = first + second + third + fourth + fifth + sixth
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAddMSpan(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := int8(0)
-
-	span := benchSpanAddM()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					for _, fourth := range span {
-						for _, fifth := range span {
-							for _, sixth := range span {
-								sum, _ = AddM(
+								result, _ = AddM(
 									false,
 									first,
 									second,
@@ -1197,54 +1023,29 @@ func BenchmarkAddMSpan(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkAddUM2Args(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := uint(0)
-
-	b.ResetTimer()
-
-	for range b.N {
-		sum, _ = AddUM(uint(b.N), 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
-}
-
-func BenchmarkAddUM2ArgsSpan(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := uint8(0)
+	result := uint8(0)
 
 	span := benchSpanAddU()
 
-	b.ResetTimer()
-
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
-				sum, _ = AddUM(first, second)
+				result, _ = AddUM(first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
-func BenchmarkAddUMSpanIdle(b *testing.B) {
-	span := benchSpanAddUM()
+func BenchmarkAddUMReference(b *testing.B) {
+	result := uint8(0)
 
-	b.ResetTimer()
+	span := benchSpanAddUM()
 
 	for range b.N {
 		for _, first := range span {
@@ -1253,37 +1054,7 @@ func BenchmarkAddUMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								_ = first
-								_ = second
-								_ = third
-								_ = fourth
-								_ = fifth
-								_ = sixth
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func BenchmarkAddUMSpanReference(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := uint8(0)
-
-	span := benchSpanAddUM()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					for _, fourth := range span {
-						for _, fifth := range span {
-							for _, sixth := range span {
-								sum = first + second + third + fourth + fifth + sixth
+								result = first + second + third + fourth + fifth + sixth
 							}
 						}
 					}
@@ -1292,19 +1063,13 @@ func BenchmarkAddUMSpanReference(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
-func BenchmarkAddUMSpan(b *testing.B) {
-	// sum and require is used to prevent compiler optimizations
-	sum := uint8(0)
+func BenchmarkAddUM(b *testing.B) {
+	result := uint8(0)
 
 	span := benchSpanAddUM()
-
-	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range span {
@@ -1313,7 +1078,7 @@ func BenchmarkAddUMSpan(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								sum, _ = AddUM(
+								result, _ = AddUM(
 									first,
 									second,
 									third,
@@ -1329,152 +1094,65 @@ func BenchmarkAddUMSpan(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, sum)
+	require.NotNil(b, result)
 }
 
 func BenchmarkSub3Reference(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := 0
+	result := int8(0)
 
-	b.ResetTimer()
+	span := benchSpanSub3()
 
 	for range b.N {
-		diff = b.N - 2 - 1
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					result = first - second - third
+				}
+			}
+		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
+	require.NotNil(b, result)
 }
 
 func BenchmarkSub3(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := 0
+	result := int8(0)
 
-	b.ResetTimer()
-
-	for range b.N {
-		diff, _ = Sub3(b.N, 2, 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
-}
-
-func BenchmarkSub3SpanIdle(b *testing.B) {
 	span := benchSpanSub3()
-
-	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
 				for _, third := range span {
-					_ = first
-					_ = second
-					_ = third
-				}
-			}
-		}
-	}
-}
-
-func BenchmarkSub3SpanReference(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := int8(0)
-
-	span := benchSpanSub3()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					diff = first - second - third
+					result, _ = Sub3(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
-}
-
-func BenchmarkSub3Span(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := int8(0)
-
-	span := benchSpanSub3()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					diff, _ = Sub3(first, second, third)
-				}
-			}
-		}
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
+	require.NotNil(b, result)
 }
 
 func BenchmarkSubUM2Args(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := uint(0)
-
-	b.ResetTimer()
-
-	for range b.N {
-		diff, _ = SubUM(uint(b.N), 1)
-	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
-}
-
-func BenchmarkSubUM2ArgsSpan(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := uint8(0)
+	result := uint8(0)
 
 	span := benchSpanSubU()
 
-	b.ResetTimer()
-
 	for range b.N {
 		for _, first := range span {
 			for _, second := range span {
-				diff, _ = SubUM(first, second)
+				result, _ = SubUM(first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
+	require.NotNil(b, result)
 }
 
-func BenchmarkSubUMSpanIdle(b *testing.B) {
-	span := benchSpanSubUM()
+func BenchmarkSubUMReference(b *testing.B) {
+	result := uint8(0)
 
-	b.ResetTimer()
+	span := benchSpanSubUM()
 
 	for range b.N {
 		for _, first := range span {
@@ -1483,37 +1161,7 @@ func BenchmarkSubUMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								_ = first
-								_ = second
-								_ = third
-								_ = fourth
-								_ = fifth
-								_ = sixth
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func BenchmarkSubUMSpanReference(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := uint8(0)
-
-	span := benchSpanSubUM()
-
-	b.ResetTimer()
-
-	for range b.N {
-		for _, first := range span {
-			for _, second := range span {
-				for _, third := range span {
-					for _, fourth := range span {
-						for _, fifth := range span {
-							for _, sixth := range span {
-								diff = first + second + third + fourth + fifth + sixth
+								result = first + second + third + fourth + fifth + sixth
 							}
 						}
 					}
@@ -1522,19 +1170,13 @@ func BenchmarkSubUMSpanReference(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
+	require.NotNil(b, result)
 }
 
-func BenchmarkSubUMSpan(b *testing.B) {
-	// diff and require is used to prevent compiler optimizations
-	diff := uint8(0)
+func BenchmarkSubUM(b *testing.B) {
+	result := uint8(0)
 
 	span := benchSpanSubUM()
-
-	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range span {
@@ -1543,7 +1185,7 @@ func BenchmarkSubUMSpan(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								diff, _ = SubUM(
+								result, _ = SubUM(
 									first,
 									second,
 									third,
@@ -1559,229 +1201,181 @@ func BenchmarkSubUMSpan(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, diff)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulReference3Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					product = first * second * third
+					result = first * second * third
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulReference4Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
 					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						product = first * second * third * fourth
+						result = first * second * third * fourth
 					}
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulM1Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
-			product, _ = MulM(first)
+			result, _ = MulM(first)
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulM2Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
-				product, _ = MulM(first, second)
+				result, _ = MulM(first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulM3Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					product, _ = MulM(first, second, third)
+					result, _ = MulM(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulM4Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
 					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						product, _ = MulM(first, second, third, fourth)
+						result, _ = MulM(first, second, third, fourth)
 					}
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulT(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					product, _ = MulT(first, second, third)
+					result, _ = MulT(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulUM1Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint(0)
+	result := uint(0)
 
 	for range b.N {
 		for first := benchMinUint; first <= benchMaxUint; first++ {
-			product, _ = MulUM(first)
+			result, _ = MulUM(first)
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulUM2Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint(0)
+	result := uint(0)
 
 	for range b.N {
 		for first := benchMinUint; first <= benchMaxUint; first++ {
 			for second := benchMinUint; second <= benchMaxUint; second++ {
-				product, _ = MulUM(first, second)
+				result, _ = MulUM(first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulUM3Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint(0)
+	result := uint(0)
 
 	for range b.N {
 		for first := benchMinUint; first <= benchMaxUint; first++ {
 			for second := benchMinUint; second <= benchMaxUint; second++ {
 				for third := benchMinUint; third <= benchMaxUint; third++ {
-					product, _ = MulUM(first, second, third)
+					result, _ = MulUM(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkMulUM4Args(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint(0)
+	result := uint(0)
 
 	for range b.N {
 		for first := benchMinUint; first <= benchMaxUint; first++ {
 			for second := benchMinUint; second <= benchMaxUint; second++ {
 				for third := benchMinUint; third <= benchMaxUint; third++ {
 					for fourth := benchMinUint; fourth <= benchMaxUint; fourth++ {
-						product, _ = MulUM(first, second, third, fourth)
+						result, _ = MulUM(first, second, third, fourth)
 					}
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivReference3Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
@@ -1791,21 +1385,17 @@ func BenchmarkDivReference3Args(b *testing.B) {
 						continue
 					}
 
-					quotient = first / second / third
+					result = first / second / third
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivReference4Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
@@ -1816,147 +1406,112 @@ func BenchmarkDivReference4Args(b *testing.B) {
 							continue
 						}
 
-						quotient = first / second / third / fourth
+						result = first / second / third / fourth
 					}
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivM1Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
-			quotient, _ = DivM(first)
+			result, _ = DivM(first)
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivM2Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
-				quotient, _ = DivM(first, second)
+				result, _ = DivM(first, second)
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivM3Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
-					quotient, _ = DivM(first, second, third)
+					result, _ = DivM(first, second, third)
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkDivM4Args(b *testing.B) {
-	// quotient and require is used to prevent compiler optimizations
-	quotient := 0
+	result := 0
 
 	for range b.N {
 		for first := benchMinInt; first <= benchMaxInt; first++ {
 			for second := benchMinInt; second <= benchMaxInt; second++ {
 				for third := benchMinInt; third <= benchMaxInt; third++ {
 					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						quotient, _ = DivM(first, second, third, fourth)
+						result, _ = DivM(first, second, third, fourth)
 					}
 				}
 			}
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, quotient)
+	require.NotNil(b, result)
 }
 
 func BenchmarkPow10Reference(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := float64(0)
+	result := float64(0)
 
 	for range b.N {
-		product = math.Pow10(19)
+		result = math.Pow10(19)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkPow10(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint64(0)
+	result := uint64(0)
 
 	for range b.N {
-		product, _ = Pow10[uint64](19)
+		result, _ = Pow10[uint64](19)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkPowReference(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := float64(0)
+	result := float64(0)
 
 	for range b.N {
-		product = math.Pow(14, 14)
+		result = math.Pow(14, 14)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
 
 func BenchmarkPow(b *testing.B) {
-	// product and require is used to prevent compiler optimizations
-	product := uint64(0)
+	result := uint64(0)
 
 	for range b.N {
-		product, _ = Pow(uint64(14), 14)
+		result, _ = Pow(uint64(14), 14)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, product)
+	require.NotNil(b, result)
 }
