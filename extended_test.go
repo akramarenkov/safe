@@ -933,11 +933,6 @@ func BenchmarkAdd3(b *testing.B) {
 }
 
 func BenchmarkAdd3SpanIdle(b *testing.B) {
-	// one, two, three and require is used to prevent compiler optimizations
-	one := int8(0)
-	two := int8(0)
-	three := int8(0)
-
 	span := benchSpanAdd3()
 
 	b.ResetTimer()
@@ -946,20 +941,13 @@ func BenchmarkAdd3SpanIdle(b *testing.B) {
 		for _, first := range span {
 			for _, second := range span {
 				for _, third := range span {
-					one = first
-					two = second
-					three = third
+					_ = first
+					_ = second
+					_ = third
 				}
 			}
 		}
 	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, one)
-	require.NotNil(b, two)
-	require.NotNil(b, three)
 }
 
 func BenchmarkAdd3SpanReference(b *testing.B) {
@@ -1121,14 +1109,6 @@ func BenchmarkAddM(b *testing.B) {
 }
 
 func BenchmarkAddMSpanIdle(b *testing.B) {
-	// one, two ... six and require is used to prevent compiler optimizations
-	one := int8(0)
-	two := int8(0)
-	three := int8(0)
-	four := int8(0)
-	five := int8(0)
-	six := int8(0)
-
 	span := benchSpanAddM()
 
 	b.ResetTimer()
@@ -1140,12 +1120,12 @@ func BenchmarkAddMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								one = first
-								two = second
-								three = third
-								four = fourth
-								five = fifth
-								six = sixth
+								_ = first
+								_ = second
+								_ = third
+								_ = fourth
+								_ = fifth
+								_ = sixth
 							}
 						}
 					}
@@ -1153,16 +1133,6 @@ func BenchmarkAddMSpanIdle(b *testing.B) {
 			}
 		}
 	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, one)
-	require.NotNil(b, two)
-	require.NotNil(b, three)
-	require.NotNil(b, four)
-	require.NotNil(b, five)
-	require.NotNil(b, six)
 }
 
 func BenchmarkAddMSpanReference(b *testing.B) {
@@ -1272,14 +1242,6 @@ func BenchmarkAddUM2ArgsSpan(b *testing.B) {
 }
 
 func BenchmarkAddUMSpanIdle(b *testing.B) {
-	// one, two ... six and require is used to prevent compiler optimizations
-	one := uint8(0)
-	two := uint8(0)
-	three := uint8(0)
-	four := uint8(0)
-	five := uint8(0)
-	six := uint8(0)
-
 	span := benchSpanAddUM()
 
 	b.ResetTimer()
@@ -1291,12 +1253,12 @@ func BenchmarkAddUMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								one = first
-								two = second
-								three = third
-								four = fourth
-								five = fifth
-								six = sixth
+								_ = first
+								_ = second
+								_ = third
+								_ = fourth
+								_ = fifth
+								_ = sixth
 							}
 						}
 					}
@@ -1304,16 +1266,6 @@ func BenchmarkAddUMSpanIdle(b *testing.B) {
 			}
 		}
 	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, one)
-	require.NotNil(b, two)
-	require.NotNil(b, three)
-	require.NotNil(b, four)
-	require.NotNil(b, five)
-	require.NotNil(b, six)
 }
 
 func BenchmarkAddUMSpanReference(b *testing.B) {
@@ -1416,11 +1368,6 @@ func BenchmarkSub3(b *testing.B) {
 }
 
 func BenchmarkSub3SpanIdle(b *testing.B) {
-	// one, two, three and require is used to prevent compiler optimizations
-	one := int8(0)
-	two := int8(0)
-	three := int8(0)
-
 	span := benchSpanSub3()
 
 	b.ResetTimer()
@@ -1429,20 +1376,13 @@ func BenchmarkSub3SpanIdle(b *testing.B) {
 		for _, first := range span {
 			for _, second := range span {
 				for _, third := range span {
-					one = first
-					two = second
-					three = third
+					_ = first
+					_ = second
+					_ = third
 				}
 			}
 		}
 	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, one)
-	require.NotNil(b, two)
-	require.NotNil(b, three)
 }
 
 func BenchmarkSub3SpanReference(b *testing.B) {
@@ -1532,14 +1472,6 @@ func BenchmarkSubUM2ArgsSpan(b *testing.B) {
 }
 
 func BenchmarkSubUMSpanIdle(b *testing.B) {
-	// one, two ... six and require is used to prevent compiler optimizations
-	one := uint8(0)
-	two := uint8(0)
-	three := uint8(0)
-	four := uint8(0)
-	five := uint8(0)
-	six := uint8(0)
-
 	span := benchSpanSubUM()
 
 	b.ResetTimer()
@@ -1551,12 +1483,12 @@ func BenchmarkSubUMSpanIdle(b *testing.B) {
 					for _, fourth := range span {
 						for _, fifth := range span {
 							for _, sixth := range span {
-								one = first
-								two = second
-								three = third
-								four = fourth
-								five = fifth
-								six = sixth
+								_ = first
+								_ = second
+								_ = third
+								_ = fourth
+								_ = fifth
+								_ = sixth
 							}
 						}
 					}
@@ -1564,16 +1496,6 @@ func BenchmarkSubUMSpanIdle(b *testing.B) {
 			}
 		}
 	}
-
-	b.StopTimer()
-
-	// meaningless check
-	require.NotNil(b, one)
-	require.NotNil(b, two)
-	require.NotNil(b, three)
-	require.NotNil(b, four)
-	require.NotNil(b, five)
-	require.NotNil(b, six)
 }
 
 func BenchmarkSubUMSpanReference(b *testing.B) {
