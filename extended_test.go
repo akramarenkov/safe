@@ -1384,13 +1384,31 @@ func BenchmarkMulUM(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkDivReference3Args(b *testing.B) {
-	result := 0
+func BenchmarkDivM2Args(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanDiv()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
+		for _, first := range span {
+			for _, second := range span {
+				result, _ = DivM(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkDivMReference(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanDivM()
+
+	for range b.N {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
 					if second == 0 || third == 0 {
 						continue
 					}
@@ -1404,80 +1422,16 @@ func BenchmarkDivReference3Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkDivReference4Args(b *testing.B) {
-	result := 0
+func BenchmarkDivM(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanDivM()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						if second == 0 || third == 0 || fourth == 0 {
-							continue
-						}
-
-						result = first / second / third / fourth
-					}
-				}
-			}
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkDivM1Args(b *testing.B) {
-	result := 0
-
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			result, _ = DivM(first)
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkDivM2Args(b *testing.B) {
-	result := 0
-
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				result, _ = DivM(first, second)
-			}
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkDivM3Args(b *testing.B) {
-	result := 0
-
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
 					result, _ = DivM(first, second, third)
-				}
-			}
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkDivM4Args(b *testing.B) {
-	result := 0
-
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						result, _ = DivM(first, second, third, fourth)
-					}
 				}
 			}
 		}

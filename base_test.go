@@ -10,11 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	benchMinInt = -10
-	benchMaxInt = 10
-)
-
 func TestAdd(t *testing.T) {
 	testAddInt(t)
 	testAddUint(t)
