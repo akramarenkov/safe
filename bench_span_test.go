@@ -8,125 +8,364 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 )
 
-// For benchmarking with full and more or less uniform coverage.
-func TestBenchSpan(t *testing.T) {
-	// In order not to create a false full coverage in which there are no error checks
+// Benchmark spans used for benchmarking with more or less full and uniform coverage.
+
+// In order not to create a false full coverage in which there are no error checks.
+func testBenchSpanSkip(t *testing.T) {
 	if os.Getenv(consts.EnvEnableBenchSpanTest) == "" {
 		t.SkipNow()
 	}
-
-	testBenchSpanAdd(t)
-	testBenchSpanAddU(t)
-	testBenchSpanSub(t)
-	testBenchSpanSubU(t)
-	testBenchSpanMul(t)
-	testBenchSpanDiv(t)
-	testBenchSpanNegate(t)
-	testBenchSpanNegateS(t)
-	testBenchSpanIToI(t)
-	testBenchSpanUToS(t)
-	testBenchSpanIToF(t)
-	testBenchSpanFToI(t)
-	testBenchSpanAdd3(t)
-	testBenchSpanAddM(t)
-	testBenchSpanAddUM(t)
-	testBenchSpanSub3(t)
-	testBenchSpanSubUM(t)
-	testBenchSpanMul3(t)
-	testBenchSpanMulM(t)
-	testBenchSpanMulUM(t)
-	testBenchSpanDivM(t)
 }
 
-func benchSpanAdd() []int8 {
-	return []int8{127, 126, -128, -127}
+func benchSpanAdd() ([]int8, []int8) {
+	span := []int8{127, 126, -128, -127}
+	return span, span
 }
 
-func testBenchSpanAdd(*testing.T) {
-	span := benchSpanAdd()
+func TestBenchSpanAdd(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2 := benchSpanAdd()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = Add(first, second)
 		}
 	}
 }
 
-func benchSpanAddU() []uint8 {
-	return []uint8{255, 1, 2, 3}
+func benchSpanAddU() ([]uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span
 }
 
-func testBenchSpanAddU(*testing.T) {
-	span := benchSpanAddU()
+func TestBenchSpanAddU(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2 := benchSpanAddU()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = AddU(first, second)
 		}
 	}
 }
 
-func benchSpanSub() []int8 {
-	return []int8{127, 126, -128, -127}
+func benchSpanAdd3() ([]int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127}
+	return span, span, span
 }
 
-func testBenchSpanSub(*testing.T) {
-	span := benchSpanSub()
+func TestBenchSpanAdd3(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2, level3 := benchSpanAdd3()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = Add3(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanAddM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanAddM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanAddM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = AddM(
+								false,
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func benchSpanAddUM() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanAddUM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanAddUM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = AddUM(
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func benchSpanSub() ([]int8, []int8) {
+	span := []int8{127, 126, -128, -127}
+	return span, span
+}
+
+func TestBenchSpanSub(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2 := benchSpanSub()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = Sub(first, second)
 		}
 	}
 }
 
-func benchSpanSubU() []uint8 {
-	return []uint8{255, 1, 2, 3}
+func benchSpanSubU() ([]uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span
 }
 
-func testBenchSpanSubU(*testing.T) {
-	span := benchSpanSubU()
+func TestBenchSpanSubU(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2 := benchSpanSubU()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = SubU(first, second)
 		}
 	}
 }
 
-func benchSpanMul() []int8 {
-	return []int8{0, -128, -128, -1, 127}
+func benchSpanSub3() ([]int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127}
+	return span, span, span
 }
 
-func testBenchSpanMul(*testing.T) {
-	span := benchSpanMul()
+func TestBenchSpanSub3(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2, level3 := benchSpanSub3()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = Sub3(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanSubUM() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanSubUM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanSubUM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = SubUM(
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func benchSpanMul() ([]int8, []int8) {
+	span := []int8{0, -128, -128, -1, 127}
+	return span, span
+}
+
+func TestBenchSpanMul(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2 := benchSpanMul()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = Mul(first, second)
 		}
 	}
 }
 
-func benchSpanDiv() []int8 {
-	return []int8{0, -128, -1, -1, -1, 127}
+func benchSpanMul3() ([]int8, []int8, []int8) {
+	span := []int8{0, -128, -128, -1, 127}
+	return span, span, span
 }
 
-func testBenchSpanDiv(*testing.T) {
-	span := benchSpanDiv()
+func TestBenchSpanMul3(t *testing.T) {
+	testBenchSpanSkip(t)
 
-	for _, first := range span {
-		for _, second := range span {
+	level1, level2, level3 := benchSpanMul3()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = Mul3(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanMulM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
+	span := []int8{0, 2, -128, -1, 3, 1, 1}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanMulM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanMulM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = MulM(
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func benchSpanMulUM() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanMulUM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanMulUM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = MulUM(
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func benchSpanDiv() ([]int8, []int8) {
+	span := []int8{0, -128, -1, -1, -1, 127}
+	return span, span
+}
+
+func TestBenchSpanDiv(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2 := benchSpanDiv()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
 			_, _ = Div(first, second)
 		}
 	}
 }
 
-func benchSpanNegate() ([]int8, []uint8) {
-	return []int8{-128, 0, 1, 2}, []uint8{0, 1, 2}
+func benchSpanDivM() ([]int8, []int8, []int8) {
+	span := []int8{0, -128, -1, -1, -1, 127}
+	return span, span, span
 }
 
-func testBenchSpanNegate(*testing.T) {
+func TestBenchSpanDivM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanDivM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = DivM(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanNegate() ([]int8, []uint8) {
+	signed := []int8{-128, -128, 0, 1, 2, 3}
+	unsigned := []uint8{0, 1, 2, 3}
+
+	return signed, unsigned
+}
+
+func TestBenchSpanNegate(t *testing.T) {
+	testBenchSpanSkip(t)
+
 	signed, unsigned := benchSpanNegate()
 
 	for _, number := range signed {
@@ -138,23 +377,17 @@ func testBenchSpanNegate(*testing.T) {
 	}
 }
 
-func benchSpanNegateS() []int8 {
-	return []int8{-128, -128, 0, 1}
-}
-
-func testBenchSpanNegateS(*testing.T) {
-	span := benchSpanNegateS()
-
-	for _, number := range span {
-		_, _ = NegateS(number)
-	}
-}
-
 func benchSpanIToI() ([]int8, []uint8, []uint16) {
-	return []int8{-2, -1, 1, 2}, []uint8{0, 1, 128, 129}, []uint16{256, 257}
+	s8 := []int8{-2, -1, 1, 2}
+	u8 := []uint8{0, 1, 2, 128, 129, 130, 131}
+	u16 := []uint16{256, 257, 258}
+
+	return s8, u8, u16
 }
 
-func testBenchSpanIToI(*testing.T) {
+func TestBenchSpanIToI(t *testing.T) {
+	testBenchSpanSkip(t)
+
 	s8, u8, u16 := benchSpanIToI()
 
 	for _, number := range s8 {
@@ -170,27 +403,13 @@ func testBenchSpanIToI(*testing.T) {
 	}
 }
 
-func benchSpanUToS() ([]uint8, []uint16) {
-	return []uint8{0, 1, 128, 129}, []uint16{256, 257}
-}
-
-func testBenchSpanUToS(*testing.T) {
-	u8, u16 := benchSpanUToS()
-
-	for _, number := range u8 {
-		_, _ = UToS[int8](number)
-	}
-
-	for _, number := range u16 {
-		_, _ = UToS[int8](number)
-	}
-}
-
 func benchSpanIToF() []int64 {
 	return []int64{1, 2, 9007199254740993, 9007199254740995}
 }
 
-func testBenchSpanIToF(*testing.T) {
+func TestBenchSpanIToF(t *testing.T) {
+	testBenchSpanSkip(t)
+
 	span := benchSpanIToF()
 
 	for _, number := range span {
@@ -213,218 +432,12 @@ func benchSpanFToI() []float64 {
 	return span
 }
 
-func testBenchSpanFToI(*testing.T) {
+func TestBenchSpanFToI(t *testing.T) {
+	testBenchSpanSkip(t)
+
 	span := benchSpanFToI()
 
 	for _, number := range span {
 		_, _ = FToI[int](number)
-	}
-}
-
-func benchSpanAdd3() []int8 {
-	return []int8{127, 126, -128, -127}
-}
-
-func testBenchSpanAdd3(*testing.T) {
-	span := benchSpanAdd3()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				_, _ = Add3(first, second, third)
-			}
-		}
-	}
-}
-
-func benchSpanAddM() []int8 {
-	return []int8{127, 126, -128, -127}
-}
-
-func testBenchSpanAddM(*testing.T) {
-	span := benchSpanAddM()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				for _, fourth := range span {
-					for _, fifth := range span {
-						for _, sixth := range span {
-							_, _ = AddM(
-								false,
-								first,
-								second,
-								third,
-								fourth,
-								fifth,
-								sixth,
-							)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func benchSpanAddUM() []uint8 {
-	return []uint8{255, 1, 2, 3}
-}
-
-func testBenchSpanAddUM(*testing.T) {
-	span := benchSpanAddUM()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				for _, fourth := range span {
-					for _, fifth := range span {
-						for _, sixth := range span {
-							_, _ = AddUM(
-								first,
-								second,
-								third,
-								fourth,
-								fifth,
-								sixth,
-							)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func benchSpanSub3() []int8 {
-	return []int8{127, 126, -128, -127}
-}
-
-func testBenchSpanSub3(*testing.T) {
-	span := benchSpanSub3()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				_, _ = Sub3(first, second, third)
-			}
-		}
-	}
-}
-
-func benchSpanSubUM() []uint8 {
-	return []uint8{255, 1, 2, 3}
-}
-
-func testBenchSpanSubUM(*testing.T) {
-	span := benchSpanSubUM()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				for _, fourth := range span {
-					for _, fifth := range span {
-						for _, sixth := range span {
-							_, _ = SubUM(
-								first,
-								second,
-								third,
-								fourth,
-								fifth,
-								sixth,
-							)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func benchSpanMul3() []int8 {
-	return []int8{0, -128, -128, -1, 127}
-}
-
-func testBenchSpanMul3(*testing.T) {
-	span := benchSpanMul3()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				_, _ = Mul3(first, second, third)
-			}
-		}
-	}
-}
-
-func benchSpanMulM() []int8 {
-	return []int8{0, 2, -128, -1, 3, 1, 1}
-}
-
-func testBenchSpanMulM(*testing.T) {
-	span := benchSpanMulM()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				for _, fourth := range span {
-					for _, fifth := range span {
-						for _, sixth := range span {
-							_, _ = MulM(
-								first,
-								second,
-								third,
-								fourth,
-								fifth,
-								sixth,
-							)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func benchSpanMulUM() []uint8 {
-	return []uint8{255, 1, 2, 3}
-}
-
-func testBenchSpanMulUM(*testing.T) {
-	span := benchSpanMulUM()
-
-	for _, first := range span {
-		for _, second := range span {
-			for _, third := range span {
-				for _, fourth := range span {
-					for _, fifth := range span {
-						for _, sixth := range span {
-							_, _ = MulUM(
-								first,
-								second,
-								third,
-								fourth,
-								fifth,
-								sixth,
-							)
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-func benchSpanDivM() []int8 {
-	return []int8{0, -128, -1, -1, -1, 127}
-}
-
-func testBenchSpanDivM(*testing.T) {
-	span := benchSpanDivM()
-
-	for _, first := range span {
-		for _, second := range span {
-			_, _ = DivM(first, second)
-		}
 	}
 }

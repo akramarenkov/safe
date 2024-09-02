@@ -169,20 +169,6 @@ func Negate[Type constraints.Integer](number Type) (Type, error) {
 	return negated, nil
 }
 
-// Changes the sign of a signed integer and determines whether an overflow has
-// occurred or not.
-//
-// Slightly faster than the Negate function.
-//
-// In case of overflow, an error is returned.
-func NegateS[Type constraints.Signed](number Type) (Type, error) {
-	if is.Min(number) {
-		return 0, ErrOverflow
-	}
-
-	return -number, nil
-}
-
 // Converts an integer of one type to an integer of another type and determines whether
 // an overflow has occurred or not.
 //
@@ -204,30 +190,6 @@ func IToI[TypeTo, TypeFrom constraints.Integer](number TypeFrom) (TypeTo, error)
 	// When converting from a variable with a larger bit width to a variable with a
 	// smaller bit width, multiple overflows are possible
 	reverted := TypeFrom(converted)
-
-	if reverted != number {
-		return 0, ErrOverflow
-	}
-
-	return converted, nil
-}
-
-// Converts an unsigned integer to a signed integer and determines whether an overflow
-// has occurred or not.
-//
-// Slightly faster than the IToI function.
-//
-// In case of overflow, an error is returned.
-func UToS[Sgn constraints.Signed, Uns constraints.Unsigned](number Uns) (Sgn, error) {
-	converted := Sgn(number)
-
-	if converted < 0 {
-		return 0, ErrOverflow
-	}
-
-	// When converting from a variable with a larger bit width to a variable with a
-	// smaller bit width, multiple overflows are possible
-	reverted := Uns(converted)
 
 	if reverted != number {
 		return 0, ErrOverflow
