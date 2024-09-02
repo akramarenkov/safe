@@ -643,17 +643,17 @@ func TestCmpMulM(t *testing.T) {
 	require.Equal(t, []int{-1, -5, 0, 15, 27}, factors)
 }
 
-func TestMulT(t *testing.T) {
-	testMulTInt(t)
-	testMulTUint(t)
+func TestMul3(t *testing.T) {
+	testMul3Int(t)
+	testMul3Uint(t)
 }
 
-func testMulTInt(t *testing.T) {
+func testMul3Int(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return MulT(args[0], args[1], args[2])
+			return Mul3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
@@ -676,12 +676,12 @@ func testMulTInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulTUint(t *testing.T) {
+func testMul3Uint(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return MulT(args[0], args[1], args[2])
+			return Mul3(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
@@ -1204,13 +1204,15 @@ func BenchmarkSubUM(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulReference3Args(b *testing.B) {
-	result := 0
+func BenchmarkMul3Reference(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanMul3()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
 					result = first * second * third
 				}
 			}
@@ -1220,16 +1222,16 @@ func BenchmarkMulReference3Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulReference4Args(b *testing.B) {
-	result := 0
+func BenchmarkMul3(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanMul3()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						result = first * second * third * fourth
-					}
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					result, _ = Mul3(first, second, third)
 				}
 			}
 		}
@@ -1238,24 +1240,14 @@ func BenchmarkMulReference4Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulM1Args(b *testing.B) {
-	result := 0
-
-	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			result, _ = MulM(first)
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
 func BenchmarkMulM2Args(b *testing.B) {
-	result := 0
+	result := int8(0)
+
+	span := benchSpanMul()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
+		for _, first := range span {
+			for _, second := range span {
 				result, _ = MulM(first, second)
 			}
 		}
@@ -1265,12 +1257,14 @@ func BenchmarkMulM2Args(b *testing.B) {
 }
 
 func BenchmarkMulM3Args(b *testing.B) {
-	result := 0
+	result := int8(0)
+
+	span := benchSpanMul3()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
 					result, _ = MulM(first, second, third)
 				}
 			}
@@ -1280,15 +1274,21 @@ func BenchmarkMulM3Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulM4Args(b *testing.B) {
-	result := 0
+func BenchmarkMulMReference(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanMulM()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					for fourth := benchMinInt; fourth <= benchMaxInt; fourth++ {
-						result, _ = MulM(first, second, third, fourth)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								result = first * second * third * fourth * fifth * sixth
+							}
+						}
 					}
 				}
 			}
@@ -1298,14 +1298,29 @@ func BenchmarkMulM4Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulT(b *testing.B) {
-	result := 0
+func BenchmarkMulM(b *testing.B) {
+	result := int8(0)
+
+	span := benchSpanMulM()
 
 	for range b.N {
-		for first := benchMinInt; first <= benchMaxInt; first++ {
-			for second := benchMinInt; second <= benchMaxInt; second++ {
-				for third := benchMinInt; third <= benchMaxInt; third++ {
-					result, _ = MulT(first, second, third)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								result, _ = MulM(
+									first,
+									second,
+									third,
+									fourth,
+									fifth,
+									sixth,
+								)
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1314,40 +1329,22 @@ func BenchmarkMulT(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulUM1Args(b *testing.B) {
-	result := uint(0)
+func BenchmarkMulUMReference(b *testing.B) {
+	result := uint8(0)
+
+	span := benchSpanMulUM()
 
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			result, _ = MulUM(first)
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkMulUM2Args(b *testing.B) {
-	result := uint(0)
-
-	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
-				result, _ = MulUM(first, second)
-			}
-		}
-	}
-
-	require.NotNil(b, result)
-}
-
-func BenchmarkMulUM3Args(b *testing.B) {
-	result := uint(0)
-
-	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
-				for third := benchMinUint; third <= benchMaxUint; third++ {
-					result, _ = MulUM(first, second, third)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								result = first * second * third * fourth * fifth * sixth
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1356,15 +1353,28 @@ func BenchmarkMulUM3Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulUM4Args(b *testing.B) {
-	result := uint(0)
+func BenchmarkMulUM(b *testing.B) {
+	result := uint8(0)
+
+	span := benchSpanMulUM()
 
 	for range b.N {
-		for first := benchMinUint; first <= benchMaxUint; first++ {
-			for second := benchMinUint; second <= benchMaxUint; second++ {
-				for third := benchMinUint; third <= benchMaxUint; third++ {
-					for fourth := benchMinUint; fourth <= benchMaxUint; fourth++ {
-						result, _ = MulUM(first, second, third, fourth)
+		for _, first := range span {
+			for _, second := range span {
+				for _, third := range span {
+					for _, fourth := range span {
+						for _, fifth := range span {
+							for _, sixth := range span {
+								result, _ = MulUM(
+									first,
+									second,
+									third,
+									fourth,
+									fifth,
+									sixth,
+								)
+							}
+						}
 					}
 				}
 			}

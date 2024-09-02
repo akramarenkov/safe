@@ -13,9 +13,6 @@ import (
 const (
 	benchMinInt = -10
 	benchMaxInt = 10
-
-	benchMinUint = uint(0)
-	benchMaxUint = uint(20)
 )
 
 func TestAdd(t *testing.T) {

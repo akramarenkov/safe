@@ -191,9 +191,37 @@ func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 	return diff, nil
 }
 
+// Multiplies three integers and determines whether an overflow has occurred or not.
+//
+// In case of overflow, an error is returned.
+func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
+	interim, err := Mul(first, second)
+	if err == nil {
+		product, err := Mul(interim, third)
+		if err == nil {
+			return product, nil
+		}
+	}
+
+	interim, err = Mul(first, third)
+	if err == nil {
+		product, err := Mul(interim, second)
+		if err == nil {
+			return product, nil
+		}
+	}
+
+	interim, err = Mul(second, third)
+	if err == nil {
+		return Mul(first, interim)
+	}
+
+	return 0, ErrOverflow
+}
+
 // Multiplies multiple integers and determines whether an overflow has occurred or not.
 //
-// Slower than the Mul function.
+// Slower than the Mul, Mul3 functions.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
@@ -243,36 +271,6 @@ func cmpMulM[Type constraints.Integer](first, second Type) int {
 	}
 
 	return 0
-}
-
-// Multiplies three integers and determines whether an overflow has occurred or not.
-//
-// Faster than the MulM function.
-//
-// In case of overflow, an error is returned.
-func MulT[Type constraints.Integer](first, second, third Type) (Type, error) {
-	interim, err := Mul(first, second)
-	if err == nil {
-		product, err := Mul(interim, third)
-		if err == nil {
-			return product, nil
-		}
-	}
-
-	interim, err = Mul(first, third)
-	if err == nil {
-		product, err := Mul(interim, second)
-		if err == nil {
-			return product, nil
-		}
-	}
-
-	interim, err = Mul(second, third)
-	if err == nil {
-		return Mul(first, interim)
-	}
-
-	return 0, ErrOverflow
 }
 
 // Multiplies multiple unsigned integers and determines whether an overflow has
