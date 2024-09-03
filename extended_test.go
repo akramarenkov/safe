@@ -13,20 +13,80 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAddM(t *testing.T) {
-	_, err := AddM[int](false)
-	require.Error(t, err)
-
-	testAddMInt(t)
-	testAddMUint(t)
+func TestAdd3(t *testing.T) {
+	testAdd3Int(t)
+	testAdd3Uint(t)
 }
 
-func testAddMInt(t *testing.T) {
+func testAdd3Int(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return Add3(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testAdd3Uint(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Add3(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestAddM(t *testing.T) {
+	testAddMInt(t, false)
+	testAddMInt(t, true)
+	testAddMUint(t, false)
+	testAddMUint(t, true)
+}
+
+func testAddMInt(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
@@ -52,7 +112,7 @@ func testAddMInt(t *testing.T) {
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
@@ -78,7 +138,7 @@ func testAddMInt(t *testing.T) {
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
@@ -101,12 +161,12 @@ func testAddMInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUint(t *testing.T) {
+func testAddMUint(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
@@ -132,7 +192,7 @@ func testAddMUint(t *testing.T) {
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
@@ -158,7 +218,7 @@ func testAddMUint(t *testing.T) {
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(false, args...)
+			return AddM(unmodify, args...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
@@ -181,30 +241,33 @@ func testAddMUint(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMDataSet(t *testing.T) {
-	inspected := func(args ...int8) (int8, error) {
-		return AddM(false, args...)
-	}
-
-	result, err := dataset.InspectFromFile("dataset/addm", inspected)
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
+func TestAddMError(t *testing.T) {
+	_, err := AddM[int](false)
+	require.Error(t, err)
 }
 
-func TestAddMDataSetUnmodify(t *testing.T) {
+func TestAddMUnmodify(t *testing.T) {
+	expected := []int8{126, 2, 1, 0, -127, -128}
+	modified := []int8{126, 2, 1, 0, -127, -128}
+	unmodified := []int8{126, 2, 1, 0, -127, -128}
+
+	_, err := AddM(false, modified...)
+	require.NoError(t, err)
+	require.NotEqual(t, expected, modified)
+
+	_, err = AddM(true, unmodified...)
+	require.NoError(t, err)
+	require.Equal(t, expected, unmodified)
+}
+
+func TestAddMDataSet(t *testing.T) {
+	testAddMDataSet(t, false)
+	testAddMDataSet(t, true)
+}
+
+func testAddMDataSet(t *testing.T, unmodify bool) {
 	inspected := func(args ...int8) (int8, error) {
-		return AddM(true, args...)
+		return AddM(unmodify, args...)
 	}
 
 	result, err := dataset.InspectFromFile("dataset/addm", inspected)
@@ -256,16 +319,8 @@ func TestAddM4Args(t *testing.T) {
 	}
 
 	testAddM4ArgsInt(t, false)
-	testAddM4ArgsUint(t, false)
-}
-
-func TestAddM4ArgsUnmodify(t *testing.T) {
-	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
-		t.SkipNow()
-	}
-
 	testAddM4ArgsInt(t, true)
+	testAddM4ArgsUint(t, false)
 	testAddM4ArgsUint(t, true)
 }
 
@@ -328,16 +383,8 @@ func TestAddM5Args(t *testing.T) {
 	}
 
 	testAddM5ArgsInt(t, false)
-	testAddM5ArgsUint(t, false)
-}
-
-func TestAddM5ArgsUnmodify(t *testing.T) {
-	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
-		t.SkipNow()
-	}
-
 	testAddM5ArgsInt(t, true)
+	testAddM5ArgsUint(t, false)
 	testAddM5ArgsUint(t, true)
 }
 
@@ -374,67 +421,6 @@ func testAddM5ArgsUint(t *testing.T, unmodify bool) {
 		},
 		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
 			return first + second + third + fourth + fifth, nil
-		},
-	}
-
-	result, err := opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-}
-
-func TestAdd3(t *testing.T) {
-	testAdd3Int(t)
-	testAdd3Uint(t)
-}
-
-func testAdd3Int(t *testing.T) {
-	opts := inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...int8) (int8, error) {
-			return Add3(args[0], args[1], args[2])
-		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] + args[1] + args[2], nil
-		},
-	}
-
-	result, err := opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-}
-
-func testAdd3Uint(t *testing.T) {
-	opts := inspect.Opts[uint8, uint8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...uint8) (uint8, error) {
-			return Add3(args[0], args[1], args[2])
-		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] + args[1] + args[2], nil
 		},
 	}
 

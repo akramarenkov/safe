@@ -62,37 +62,20 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 		return Add(addends[0], addends[1])
 	}
 
-	copied := false
-	sorted := false
-
-	clone := func() {
-		if copied || !unmodify {
-			return
-		}
-
-		copied = true
-
+	if unmodify && len(addends) != 3 {
 		addends = clone.Slice(addends)
 	}
 
-	sort := func() bool {
-		if sorted {
-			return false
-		}
-
-		sorted = true
-
-		sortAddM(addends)
-
-		return true
-	}
+	sorted := false
 
 	for len(addends) != 3 {
 		interim, err := Add(addends[0], addends[len(addends)-1])
 		if err != nil {
-			clone()
+			if !sorted {
+				sorted = true
 
-			if proceed := sort(); proceed {
+				sortAddM(addends)
+
 				continue
 			}
 
