@@ -154,6 +154,65 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 	return 0, ErrOverflow
 }
 
+// Subtracts several integers (subtrahends from minuend) and determines whether an
+// overflow has occurred or not.
+//
+// The function sorts and modifies the input arguments. By default, a copy of the input
+// arguments is not created and, if a slice is passed, it will be modified. If a slice
+// is passed as an input argument and it should not be modified, then the unmodify
+// argument must be set to true. In other cases, unmodify can be left as false.
+//
+// Slower than the [Sub], [Sub3] functions. And overall very slow, be careful.
+//
+// In case of overflow, an error is returned.
+func SubM[Type constraints.Integer](
+	unmodify bool,
+	minuend Type,
+	subtrahends ...Type,
+) (Type, error) {
+	switch len(subtrahends) {
+	case 0:
+		return minuend, nil
+	case 1:
+		return Sub(minuend, subtrahends[0])
+	}
+
+	if unmodify && len(subtrahends) != 2 {
+		subtrahends = clone.Slice(subtrahends)
+	}
+
+	for len(subtrahends) != 2 {
+		found := false
+		max := Type(0)
+		maxID := 0
+
+		for id, subtrahend := range subtrahends {
+			interim, err := Sub(minuend, subtrahend)
+			if err != nil {
+				continue
+			}
+
+			if interim > max || !found {
+				max = interim
+				maxID = id
+				found = true
+			}
+		}
+
+		if found {
+			minuend = max
+			subtrahends[0], subtrahends[maxID] = subtrahends[maxID], subtrahends[0]
+			subtrahends = subtrahends[1:]
+
+			continue
+		}
+
+		return 0, ErrOverflow
+	}
+
+	return Sub3(minuend, subtrahends[0], subtrahends[1])
+}
+
 // Subtracts several unsigned integers (subtrahends from minuend) and determines
 // whether an overflow has occurred or not.
 //

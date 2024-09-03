@@ -530,6 +530,130 @@ func testSub3Uint(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
+func TestSubM4Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testSubM4ArgsInt(t, false)
+	testSubM4ArgsUint(t, false)
+}
+
+func testSubM4ArgsInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts4[int8]{
+		Inspected: func(first, second, third, fourth int8) (int8, error) {
+			return SubM(unmodify, first, second, third, fourth)
+		},
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			return first - second - third - fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testSubM4ArgsUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts4[uint8]{
+		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
+			return SubM(unmodify, first, second, third, fourth)
+		},
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			return first - second - third - fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestSubM5Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testSubM5ArgsInt(t, false)
+	testSubM5ArgsUint(t, false)
+}
+
+func testSubM5ArgsInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts5[int8]{
+		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
+			return SubM(unmodify, first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first - second - third - fourth - fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testSubM5ArgsUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts5[uint8]{
+		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
+			return SubM(unmodify, first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first - second - third - fourth - fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
 func TestSubUM(t *testing.T) {
 	diff, err := SubUM(uint(math.MaxUint))
 	require.NoError(t, err)
