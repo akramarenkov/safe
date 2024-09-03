@@ -111,8 +111,7 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 func sortAddM[Type constraints.Integer](addends []Type) {
 	for first := 1; first < len(addends); first++ {
 		for second := first; second > 0 && addends[second] < addends[second-1]; second-- {
-			addends[second] = addends[second-1]
-			addends[second-1] = addends[second]
+			addends[second], addends[second-1] = addends[second-1], addends[second]
 		}
 	}
 }
