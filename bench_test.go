@@ -182,6 +182,14 @@ func BenchmarkAddMReference(b *testing.B) {
 }
 
 func BenchmarkAddM(b *testing.B) {
+	benchmarkAddM(b, false)
+}
+
+func BenchmarkAddMUnmodify(b *testing.B) {
+	benchmarkAddM(b, true)
+}
+
+func benchmarkAddM(b *testing.B, unmodify bool) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddM()
@@ -194,7 +202,7 @@ func BenchmarkAddM(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = AddM(
-									false,
+									unmodify,
 									first,
 									second,
 									third,
