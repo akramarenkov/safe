@@ -91,6 +91,7 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 	return Add3(addends[0], addends[1], addends[2])
 }
 
+// Slightly faster than the [slices.Sort].
 func sortAddM[Type constraints.Integer](addends []Type) {
 	for first := 1; first < len(addends); first++ {
 		for second := first; second > 0 && addends[second] < addends[second-1]; second-- {
