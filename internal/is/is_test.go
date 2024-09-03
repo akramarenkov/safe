@@ -111,85 +111,61 @@ func TestSigned(t *testing.T) {
 func BenchmarkReference(b *testing.B) {
 	conclusion := false
 
-	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		if b.N == math.MinInt {
 			conclusion = true
 		}
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
 
 func BenchmarkMin(b *testing.B) {
 	conclusion := false
 
-	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = Min(b.N)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
 
 func BenchmarkMax(b *testing.B) {
 	conclusion := false
 
-	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = Max(b.N)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
 
 func BenchmarkMinusOne(b *testing.B) {
 	conclusion := false
 
-	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = MinusOne(b.N)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
 
 func BenchmarkEven(b *testing.B) {
 	conclusion := false
 
-	// b.N, conclusion and require is used to prevent compiler optimizations
 	for range b.N {
 		conclusion = Even(b.N)
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
 
 func BenchmarkSigned(b *testing.B) {
-	// conclusion and require is used to prevent compiler optimizations
 	conclusion := false
 
 	for range b.N {
 		conclusion = Signed[int]()
 	}
 
-	b.StopTimer()
-
-	// meaningless check
 	require.NotNil(b, conclusion)
 }
