@@ -15,10 +15,10 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 
 	// When overflowing, the sum turns out to be less than both terms, so you can
 	// compare it with any of them. For an illustration of overflow when adding
-	// unsigned numbers, see add.svg. For signed numbers it turns out a little more
-	// complicated as indicated in the conditions below
+	// unsigned numbers, see internal/research/add. For signed numbers it turns out a
+	// little more complicated as indicated in the conditions below
 
-	// When adding positive and negative numbers, overflow is impossible
+	// When adding positive and negative numbers simultaneously, overflow is impossible
 	switch {
 	case first > 0 && second > 0:
 		if sum < first {
@@ -35,7 +35,7 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 
 // Adds two unsigned integers and determines whether an overflow has occurred or not.
 //
-// Slightly faster than the Add function.
+// Slightly faster than the [Add] function.
 //
 // In case of overflow, an error is returned.
 func AddU[Type constraints.Unsigned](first, second Type) (Type, error) {
@@ -76,7 +76,7 @@ func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 // Subtracts two unsigned integers (subtrahend from minuend) and determines whether an
 // overflow has occurred or not.
 //
-// Slightly faster than the Sub function.
+// Slightly faster than the [Sub] function.
 //
 // In case of overflow, an error is returned.
 func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
@@ -107,7 +107,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	// Therefore, this case is checked separately. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a
 	// simple check for equality of the second -1 fails, therefore second is checked
-	// for a negative value (is slightly faster than isMinusOne)
+	// for a negative value (is slightly faster than is.MinusOne)
 	if is.Min(first) && second < 0 {
 		return 0, ErrOverflow
 	}
@@ -115,7 +115,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	product := first * second
 
 	// It would be possible to represent the multiplication as an addition in a loop
-	// and check the sum at each iteration, but this is slower
+	// and check the sum at each iteration, but this is much slower
 	if product/second != first {
 		return 0, ErrOverflow
 	}
@@ -142,7 +142,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	// due to overflow - minimum negative value. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a simple
 	// check for equality of the divisor -1 fails, therefore divisor is checked for a
-	// negative value (is slightly faster than isMinusOne)
+	// negative value (is slightly faster than is.MinusOne)
 	if is.Min(quotient) && divisor < 0 {
 		return 0, ErrOverflow
 	}

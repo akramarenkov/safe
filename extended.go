@@ -41,21 +41,21 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
-// Adds up multiple integers and determines whether an overflow has occurred or not.
+// Adds up several integers and determines whether an overflow has occurred or not.
 //
 // The function sorts and modifies the input arguments. By default, a copy of the input
 // arguments is not created and, if a slice is passed, it will be modified. If a slice
 // is passed as an input argument and it should not be modified, then the unmodify
 // argument must be set to true. In other cases, unmodify can be left as false.
 //
-// Slower than the Add, Add3 functions. And overall very slow, be careful.
+// Slower than the [Add], [Add3] functions. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error) {
 	//nolint:mnd
 	switch len(addends) {
 	case 0:
-		return 0, ErrMissinArguments
+		return 0, ErrMissingArguments
 	case 1:
 		return addends[0], nil
 	case 2:
@@ -111,20 +111,21 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 func sortAddM[Type constraints.Integer](addends []Type) {
 	for first := 1; first < len(addends); first++ {
 		for second := first; second > 0 && addends[second] < addends[second-1]; second-- {
-			addends[second], addends[second-1] = addends[second-1], addends[second]
+			addends[second] = addends[second-1]
+			addends[second-1] = addends[second]
 		}
 	}
 }
 
-// Adds up multiple unsigned integers and determines whether an overflow has occurred or
+// Adds up several unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Slower than the AddU function, faster than the AddM function.
+// Slower than the [AddU] function, faster than the [AddM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {
 	if len(addends) == 0 {
-		return 0, ErrMissinArguments
+		return 0, ErrMissingArguments
 	}
 
 	sum := addends[0]
@@ -170,10 +171,10 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 	return 0, ErrOverflow
 }
 
-// Subtracts multiple unsigned integers (subtrahends from minuend) and determines
+// Subtracts several unsigned integers (subtrahends from minuend) and determines
 // whether an overflow has occurred or not.
 //
-// Slower than the SubU function.
+// Slower than the [SubU] function.
 //
 // In case of overflow, an error is returned.
 func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
@@ -219,14 +220,14 @@ func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
-// Multiplies multiple integers and determines whether an overflow has occurred or not.
+// Multiplies several integers and determines whether an overflow has occurred or not.
 //
-// Slower than the Mul, Mul3 functions.
+// Slower than the [Mul], [Mul3] functions.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
 	if len(factors) == 0 {
-		return 0, ErrMissinArguments
+		return 0, ErrMissingArguments
 	}
 
 	slices.SortFunc(factors, cmpMulM)
@@ -273,15 +274,15 @@ func cmpMulM[Type constraints.Integer](first, second Type) int {
 	return 0
 }
 
-// Multiplies multiple unsigned integers and determines whether an overflow has
+// Multiplies several unsigned integers and determines whether an overflow has
 // occurred or not.
 //
-// Faster than the MulM function.
+// Faster than the [MulM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	if len(factors) == 0 {
-		return 0, ErrMissinArguments
+		return 0, ErrMissingArguments
 	}
 
 	product := factors[0]
@@ -305,12 +306,12 @@ func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	return product, nil
 }
 
-// Divides multiple integers (dividend to divisors) and determines whether an overflow
+// Divides several integers (dividend to divisors) and determines whether an overflow
 // has occurred or not.
 //
 // The divisors is also checked for equality to zero.
 //
-// Slower than the Div function.
+// Slower than the [Div] function.
 //
 // In case of overflow or divisors equal to zero, an error is returned.
 func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, error) {
