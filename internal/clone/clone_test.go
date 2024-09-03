@@ -13,9 +13,16 @@ func Test(t *testing.T) {
 
 	copied := Slice(original)
 
-	require.Equal(t, expected, copied)
 	require.Equal(t, expected, original)
+	require.Equal(t, expected, copied)
 	require.NotSame(t, unsafe.SliceData(original), unsafe.SliceData(copied))
+
+	for id := range copied {
+		copied[id]--
+	}
+
+	require.Equal(t, expected, original)
+	require.NotEqual(t, expected, copied)
 }
 
 func Benchmark(b *testing.B) {
