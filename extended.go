@@ -43,10 +43,11 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 
 // Adds up several integers and determines whether an overflow has occurred or not.
 //
-// The function sorts and modifies the input arguments. By default, a copy of the input
-// arguments is not created and, if a slice is passed, it will be modified. If a slice
-// is passed as an input argument and it should not be modified, then the unmodify
-// argument must be set to true. In other cases, unmodify can be left as false.
+// The function sorts and modifies the variadic input arguments. By default, a copy of
+// the variadic input arguments is not created and, if a slice is passed, it will be
+// modified. If a slice is passed as an input argument and it should not be modified,
+// then the unmodify argument must be set to true. In other cases, unmodify can be left
+// as false.
 //
 // Slower than the [Add], [Add3] functions. And overall very slow, be careful.
 //
@@ -157,10 +158,11 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 // Subtracts several integers (subtrahends from minuend) and determines whether an
 // overflow has occurred or not.
 //
-// The function sorts and modifies the input arguments. By default, a copy of the input
-// arguments is not created and, if a slice is passed, it will be modified. If a slice
-// is passed as an input argument and it should not be modified, then the unmodify
-// argument must be set to true. In other cases, unmodify can be left as false.
+// The function sorts and modifies the variadic input arguments. By default, a copy of
+// the variadic input arguments is not created and, if a slice is passed, it will be
+// modified. If a slice is passed as an input argument and it should not be modified,
+// then the unmodify argument must be set to true. In other cases, unmodify can be left
+// as false.
 //
 // Slower than the [Sub], [Sub3] functions. And overall very slow, be careful.
 //
@@ -193,9 +195,9 @@ func SubM[Type constraints.Integer](
 			}
 
 			if interim > max || !found {
+				found = true
 				max = interim
 				maxID = id
-				found = true
 			}
 		}
 

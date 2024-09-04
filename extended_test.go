@@ -530,6 +530,239 @@ func testSub3Uint(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
+func TestSubM(t *testing.T) {
+	testSubMInt(t, false)
+	testSubMInt(t, true)
+	testSubMUint(t, false)
+	testSubMUint(t, true)
+}
+
+func testSubMInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1] - args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testSubMUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return SubM(unmodify, args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1] - args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestSubMUnmodify(t *testing.T) {
+	expected := []int8{-128, 127, 127, -2, -126, -128}
+	modified := []int8{-128, 127, 127, -2, -126, -128}
+	unmodified := []int8{-128, 127, 127, -2, -126, -128}
+
+	_, err := SubM(false, modified[0], modified[1:]...)
+	require.NoError(t, err)
+	require.NotEqual(t, expected, modified)
+
+	_, err = SubM(true, unmodified[0], unmodified[1:]...)
+	require.NoError(t, err)
+	require.Equal(t, expected, unmodified)
+}
+
+func TestSubMDataSet(t *testing.T) {
+	testSubMDataSet(t, false)
+	testSubMDataSet(t, true)
+}
+
+func testSubMDataSet(t *testing.T, unmodify bool) {
+	inspected := func(args ...int8) (int8, error) {
+		return SubM(unmodify, args[0], args[1:]...)
+	}
+
+	result, err := dataset.InspectFromFile("dataset/subm", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestSubMCollectDataSet(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataSet) == "" {
+		t.SkipNow()
+	}
+
+	reference := func(args ...int64) (int64, error) {
+		reference := args[0]
+
+		for _, arg := range args[1:] {
+			reference -= arg
+		}
+
+		return reference, nil
+	}
+
+	collector := dataset.Collector[int8]{
+		ArgsQuantity:               6,
+		NotOverflowedItemsQuantity: 1 << 15,
+		OverflowedItemsQuantity:    1 << 15,
+		Reference:                  reference,
+	}
+
+	err := collector.CollectToFile("dataset/subm")
+	require.NoError(t, err)
+}
+
 func TestSubM4Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(consts.EnvEnableLongTest) == "" {

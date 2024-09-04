@@ -188,8 +188,41 @@ func TestBenchSpanSub3(t *testing.T) {
 	}
 }
 
+func benchSpanSubM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127, 1, 2}
+	return span, span, span, span, span, span
+}
+
+func TestBenchSpanSubM(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				for _, fourth := range level4 {
+					for _, fifth := range level5 {
+						for _, sixth := range level6 {
+							_, _ = SubM(
+								false,
+								first,
+								second,
+								third,
+								fourth,
+								fifth,
+								sixth,
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 func benchSpanSubUM() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
-	span := []uint8{255, 1, 2, 3}
+	span := []uint8{255, 1, 2, 3, 4, 5}
 	return span, span, span, span, span, span
 }
 

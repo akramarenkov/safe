@@ -440,6 +440,104 @@ func BenchmarkSub3(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkSubM2Args(b *testing.B) {
+	result := int8(0)
+
+	level1, level2 := benchSpanSub()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				result, _ = SubM(false, first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubM3Args(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanSub3()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubM(false, first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubMReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					for _, fourth := range level4 {
+						for _, fifth := range level5 {
+							for _, sixth := range level6 {
+								result = first + second + third + fourth + fifth + sixth
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubM(b *testing.B) {
+	benchmarkSubM(b, false)
+}
+
+func BenchmarkSubMUnmodify(b *testing.B) {
+	benchmarkSubM(b, true)
+}
+
+func benchmarkSubM(b *testing.B, unmodify bool) {
+	result := int8(0)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					for _, fourth := range level4 {
+						for _, fifth := range level5 {
+							for _, sixth := range level6 {
+								result, _ = SubM(
+									unmodify,
+									first,
+									second,
+									third,
+									fourth,
+									fifth,
+									sixth,
+								)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkSubUM2Args(b *testing.B) {
 	result := uint8(0)
 
@@ -469,6 +567,38 @@ func BenchmarkSubUMReference(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result = first - second - third - fourth - fifth - sixth
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubMOnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3, level4, level5, level6 := benchSpanSubUM()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					for _, fourth := range level4 {
+						for _, fifth := range level5 {
+							for _, sixth := range level6 {
+								result, _ = SubM(
+									false,
+									first,
+									second,
+									third,
+									fourth,
+									fifth,
+									sixth,
+								)
 							}
 						}
 					}
