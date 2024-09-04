@@ -218,7 +218,7 @@ func SubM[Type constraints.Integer](
 // Subtracts several unsigned integers (subtrahends from minuend) and determines
 // whether an overflow has occurred or not.
 //
-// Slower than the [SubU] function.
+// Slower than the [SubU] function, faster than the [SubM] function.
 //
 // In case of overflow, an error is returned.
 func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
