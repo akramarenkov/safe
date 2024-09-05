@@ -306,6 +306,7 @@ func TestBenchSpanMulM(t *testing.T) {
 					for _, fifth := range level5 {
 						for _, sixth := range level6 {
 							_, _ = MulM(
+								false,
 								first,
 								second,
 								third,
@@ -322,7 +323,7 @@ func TestBenchSpanMulM(t *testing.T) {
 }
 
 func benchSpanMulUM() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
-	span := []uint8{255, 1, 2, 3}
+	span := []uint8{0, 255, 1, 2, 3}
 	return span, span, span, span, span, span
 }
 

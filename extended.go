@@ -1,8 +1,6 @@
 package safe
 
 import (
-	"slices"
-
 	"github.com/akramarenkov/safe/internal/clone"
 	"github.com/akramarenkov/safe/internal/is"
 	"golang.org/x/exp/constraints"
@@ -43,7 +41,7 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 
 // Adds up several integers and determines whether an overflow has occurred or not.
 //
-// The function sorts and modifies the variadic input arguments. By default, a copy of
+// The function modifies the variadic input arguments. By default, a copy of
 // the variadic input arguments is not created and, if a slice is passed, it will be
 // modified. If a slice is passed as an input argument and it should not be modified,
 // then the unmodify argument must be set to true. In other cases, unmodify can be left
@@ -158,7 +156,7 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 // Subtracts several integers (subtrahends from minuend) and determines whether an
 // overflow has occurred or not.
 //
-// The function sorts and modifies the variadic input arguments. By default, a copy of
+// The function modifies the variadic input arguments. By default, a copy of
 // the variadic input arguments is not created and, if a slice is passed, it will be
 // modified. If a slice is passed as an input argument and it should not be modified,
 // then the unmodify argument must be set to true. In other cases, unmodify can be left
@@ -266,15 +264,33 @@ func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
 
 // Multiplies several integers and determines whether an overflow has occurred or not.
 //
-// Slower than the [Mul], [Mul3] functions.
+// The function modifies the variadic input arguments. By default, a copy of
+// the variadic input arguments is not created and, if a slice is passed, it will be
+// modified. If a slice is passed as an input argument and it should not be modified,
+// then the unmodify argument must be set to true. In other cases, unmodify can be left
+// as false.
+//
+// Slower than the [Mul], [Mul3] functions. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
-func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
-	if len(factors) == 0 {
+func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error) {
+	//nolint:mnd
+	switch len(factors) {
+	case 0:
 		return 0, ErrMissingArguments
+	case 1:
+		return factors[0], nil
+	case 2:
+		return Mul(factors[0], factors[1])
+	case 3:
+		return Mul3(factors[0], factors[1], factors[2])
 	}
 
-	slices.SortFunc(factors, cmpMulM)
+	if unmodify {
+		factors = clone.Slice(factors)
+	}
+
+	sortMulM(factors)
 
 	for _, factor := range factors {
 		if factor == 0 {
@@ -296,26 +312,23 @@ func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
 	return product, nil
 }
 
-func cmpMulM[Type constraints.Integer](first, second Type) int {
-	if first < 0 && second < 0 {
-		switch {
-		case first > second:
-			return -1
-		case first < second:
-			return 1
+// Slightly faster than the [slices.SortFunc] and specialized comparison function.
+func sortMulM[Type constraints.Integer](factors []Type) {
+	for first := 1; first < len(factors); first++ {
+		for second := first; second > 0; second-- {
+			if factors[second] < 0 && factors[second-1] < 0 {
+				if factors[second] < factors[second-1] {
+					break
+				}
+			} else {
+				if factors[second] > factors[second-1] {
+					break
+				}
+			}
+
+			factors[second], factors[second-1] = factors[second-1], factors[second]
 		}
-
-		return 0
 	}
-
-	switch {
-	case first < second:
-		return -1
-	case first > second:
-		return 1
-	}
-
-	return 0
 }
 
 // Multiplies several unsigned integers and determines whether an overflow has
@@ -329,14 +342,14 @@ func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
 		return 0, ErrMissingArguments
 	}
 
-	product := factors[0]
-	factors = factors[1:]
-
 	for _, factor := range factors {
 		if factor == 0 {
 			return 0, nil
 		}
 	}
+
+	product := factors[0]
+	factors = factors[1:]
 
 	for _, factor := range factors {
 		interim, err := Mul(product, factor)

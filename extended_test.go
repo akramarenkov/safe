@@ -3,12 +3,12 @@ package safe
 import (
 	"math"
 	"os"
-	"slices"
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset"
+	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 
 	"github.com/stretchr/testify/require"
 )
@@ -919,73 +919,6 @@ func TestSubUM(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulM(t *testing.T) {
-	_, err := MulM[int]()
-	require.Error(t, err)
-
-	testMulMInt(t)
-	testMulMUint(t)
-}
-
-func testMulMInt(t *testing.T) {
-	opts := inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: MulM[int8],
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] * args[1] * args[2], nil
-		},
-	}
-
-	result, err := opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-}
-
-func testMulMUint(t *testing.T) {
-	opts := inspect.Opts[uint8, uint8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: MulM[uint8],
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] * args[1] * args[2], nil
-		},
-	}
-
-	result, err := opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-}
-
-func TestCmpMulM(t *testing.T) {
-	factors := []int{15, 0, 27, -1, -5}
-
-	slices.SortFunc(factors, cmpMulM)
-	require.Equal(t, []int{-1, -5, 0, 15, 27}, factors)
-}
-
 func TestMul3(t *testing.T) {
 	testMul3Int(t)
 	testMul3Uint(t)
@@ -1028,6 +961,384 @@ func testMul3Uint(t *testing.T) {
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestMulM(t *testing.T) {
+	testMulMInt(t, false)
+	testMulMInt(t, true)
+	testMulMUint(t, false)
+	testMulMUint(t, true)
+}
+
+func testMulMInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1] * args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testMulMUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return MulM(unmodify, args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1] * args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestMulMError(t *testing.T) {
+	_, err := MulM[int](false)
+	require.Error(t, err)
+}
+
+func TestMulMUnmodify(t *testing.T) {
+	expected := []int8{0, -126, -127, -128, -128, -128}
+	modified := []int8{0, -126, -127, -128, -128, -128}
+	unmodified := []int8{0, -126, -127, -128, -128, -128}
+
+	_, err := MulM(false, modified...)
+	require.NoError(t, err)
+	require.NotEqual(t, expected, modified)
+
+	_, err = MulM(true, unmodified...)
+	require.NoError(t, err)
+	require.Equal(t, expected, unmodified)
+}
+
+func TestMulMDataSet(t *testing.T) {
+	testMulMDataSet(t, false)
+	testMulMDataSet(t, true)
+}
+
+func testMulMDataSet(t *testing.T, unmodify bool) {
+	inspected := func(args ...int8) (int8, error) {
+		return MulM(unmodify, args...)
+	}
+
+	result, err := dataset.InspectFromFile("dataset/mulm", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestMulMCollectDataSet(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataSet) == "" {
+		t.SkipNow()
+	}
+
+	reference := func(args ...int64) (int64, error) {
+		reference := args[0]
+
+		for _, arg := range args[1:] {
+			reference *= arg
+		}
+
+		return reference, nil
+	}
+
+	collector := dataset.Collector[int8]{
+		ArgsQuantity:               6,
+		NotOverflowedItemsQuantity: 1 << 15,
+		OverflowedItemsQuantity:    1 << 15,
+		Reference:                  reference,
+		ReferenceLimits: map[int64]uint{
+			0: 6,
+		},
+		Fillers: []filler.Filler[int8]{
+			filler.NewSet[int8](),
+			filler.NewSet(
+				func() []int8 {
+					return filler.Span[int8](-20, 20)
+				},
+			),
+			filler.NewRand[int8](),
+		},
+	}
+
+	err := collector.CollectToFile("dataset/mulm")
+	require.NoError(t, err)
+}
+
+func TestMulM4Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testMulM4ArgsInt(t, false)
+	testMulM4ArgsInt(t, true)
+	testMulM4ArgsUint(t, false)
+	testMulM4ArgsUint(t, true)
+}
+
+func testMulM4ArgsInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts4[int8]{
+		Inspected: func(first, second, third, fourth int8) (int8, error) {
+			return MulM(unmodify, first, second, third, fourth)
+		},
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			return first * second * third * fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testMulM4ArgsUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts4[uint8]{
+		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
+			return MulM(unmodify, first, second, third, fourth)
+		},
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			return first * second * third * fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestMulM5Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testMulM5ArgsInt(t, false)
+	testMulM5ArgsInt(t, true)
+	testMulM5ArgsUint(t, false)
+	testMulM5ArgsUint(t, true)
+}
+
+func testMulM5ArgsInt(t *testing.T, unmodify bool) {
+	opts := inspect.Opts5[int8]{
+		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
+			return MulM(unmodify, first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first * second * third * fourth * fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testMulM5ArgsUint(t *testing.T, unmodify bool) {
+	opts := inspect.Opts5[uint8]{
+		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
+			return MulM(unmodify, first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			return first * second * third * fourth * fifth, nil
 		},
 	}
 

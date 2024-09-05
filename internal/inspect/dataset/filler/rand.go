@@ -10,11 +10,15 @@ import (
 )
 
 // Fills arguments with random values.
+//
+// Data in this filler never ends, so it must be specified last.
 type Rand[Type types.USI8] struct {
 	maxRand *big.Int
 }
 
 // Creates filler that fill arguments with random values.
+//
+// Data in this filler never ends, so it must be specified last.
 func NewRand[Type types.USI8]() *Rand[Type] {
 	rnd := &Rand[Type]{
 		maxRand: big.NewInt(math.MaxUint8 + 1),
@@ -24,6 +28,8 @@ func NewRand[Type types.USI8]() *Rand[Type] {
 }
 
 // Fills arguments with random values.
+//
+// Data in this filler never ends, so it must be specified last.
 func (rnd *Rand[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 	for id := range args {
 		value, err := rand.Int(rand.Reader, rnd.maxRand)

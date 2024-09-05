@@ -21,7 +21,7 @@ func TestFile(t *testing.T) {
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
 		Fillers: []filler.Filler[int8]{
-			filler.NewBoundary[int8](),
+			filler.NewSet[int8](),
 		},
 	}
 
@@ -60,7 +60,7 @@ func BenchmarkDataSet(b *testing.B) {
 		Reference:                  testReference,
 		Writer:                     buffer,
 		Fillers: []filler.Filler[int8]{
-			filler.NewBoundary[int8](),
+			filler.NewSet[int8](),
 		},
 	}
 

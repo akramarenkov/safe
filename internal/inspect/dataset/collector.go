@@ -2,6 +2,7 @@ package dataset
 
 import (
 	"io"
+	"maps"
 	"os"
 	"strconv"
 
@@ -21,10 +22,13 @@ type Collector[Type types.USI8] struct {
 	OverflowedItemsQuantity int
 	// Function that returns a reference value
 	Reference
+	// Quantity limits for reference values
+	ReferenceLimits map[int64]uint
 	// Writer associated with dataset storage
 	Writer io.Writer
 	// List of fillers that fill arguments of inspected and reference functions with
-	// values. If not specified will be used filler.Boundary and filler.Rand fillers
+	// values. If not specified will be used filler [filler.Set] with [filler.Boundaries]
+	// setter and filler [filler.Rand]
 	Fillers []filler.Filler[Type]
 
 	// Minimum and maximum value for specified type
@@ -55,7 +59,7 @@ func (clctr Collector[Type]) IsValid() error {
 
 func (clctr Collector[Type]) normalize() Collector[Type] {
 	if len(clctr.Fillers) == 0 {
-		clctr.Fillers = append(clctr.Fillers, filler.NewBoundary[Type]())
+		clctr.Fillers = append(clctr.Fillers, filler.NewSet[Type]())
 		clctr.Fillers = append(clctr.Fillers, filler.NewRand[Type]())
 	}
 
@@ -83,6 +87,8 @@ func (clctr Collector[Type]) Collect() error {
 	}
 
 	clctr = clctr.normalize()
+
+	clctr.ReferenceLimits = maps.Clone(clctr.ReferenceLimits)
 
 	clctr.min, clctr.max = inspect.PickUpSpan[Type, int64]()
 
@@ -136,6 +142,10 @@ func (clctr *Collector[Type]) isCollected() bool {
 func (clctr *Collector[Type]) isUseArgs() bool {
 	reference, _ := clctr.Reference(clctr.dupArgs64()...)
 
+	if clctr.isLimited(reference) {
+		return false
+	}
+
 	if reference > clctr.max || reference < clctr.min {
 		if clctr.OverflowedItemsQuantity <= 0 {
 			return false
@@ -153,6 +163,25 @@ func (clctr *Collector[Type]) isUseArgs() bool {
 	clctr.NotOverflowedItemsQuantity--
 
 	return true
+}
+
+func (clctr *Collector[Type]) isLimited(reference int64) bool {
+	if len(clctr.ReferenceLimits) == 0 {
+		return false
+	}
+
+	quantity, exists := clctr.ReferenceLimits[reference]
+	if !exists {
+		return false
+	}
+
+	if quantity == 0 {
+		return true
+	}
+
+	clctr.ReferenceLimits[reference]--
+
+	return false
 }
 
 func (clctr *Collector[Type]) writeItem() error {

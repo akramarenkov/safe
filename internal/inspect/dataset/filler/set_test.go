@@ -1,35 +1,57 @@
 package filler
 
 import (
-	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestBoundary(t *testing.T) {
-	filler := NewBoundary[int8]()
+func TestSetBoundaries(t *testing.T) {
+	filler := NewSet[int8]()
 
-	testBoundary(t, filler)
+	testSet(t, filler, Boundaries[int8]())
 
 	filler.Reset()
 
-	testBoundary(t, filler)
+	testSet(t, filler, Boundaries[int8]())
 }
 
-func testBoundary(t *testing.T, filler *Boundary[int8]) {
+func TestSetSpan(t *testing.T) {
+	span := func() []int8 {
+		return Span[int8](-10, 10)
+	}
+
+	filler := NewSet(span)
+
+	testSet(t, filler, span())
+
+	filler.Reset()
+
+	testSet(t, filler, span())
+}
+
+func TestSetPanic(t *testing.T) {
+	filler := NewSet[int8](nil)
+
+	const argsQuantity = 1
+
+	args := make([]int8, argsQuantity)
+	args64 := make([]int64, argsQuantity)
+
+	require.Panics(t, func() { _, _ = filler.Fill(args, args64) })
+}
+
+func testSet(t *testing.T, filler *Set[int8], set []int8) {
 	const argsQuantity = 3
 
 	args := make([]int8, argsQuantity)
 	args64 := make([]int64, argsQuantity)
 
-	boundaries := getBoundaries[int8]()
-
-	for fid, first := range boundaries {
-		for sid, second := range boundaries {
-			for tid, third := range boundaries {
+	for fid, first := range set {
+		for sid, second := range set {
+			for tid, third := range set {
 				isLastIteration := func() bool {
-					return fid == len(boundaries)-1 && sid == fid && tid == fid
+					return fid == len(set)-1 && sid == fid && tid == fid
 				}
 
 				completed, err := filler.Fill(args, args64)
@@ -72,37 +94,9 @@ func testBoundary(t *testing.T, filler *Boundary[int8]) {
 		}
 	}
 
-	for range boundaries {
+	for range set {
 		completed, err := filler.Fill(args, args64)
 		require.NoError(t, err)
 		require.True(t, completed)
 	}
-}
-
-func TestGetBoundaries(t *testing.T) {
-	expectedInt := []int8{
-		math.MinInt8,
-		math.MinInt8 + 1,
-		math.MinInt8 + 2,
-		-2,
-		-1,
-		0,
-		1,
-		2,
-		math.MaxInt8 - 2,
-		math.MaxInt8 - 1,
-		math.MaxInt8,
-	}
-
-	expectedUint := []uint8{
-		0,
-		1,
-		2,
-		math.MaxUint8 - 2,
-		math.MaxUint8 - 1,
-		math.MaxUint8,
-	}
-
-	require.Equal(t, expectedInt, getBoundaries[int8]())
-	require.Equal(t, expectedUint, getBoundaries[uint8]())
 }

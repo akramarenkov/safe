@@ -717,7 +717,7 @@ func BenchmarkMulM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = MulM(first, second)
+				result, _ = MulM(false, first, second)
 			}
 		}
 	}
@@ -734,7 +734,7 @@ func BenchmarkMulM3Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				for _, third := range level3 {
-					result, _ = MulM(first, second, third)
+					result, _ = MulM(false, first, second, third)
 				}
 			}
 		}
@@ -768,6 +768,14 @@ func BenchmarkMulMReference(b *testing.B) {
 }
 
 func BenchmarkMulM(b *testing.B) {
+	benchmarkMulM(b, false)
+}
+
+func BenchmarkMulMUnmodify(b *testing.B) {
+	benchmarkMulM(b, true)
+}
+
+func benchmarkMulM(b *testing.B, unmodify bool) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulM()
@@ -780,6 +788,7 @@ func BenchmarkMulM(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = MulM(
+									unmodify,
 									first,
 									second,
 									third,
@@ -835,6 +844,7 @@ func BenchmarkMulMOnlyUnsigned(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = MulM(
+									false,
 									first,
 									second,
 									third,
