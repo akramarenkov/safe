@@ -441,9 +441,6 @@ func testAddM5ArgsUint(t *testing.T, unmodify bool) {
 }
 
 func TestAddUM(t *testing.T) {
-	_, err := AddUM[uint]()
-	require.Error(t, err)
-
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -467,6 +464,11 @@ func TestAddUM(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestAddUMError(t *testing.T) {
+	_, err := AddUM[uint]()
+	require.Error(t, err)
 }
 
 func TestSub3(t *testing.T) {
@@ -1359,9 +1361,6 @@ func testMulM5ArgsUint(t *testing.T, unmodify bool) {
 }
 
 func TestMulUM(t *testing.T) {
-	_, err := MulUM[uint]()
-	require.Error(t, err)
-
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1385,6 +1384,11 @@ func TestMulUM(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestMulUMError(t *testing.T) {
+	_, err := MulUM[uint]()
+	require.Error(t, err)
 }
 
 func TestDivM(t *testing.T) {
