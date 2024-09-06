@@ -772,7 +772,9 @@ func TestSubM4Args(t *testing.T) {
 	}
 
 	testSubM4ArgsInt(t, false)
+	testSubM4ArgsInt(t, true)
 	testSubM4ArgsUint(t, false)
+	testSubM4ArgsUint(t, true)
 }
 
 func testSubM4ArgsInt(t *testing.T, unmodify bool) {
@@ -834,7 +836,9 @@ func TestSubM5Args(t *testing.T) {
 	}
 
 	testSubM5ArgsInt(t, false)
+	testSubM5ArgsInt(t, true)
 	testSubM5ArgsUint(t, false)
+	testSubM5ArgsUint(t, true)
 }
 
 func testSubM5ArgsInt(t *testing.T, unmodify bool) {
