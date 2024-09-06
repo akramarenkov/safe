@@ -260,12 +260,12 @@ func TestAddMUnmodify(t *testing.T) {
 	require.Equal(t, expected, unmodified)
 }
 
-func TestAddMDataSet(t *testing.T) {
-	testAddMDataSet(t, false)
-	testAddMDataSet(t, true)
+func TestAddMDataset(t *testing.T) {
+	testAddMDataset(t, false)
+	testAddMDataset(t, true)
 }
 
-func testAddMDataSet(t *testing.T, unmodify bool) {
+func testAddMDataset(t *testing.T, unmodify bool) {
 	inspected := func(args ...int8) (int8, error) {
 		return AddM(unmodify, args...)
 	}
@@ -286,8 +286,8 @@ func testAddMDataSet(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMCollectDataSet(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataSet) == "" {
+func TestAddMCollectDataset(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -713,12 +713,12 @@ func TestSubMUnmodify(t *testing.T) {
 	require.Equal(t, expected, unmodified)
 }
 
-func TestSubMDataSet(t *testing.T) {
-	testSubMDataSet(t, false)
-	testSubMDataSet(t, true)
+func TestSubMDataset(t *testing.T) {
+	testSubMDataset(t, false)
+	testSubMDataset(t, true)
 }
 
-func testSubMDataSet(t *testing.T, unmodify bool) {
+func testSubMDataset(t *testing.T, unmodify bool) {
 	inspected := func(args ...int8) (int8, error) {
 		return SubM(unmodify, args[0], args[1:]...)
 	}
@@ -739,8 +739,8 @@ func testSubMDataSet(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMCollectDataSet(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataSet) == "" {
+func TestSubMCollectDataset(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -1168,12 +1168,12 @@ func TestMulMUnmodify(t *testing.T) {
 	require.Equal(t, expected, unmodified)
 }
 
-func TestMulMDataSet(t *testing.T) {
-	testMulMDataSet(t, false)
-	testMulMDataSet(t, true)
+func TestMulMDataset(t *testing.T) {
+	testMulMDataset(t, false)
+	testMulMDataset(t, true)
 }
 
-func testMulMDataSet(t *testing.T, unmodify bool) {
+func testMulMDataset(t *testing.T, unmodify bool) {
 	inspected := func(args ...int8) (int8, error) {
 		return MulM(unmodify, args...)
 	}
@@ -1194,8 +1194,8 @@ func testMulMDataSet(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMCollectDataSet(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataSet) == "" {
+func TestMulMCollectDataset(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -1217,7 +1217,7 @@ func TestMulMCollectDataSet(t *testing.T) {
 		ReferenceLimits: map[int64]uint{
 			0: 6,
 		},
-		Fillers: []filler.Filler[int8]{
+		Fillers: []filler.Filler{
 			filler.NewSet[int8](),
 			filler.NewSet(
 				func() []int8 {
@@ -1392,20 +1392,72 @@ func TestMulUMError(t *testing.T) {
 }
 
 func TestDivM(t *testing.T) {
-	quotient, err := DivM(uint(math.MaxUint))
-	require.NoError(t, err)
-	require.Equal(t, uint(math.MaxUint), quotient)
-
 	testDivMInt(t)
 	testDivMUint(t)
 }
 
 func testDivMInt(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return args[0] / args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...int8) (int8, error) {
-			return DivM(args[0], args[1], args[2])
+			return DivM(args[0], args[1:]...)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			if args[1] == 0 || args[2] == 0 {
@@ -1413,6 +1465,197 @@ func testDivMInt(t *testing.T) {
 			}
 
 			return args[0] / args[1] / args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testDivMUint(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return args[0] / args[1], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+
+	opts = inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 || args[2] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return args[0] / args[1] / args[2], nil
+		},
+	}
+
+	result, err = opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func TestDivMDataset(t *testing.T) {
+	inspected := func(args ...int8) (int8, error) {
+		return DivM(args[0], args[1:]...)
+	}
+
+	result, err := dataset.InspectFromFile("dataset/divm", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func TestDivMCollectDataset(t *testing.T) {
+	if os.Getenv(consts.EnvCollectDataset) == "" {
+		t.SkipNow()
+	}
+
+	reference := func(args ...int64) (int64, error) {
+		reference := args[0]
+
+		for _, arg := range args[1:] {
+			if arg == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			reference /= arg
+		}
+
+		return reference, nil
+	}
+
+	collector := dataset.Collector[int8]{
+		ArgsQuantity:               6,
+		NotOverflowedItemsQuantity: 1<<16 - 1<<4,
+		OverflowedItemsQuantity:    1 << 4,
+		Reference:                  reference,
+		ReferenceLimits: map[int64]uint{
+			0: 1 << 15,
+		},
+		Fillers: []filler.Filler{
+			filler.NewSet[int8](),
+			filler.NewSet(
+				func() []int8 {
+					return filler.Span[int8](-10, 10)
+				},
+			),
+			filler.NewRand[int8](),
+		},
+	}
+
+	err := collector.CollectToFile("dataset/divm")
+	require.NoError(t, err)
+}
+
+func TestDivM4Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testDivM4ArgsInt(t)
+	testDivM4ArgsUint(t)
+}
+
+func testDivM4ArgsInt(t *testing.T) {
+	opts := inspect.Opts4[int8]{
+		Inspected: func(first, second, third, fourth int8) (int8, error) {
+			return DivM(first, second, third, fourth)
+		},
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			if second == 0 || third == 0 || fourth == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return first / second / third / fourth, nil
 		},
 	}
 
@@ -1432,19 +1675,87 @@ func testDivMInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMUint(t *testing.T) {
-	opts := inspect.Opts[uint8, uint8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...uint8) (uint8, error) {
-			return DivM(args[0], args[1], args[2])
+func testDivM4ArgsUint(t *testing.T) {
+	opts := inspect.Opts4[uint8]{
+		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
+			return DivM(first, second, third, fourth)
 		},
-		Reference: func(args ...int64) (int64, error) {
-			if args[1] == 0 || args[2] == 0 {
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			if second == 0 || third == 0 || fourth == 0 {
 				return 0, ErrDivisionByZero
 			}
 
-			return args[0] / args[1] / args[2], nil
+			return first / second / third / fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.Zero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func TestDivM5Args(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(consts.EnvEnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testDivM5ArgsInt(t)
+	testDivM5ArgsUint(t)
+}
+
+func testDivM5ArgsInt(t *testing.T) {
+	opts := inspect.Opts5[int8]{
+		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
+			return DivM(first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return first / second / third / fourth / fifth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testDivM5ArgsUint(t *testing.T) {
+	opts := inspect.Opts5[uint8]{
+		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
+			return DivM(first, second, third, fourth, fifth)
+		},
+		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
+			if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return first / second / third / fourth / fifth, nil
 		},
 	}
 

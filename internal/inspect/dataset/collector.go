@@ -26,22 +26,24 @@ type Collector[Type types.USI8] struct {
 	ReferenceLimits map[int64]uint
 	// Writer associated with dataset storage
 	Writer io.Writer
-	// List of fillers that fill arguments of inspected and reference functions with
-	// values. If not specified will be used filler [filler.Set] with [filler.Boundaries]
-	// setter and filler [filler.Rand]
-	Fillers []filler.Filler[Type]
+	// List of fillers that fill arguments of dataset item (reference function) by
+	// values. If not specified will be used filler [filler.Set] with
+	// [filler.Boundaries] setter and filler [filler.Rand]
+	Fillers []filler.Filler
 
 	// Minimum and maximum value for specified type
 	min int64
 	max int64
 
 	// Arguments buffers, used to decrease allocations
-	args      []Type
-	args64    []int64
-	args64Dup []int64
+	args    []int64
+	argsDup []int64
 
 	// Dataset item buffer, used to decrease allocations
 	item []byte
+
+	// map used to maintain uniqueness of items in a dataset
+	unique map[string]struct{}
 }
 
 // Validates options. A reference function and writer must be specified.
@@ -92,12 +94,27 @@ func (clctr Collector[Type]) Collect() error {
 
 	clctr.min, clctr.max = inspect.PickUpSpan[Type, int64]()
 
-	clctr.args = make([]Type, clctr.ArgsQuantity)
-	clctr.args64 = make([]int64, clctr.ArgsQuantity)
-	clctr.args64Dup = make([]int64, clctr.ArgsQuantity)
+	clctr.args = make([]int64, clctr.ArgsQuantity)
+	clctr.argsDup = make([]int64, clctr.ArgsQuantity)
 	clctr.item = make([]byte, calcMaxItemLength(clctr.ArgsQuantity))
 
+	clctr.unique = make(map[string]struct{}, clctr.calcDatasetLength())
+
 	return clctr.main()
+}
+
+func (clctr Collector[Type]) calcDatasetLength() int {
+	length := 0
+
+	if clctr.NotOverflowedItemsQuantity > 0 {
+		length += clctr.NotOverflowedItemsQuantity
+	}
+
+	if clctr.OverflowedItemsQuantity > 0 {
+		length += clctr.OverflowedItemsQuantity
+	}
+
+	return length
 }
 
 func (clctr *Collector[Type]) main() error {
@@ -118,9 +135,13 @@ func (clctr *Collector[Type]) main() error {
 	return nil
 }
 
+func (clctr *Collector[Type]) isCollected() bool {
+	return clctr.OverflowedItemsQuantity <= 0 && clctr.NotOverflowedItemsQuantity <= 0
+}
+
 func (clctr *Collector[Type]) fillArgs() error {
 	for _, filler := range clctr.Fillers {
-		completed, err := filler.Fill(clctr.args, clctr.args64)
+		completed, err := filler.Fill(clctr.args)
 		if err != nil {
 			return err
 		}
@@ -135,12 +156,8 @@ func (clctr *Collector[Type]) fillArgs() error {
 	return ErrNotEnoughDataInFillers
 }
 
-func (clctr *Collector[Type]) isCollected() bool {
-	return clctr.OverflowedItemsQuantity <= 0 && clctr.NotOverflowedItemsQuantity <= 0
-}
-
 func (clctr *Collector[Type]) isUseArgs() bool {
-	reference, _ := clctr.Reference(clctr.dupArgs64()...)
+	reference, fault := clctr.Reference(clctr.dupArgs()...)
 
 	if clctr.isLimited(reference) {
 		return false
@@ -151,12 +168,24 @@ func (clctr *Collector[Type]) isUseArgs() bool {
 			return false
 		}
 
+		clctr.prepareItem(reference, fault)
+
+		if !clctr.isUnique() {
+			return false
+		}
+
 		clctr.OverflowedItemsQuantity--
 
 		return true
 	}
 
 	if clctr.NotOverflowedItemsQuantity <= 0 {
+		return false
+	}
+
+	clctr.prepareItem(reference, fault)
+
+	if !clctr.isUnique() {
 		return false
 	}
 
@@ -184,14 +213,34 @@ func (clctr *Collector[Type]) isLimited(reference int64) bool {
 	return false
 }
 
-func (clctr *Collector[Type]) writeItem() error {
-	return writeItem(clctr.Writer, clctr.item, clctr.Reference, clctr.args, clctr.dupArgs64())
+func (clctr *Collector[Type]) isUnique() bool {
+	key := string(clctr.item)
+
+	if _, exists := clctr.unique[key]; exists {
+		return false
+	}
+
+	clctr.unique[key] = struct{}{}
+
+	return true
 }
 
-// Protection against changes args64 from the reference function.
-func (clctr *Collector[Type]) dupArgs64() []int64 {
-	copy(clctr.args64Dup, clctr.args64)
-	return clctr.args64Dup
+func (clctr *Collector[Type]) prepareItem(reference int64, fault error) {
+	clctr.item = prepareItem(clctr.item, reference, fault, clctr.args)
+}
+
+func (clctr *Collector[Type]) writeItem() error {
+	if _, err := clctr.Writer.Write(clctr.item); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Protection against changes args from the reference function.
+func (clctr *Collector[Type]) dupArgs() []int64 {
+	copy(clctr.argsDup, clctr.args)
+	return clctr.argsDup
 }
 
 // Writes dataset item to specified writer.
@@ -203,36 +252,17 @@ func WriteItem[Type types.USI8](
 	buffer := make([]byte, calcMaxItemLength(len(args)))
 
 	args64 := make([]int64, len(args))
+	// Protection against changes args64 from the reference function
+	args64Dup := make([]int64, len(args))
 
 	for id := range args {
 		args64[id] = int64(args[id])
+		args64Dup[id] = int64(args[id])
 	}
 
-	return writeItem(writer, buffer, reference, args, args64)
-}
+	ref, fault := reference(args64Dup...)
 
-func writeItem[Type types.USI8](
-	writer io.Writer,
-	buffer []byte,
-	reference Reference,
-	args []Type,
-	args64 []int64,
-) error {
-	buffer = buffer[:0]
-
-	ref, fault := reference(args64...)
-
-	buffer = strconv.AppendBool(buffer, fault != nil)
-
-	buffer = append(buffer, " "...)
-	buffer = strconv.AppendInt(buffer, ref, consts.DecimalBase)
-
-	for _, arg := range args {
-		buffer = append(buffer, " "...)
-		buffer = strconv.AppendInt(buffer, int64(arg), consts.DecimalBase)
-	}
-
-	buffer = append(buffer, '\n')
+	buffer = prepareItem(buffer, ref, fault, args64)
 
 	if _, err := writer.Write(buffer); err != nil {
 		return err
@@ -241,10 +271,33 @@ func writeItem[Type types.USI8](
 	return nil
 }
 
+func prepareItem(
+	buffer []byte,
+	reference int64,
+	fault error,
+	args []int64,
+) []byte {
+	buffer = buffer[:0]
+
+	buffer = strconv.AppendBool(buffer, fault != nil)
+
+	buffer = append(buffer, " "...)
+	buffer = strconv.AppendInt(buffer, reference, consts.DecimalBase)
+
+	for _, arg := range args {
+		buffer = append(buffer, " "...)
+		buffer = strconv.AppendInt(buffer, arg, consts.DecimalBase)
+	}
+
+	buffer = append(buffer, '\n')
+
+	return buffer
+}
+
 func calcMaxItemLength(argsQuantity int) int {
 	const (
-		maxFaultLen     = max(len("false"), len("true"))
-		maxReferenceLen = len(" 18446744073709551615")
+		maxFaultLen     = len("false")
+		maxReferenceLen = len(" -9223372036854775808")
 		maxArgLen       = len(" -127")
 		maxNewLineLen   = len("\n")
 	)

@@ -2,8 +2,6 @@ package filler
 
 import (
 	"errors"
-
-	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
 var (
@@ -11,14 +9,14 @@ var (
 )
 
 // Filler that always returns an error.
-type Faulty[Type types.USI8] struct{}
+type Faulty struct{}
 
 // Creates filler that always returns an error.
-func NewFaulty[Type types.USI8]() *Faulty[Type] {
-	return &Faulty[Type]{}
+func NewFaulty() *Faulty {
+	return &Faulty{}
 }
 
 // Returns an error always.
-func (flt *Faulty[Type]) Fill([]Type, []int64) (bool, error) {
+func (flt *Faulty) Fill([]int64) (bool, error) {
 	return false, ErrFaulty
 }

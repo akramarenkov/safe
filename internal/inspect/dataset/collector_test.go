@@ -3,7 +3,9 @@ package dataset
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -44,7 +46,7 @@ func TestCollector(t *testing.T) {
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
 		Writer:                     buffer,
-		Fillers: []filler.Filler[int8]{
+		Fillers: []filler.Filler{
 			filler.NewSet(
 				func() []int8 {
 					return filler.Span[int8](0, 1)
@@ -56,39 +58,42 @@ func TestCollector(t *testing.T) {
 		},
 	}
 
-	expected := "false 0 0 0 0 0 0\n" +
-		"false 128 127 1 0 0 0\n"
+	expected := "false 0 0 0 0 0 0\nfalse 128 127 1 0 0 0\n"
 
 	err := collector.Collect()
 	require.NoError(t, err)
 	require.Equal(t, expected, buffer.String())
 }
 
-func TestCollectorNotOverflowedReaching(t *testing.T) {
+func TestCollectorDefaultFillers(t *testing.T) {
+	buffer := bytes.NewBuffer(nil)
+
 	collector := Collector[int8]{
 		ArgsQuantity:               5,
-		NotOverflowedItemsQuantity: 1 << 16,
-		OverflowedItemsQuantity:    1 << 16,
+		NotOverflowedItemsQuantity: 1,
+		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     bytes.NewBuffer(nil),
-		Fillers: []filler.Filler[int8]{
-			filler.NewSet[int8](),
-		},
+		Writer:                     buffer,
 	}
 
 	err := collector.Collect()
 	require.NoError(t, err)
+
+	// two dataset items + empty string after last separator
+	require.Len(t, strings.Split(buffer.String(), "\n"), 3)
 }
 
 func TestCollectorReferenceLimits(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
+	limited := int64(127)
+
 	limits := map[int64]uint{
-		-6: 1,
+		limited: 1,
 	}
 
 	expected := map[int64]uint{
-		-6: 1,
+		limited: 1,
 	}
 
 	accounter := func(desired int64) int {
@@ -111,10 +116,10 @@ func TestCollectorReferenceLimits(t *testing.T) {
 	}
 
 	testCollectorReferenceLimits(t, buffer, nil)
-	require.Equal(t, 3, accounter(-6))
+	require.Equal(t, 4, accounter(limited))
 
 	testCollectorReferenceLimits(t, buffer, limits)
-	require.Equal(t, 1, accounter(-6))
+	require.Equal(t, 1, accounter(limited))
 	require.Equal(t, expected, limits)
 }
 
@@ -132,13 +137,75 @@ func testCollectorReferenceLimits(
 		Reference:                  testReference,
 		ReferenceLimits:            limits,
 		Writer:                     buffer,
-		Fillers: []filler.Filler[int8]{
-			filler.NewSet[int8](),
+		Fillers: []filler.Filler{
+			filler.NewSet(
+				func() []int8 {
+					return filler.Span[int8](0, 1)
+				},
+				func() []int8 {
+					return filler.Span[int8](126, 127)
+				},
+			),
 		},
 	}
 
 	err := collector.Collect()
 	require.NoError(t, err)
+}
+
+func TestCollectorUniqueness(t *testing.T) {
+	buffer := bytes.NewBuffer(nil)
+
+	collector := Collector[int8]{
+		ArgsQuantity:               5,
+		NotOverflowedItemsQuantity: 10,
+		OverflowedItemsQuantity:    10,
+		Reference:                  testReference,
+		Writer:                     buffer,
+		Fillers: []filler.Filler{
+			filler.NewSame[int8](1, 100),
+			filler.NewSame[int8](127, 100),
+		},
+	}
+
+	err := collector.Collect()
+	require.Equal(t, ErrNotEnoughDataInFillers, err)
+
+	items := strings.Split(buffer.String(), "\n")
+
+	slices.Sort(items)
+
+	require.Equal(t, slices.Compact(slices.Clone(items)), items)
+
+	// two dataset items + empty string after last separator
+	require.Len(t, items, 3)
+}
+
+func TestCollectorCalcDatasetLength(t *testing.T) {
+	collector := Collector[int8]{
+		NotOverflowedItemsQuantity: 20,
+		OverflowedItemsQuantity:    -1,
+	}
+
+	require.Equal(t, collector.NotOverflowedItemsQuantity, collector.calcDatasetLength())
+
+	collector = Collector[int8]{
+		NotOverflowedItemsQuantity: -1,
+		OverflowedItemsQuantity:    10,
+	}
+
+	require.Equal(t, collector.OverflowedItemsQuantity, collector.calcDatasetLength())
+
+	collector = Collector[int8]{
+		NotOverflowedItemsQuantity: 20,
+		OverflowedItemsQuantity:    10,
+	}
+
+	require.Equal(
+		t,
+		collector.NotOverflowedItemsQuantity+collector.OverflowedItemsQuantity,
+		collector.calcDatasetLength(),
+	)
 }
 
 func TestCollectorError(t *testing.T) {
@@ -152,11 +219,11 @@ func TestCollectorError(t *testing.T) {
 		NotOverflowedItemsQuantity: 1,
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     wrecker.New(wrecker.Opts{}),
+		Writer:                     wrecker.New(wrecker.Opts{Error: io.ErrUnexpectedEOF}),
 	}
 
 	err = collector.Collect()
-	require.Error(t, err)
+	require.Equal(t, io.ErrUnexpectedEOF, err)
 
 	collector = Collector[int8]{
 		ArgsQuantity:               5,
@@ -164,13 +231,13 @@ func TestCollectorError(t *testing.T) {
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
 		Writer:                     bytes.NewBuffer(nil),
-		Fillers: []filler.Filler[int8]{
-			filler.NewFaulty[int8](),
+		Fillers: []filler.Filler{
+			filler.NewFaulty(),
 		},
 	}
 
 	err = collector.Collect()
-	require.Error(t, err)
+	require.Equal(t, filler.ErrFaulty, err)
 
 	collector = Collector[int8]{
 		ArgsQuantity:               2,
@@ -178,13 +245,20 @@ func TestCollectorError(t *testing.T) {
 		OverflowedItemsQuantity:    1 << 16,
 		Reference:                  testReference,
 		Writer:                     bytes.NewBuffer(nil),
-		Fillers: []filler.Filler[int8]{
-			filler.NewSet[int8](),
+		Fillers: []filler.Filler{
+			filler.NewSet(
+				func() []int8 {
+					return filler.Span[int8](0, 1)
+				},
+				func() []int8 {
+					return filler.Span[int8](126, 127)
+				},
+			),
 		},
 	}
 
 	err = collector.Collect()
-	require.Error(t, err)
+	require.Equal(t, ErrNotEnoughDataInFillers, err)
 }
 
 func TestCollectorFileError(t *testing.T) {
@@ -195,17 +269,31 @@ func TestCollectorFileError(t *testing.T) {
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
-		Fillers: []filler.Filler[int8]{
-			filler.NewSet[int8](),
-		},
 	}
 
 	err := collector.CollectToFile(filePath)
 	require.Error(t, err)
 }
 
+func TestWriteItem(t *testing.T) {
+	buffer := bytes.NewBuffer(nil)
+
+	err := WriteItem[int8](buffer, testReference, 1, 1, 1, 1, 1)
+	require.NoError(t, err)
+
+	err = WriteItem[int8](buffer, testReference, -128, -128, 127, 127, 1)
+	require.NoError(t, err)
+
+	require.Equal(t, "false 5 1 1 1 1 1\nfalse -1 -128 -128 127 127 1\n", buffer.String())
+}
+
+func TestWriteItemError(t *testing.T) {
+	err := WriteItem[int8](wrecker.New(wrecker.Opts{}), testReference, 1, 1, 1, 1, 1)
+	require.Error(t, err)
+}
+
 func TestCalcItemLength(t *testing.T) {
-	expected := len("false 18446744073709551615 -127 -127 -127 -127 -127\n")
+	expected := len("false -9223372036854775808 -127 -127 -127 -127 -127\n")
 
 	require.Equal(t, expected, calcMaxItemLength(5))
 }

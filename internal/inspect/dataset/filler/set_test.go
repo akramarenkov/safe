@@ -33,19 +33,13 @@ func TestSetSpan(t *testing.T) {
 func TestSetPanic(t *testing.T) {
 	filler := NewSet[int8](nil)
 
-	const argsQuantity = 1
+	args := make([]int64, 3)
 
-	args := make([]int8, argsQuantity)
-	args64 := make([]int64, argsQuantity)
-
-	require.Panics(t, func() { _, _ = filler.Fill(args, args64) })
+	require.Panics(t, func() { _, _ = filler.Fill(args) })
 }
 
 func testSet(t *testing.T, filler *Set[int8], set []int8) {
-	const argsQuantity = 3
-
-	args := make([]int8, argsQuantity)
-	args64 := make([]int64, argsQuantity)
+	args := make([]int64, 3)
 
 	for fid, first := range set {
 		for sid, second := range set {
@@ -54,7 +48,7 @@ func testSet(t *testing.T, filler *Set[int8], set []int8) {
 					return fid == len(set)-1 && sid == fid && tid == fid
 				}
 
-				completed, err := filler.Fill(args, args64)
+				completed, err := filler.Fill(args)
 				require.NoError(
 					t,
 					err,
@@ -84,18 +78,17 @@ func testSet(t *testing.T, filler *Set[int8], set []int8) {
 					)
 				}
 
-				require.Equal(t, []int8{third, second, first}, args)
 				require.Equal(
 					t,
 					[]int64{int64(third), int64(second), int64(first)},
-					args64,
+					args,
 				)
 			}
 		}
 	}
 
 	for range set {
-		completed, err := filler.Fill(args, args64)
+		completed, err := filler.Fill(args)
 		require.NoError(t, err)
 		require.True(t, completed)
 	}

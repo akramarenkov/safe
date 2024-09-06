@@ -7,9 +7,9 @@ import (
 )
 
 func TestFaulty(t *testing.T) {
-	filler := NewFaulty[int8]()
+	filler := NewFaulty()
 
-	completed, err := filler.Fill(nil, nil)
+	completed, err := filler.Fill(nil)
 	require.Error(t, err)
 	require.False(t, completed)
 }

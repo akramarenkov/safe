@@ -28,7 +28,7 @@ type Inspector[Type types.USI8] struct {
 	// Buffers used to decrease allocations
 	args    *reusable.Buffer[Type]
 	argsDup *reusable.Buffer[Type]
-	items   *reusable.Buffer[[]byte]
+	fields  *reusable.Buffer[[]byte]
 
 	// Result of inspecting
 	result types.Result[Type, Type, int64]
@@ -77,7 +77,7 @@ func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 
 	insp.args = reusable.New[Type](0)
 	insp.argsDup = reusable.New[Type](0)
-	insp.items = reusable.New[[]byte](0)
+	insp.fields = reusable.New[[]byte](0)
 
 	if err := insp.main(); err != nil {
 		return types.Result[Type, Type, int64]{}, err
@@ -90,9 +90,9 @@ func (insp *Inspector[Type]) main() error {
 	scanner := bufio.NewScanner(insp.Reader)
 
 	for scanner.Scan() {
-		items := abytes.Split(scanner.Bytes(), []byte(" "), insp.items.Get)
+		fields := abytes.Split(scanner.Bytes(), []byte(" "), insp.fields.Get)
 
-		fault, reference, args, err := insp.convItems(items)
+		fault, reference, args, err := insp.convFields(fields)
 		if err != nil {
 			return err
 		}
@@ -105,27 +105,27 @@ func (insp *Inspector[Type]) main() error {
 	return scanner.Err()
 }
 
-func (insp *Inspector[Type]) convItems(items [][]byte) (bool, int64, []Type, error) {
-	if len(items) <= referenceFieldsQuantity {
-		return false, 0, nil, ErrNotEnoughDataInElement
+func (insp *Inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, error) {
+	if len(fields) <= referenceFieldsQuantity {
+		return false, 0, nil, ErrNotEnoughDataInItem
 	}
 
-	fault, err := strconv.ParseBool(string(items[0]))
+	fault, err := strconv.ParseBool(string(fields[0]))
 	if err != nil {
 		return false, 0, nil, err
 	}
 
-	reference, err := strconv.ParseInt(string(items[1]), consts.DecimalBase, 64)
+	reference, err := strconv.ParseInt(string(fields[1]), consts.DecimalBase, 64)
 	if err != nil {
 		return false, 0, nil, err
 	}
 
-	items = items[2:]
+	fields = fields[2:]
 
-	args := insp.args.Get(len(items))
+	args := insp.args.Get(len(fields))
 
-	for id, item := range items {
-		arg, err := parseArg[Type](string(item))
+	for id, field := range fields {
+		arg, err := parseArg[Type](string(field))
 		if err != nil {
 			return false, 0, nil, err
 		}
@@ -136,9 +136,9 @@ func (insp *Inspector[Type]) convItems(items [][]byte) (bool, int64, []Type, err
 	return fault, reference, args, nil
 }
 
-func parseArg[Type types.USI8](item string) (Type, error) {
+func parseArg[Type types.USI8](field string) (Type, error) {
 	if is.Signed[Type]() {
-		arg, err := strconv.ParseInt(item, consts.DecimalBase, 8)
+		arg, err := strconv.ParseInt(field, consts.DecimalBase, 8)
 		if err != nil {
 			return 0, err
 		}
@@ -146,7 +146,7 @@ func parseArg[Type types.USI8](item string) (Type, error) {
 		return Type(arg), nil
 	}
 
-	arg, err := strconv.ParseUint(item, consts.DecimalBase, 8)
+	arg, err := strconv.ParseUint(field, consts.DecimalBase, 8)
 	if err != nil {
 		return 0, err
 	}

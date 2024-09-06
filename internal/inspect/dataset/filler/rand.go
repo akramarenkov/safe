@@ -30,22 +30,24 @@ func NewRand[Type types.USI8]() *Rand[Type] {
 // Fills arguments with random values.
 //
 // Data in this filler never ends, so it must be specified last.
-func (rnd *Rand[Type]) Fill(args []Type, args64 []int64) (bool, error) {
+func (rnd *Rand[Type]) Fill(args []int64) (bool, error) {
+	conv := func(value *big.Int) int64 {
+		return value.Int64()
+	}
+
+	if is.Signed[Type]() {
+		conv = func(value *big.Int) int64 {
+			return int64(math.MaxInt8) - value.Int64()
+		}
+	}
+
 	for id := range args {
 		value, err := rand.Int(rand.Reader, rnd.maxRand)
 		if err != nil {
 			return false, err
 		}
 
-		if is.Signed[Type]() {
-			args64[id] = int64(math.MaxInt8) - value.Int64()
-			args[id] = Type(args64[id])
-
-			continue
-		}
-
-		args64[id] = int64(math.MaxUint8) - value.Int64()
-		args[id] = Type(args64[id])
+		args[id] = conv(value)
 	}
 
 	return false, nil

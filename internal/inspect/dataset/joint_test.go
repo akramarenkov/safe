@@ -20,9 +20,6 @@ func TestFile(t *testing.T) {
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
-		Fillers: []filler.Filler[int8]{
-			filler.NewSet[int8](),
-		},
 	}
 
 	err := collector.CollectToFile(filePath)
@@ -43,7 +40,7 @@ func TestFile(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func BenchmarkDataSet(b *testing.B) {
+func BenchmarkDataset(b *testing.B) {
 	const (
 		argsQuantity  = 10
 		itemsQuantity = 1 << 16
@@ -59,7 +56,7 @@ func BenchmarkDataSet(b *testing.B) {
 		OverflowedItemsQuantity:    itemsQuantity,
 		Reference:                  testReference,
 		Writer:                     buffer,
-		Fillers: []filler.Filler[int8]{
+		Fillers: []filler.Filler{
 			filler.NewSet[int8](),
 		},
 	}

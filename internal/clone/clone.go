@@ -2,7 +2,7 @@
 package clone
 
 // Creates a shallow copy of a slice. Slightly faster than append on small number of
-// elements.
+// items.
 func Slice[Type any](slice []Type) []Type {
 	copied := make([]Type, len(slice))
 
