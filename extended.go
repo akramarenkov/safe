@@ -165,11 +165,7 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 // Slower than the [Sub], [Sub3] functions. And overall very slow, be careful.
 //
 // In case of overflow, an error is returned.
-func SubM[Type constraints.Integer](
-	unmodify bool,
-	minuend Type,
-	subtrahends ...Type,
-) (Type, error) {
+func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...Type) (Type, error) {
 	switch len(subtrahends) {
 	case 0:
 		return minuend, nil
