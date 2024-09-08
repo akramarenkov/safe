@@ -1,3 +1,4 @@
+// Internal package with types used when inspecting.
 package types
 
 // Constraints by 8-bit integer types.
