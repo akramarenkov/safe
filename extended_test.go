@@ -270,7 +270,7 @@ func testAddMDataset(t *testing.T, unmodify bool) {
 		return AddM(unmodify, args...)
 	}
 
-	result, err := dataset.InspectFromFile("dataset/addm", inspected)
+	result, err := dataset.InspectFromFile("testdata/addm", inspected)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -308,7 +308,7 @@ func TestAddMCollectDataset(t *testing.T) {
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("dataset/addm")
+	err := collector.CollectToFile("testdata/addm")
 	require.NoError(t, err)
 }
 
@@ -723,7 +723,7 @@ func testSubMDataset(t *testing.T, unmodify bool) {
 		return SubM(unmodify, args[0], args[1:]...)
 	}
 
-	result, err := dataset.InspectFromFile("dataset/subm", inspected)
+	result, err := dataset.InspectFromFile("testdata/subm", inspected)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -761,7 +761,7 @@ func TestSubMCollectDataset(t *testing.T) {
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("dataset/subm")
+	err := collector.CollectToFile("testdata/subm")
 	require.NoError(t, err)
 }
 
@@ -1182,7 +1182,7 @@ func testMulMDataset(t *testing.T, unmodify bool) {
 		return MulM(unmodify, args...)
 	}
 
-	result, err := dataset.InspectFromFile("dataset/mulm", inspected)
+	result, err := dataset.InspectFromFile("testdata/mulm", inspected)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1232,7 +1232,7 @@ func TestMulMCollectDataset(t *testing.T) {
 		},
 	}
 
-	err := collector.CollectToFile("dataset/mulm")
+	err := collector.CollectToFile("testdata/mulm")
 	require.NoError(t, err)
 }
 
@@ -1581,7 +1581,7 @@ func TestDivMDataset(t *testing.T) {
 		return DivM(args[0], args[1:]...)
 	}
 
-	result, err := dataset.InspectFromFile("dataset/divm", inspected)
+	result, err := dataset.InspectFromFile("testdata/divm", inspected)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1635,7 +1635,7 @@ func TestDivMCollectDataset(t *testing.T) {
 		},
 	}
 
-	err := collector.CollectToFile("dataset/divm")
+	err := collector.CollectToFile("testdata/divm")
 	require.NoError(t, err)
 }
 
