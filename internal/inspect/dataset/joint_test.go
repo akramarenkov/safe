@@ -48,7 +48,7 @@ func BenchmarkDataset(b *testing.B) {
 
 	buffer := bytes.NewBuffer(nil)
 
-	buffer.Grow(2 * itemsQuantity * calcMaxItemLength(argsQuantity))
+	buffer.Grow(2 * itemsQuantity * calcMaxItemLength[int8](argsQuantity))
 
 	collector := Collector[int8]{
 		ArgsQuantity:               argsQuantity,
@@ -56,7 +56,7 @@ func BenchmarkDataset(b *testing.B) {
 		OverflowedItemsQuantity:    itemsQuantity,
 		Reference:                  testReference,
 		Writer:                     buffer,
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet[int8](),
 		},
 	}

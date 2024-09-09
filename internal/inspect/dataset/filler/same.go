@@ -24,15 +24,16 @@ func NewSame[Type types.USI8](value Type, max int) *Same[Type] {
 }
 
 // Returns the same item always.
-func (sm *Same[Type]) Fill(args []int64) (bool, error) {
+func (sm *Same[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 	if sm.max <= 0 {
 		return true, nil
 	}
 
 	sm.max--
 
-	for id := range args {
-		args[id] = int64(sm.value)
+	for id := range args64 {
+		args[id] = sm.value
+		args64[id] = int64(sm.value)
 	}
 
 	return false, nil

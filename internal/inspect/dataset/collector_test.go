@@ -46,7 +46,7 @@ func TestCollector(t *testing.T) {
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
 		Writer:                     buffer,
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
 					return filler.Span[int8](0, 1)
@@ -137,7 +137,7 @@ func testCollectorReferenceLimits(
 		Reference:                  testReference,
 		ReferenceLimits:            limits,
 		Writer:                     buffer,
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
 					return filler.Span[int8](0, 1)
@@ -162,7 +162,7 @@ func TestCollectorUniqueness(t *testing.T) {
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
 		Writer:                     buffer,
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSame[int8](1, 100),
 			filler.NewSame[int8](127, 100),
 		},
@@ -231,8 +231,8 @@ func TestCollectorError(t *testing.T) {
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
 		Writer:                     bytes.NewBuffer(nil),
-		Fillers: []filler.Filler{
-			filler.NewFaulty(),
+		Fillers: []filler.Filler[int8]{
+			filler.NewFaulty[int8](),
 		},
 	}
 
@@ -245,7 +245,7 @@ func TestCollectorError(t *testing.T) {
 		OverflowedItemsQuantity:    1 << 16,
 		Reference:                  testReference,
 		Writer:                     bytes.NewBuffer(nil),
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
 					return filler.Span[int8](0, 1)
@@ -292,8 +292,21 @@ func TestWriteItemError(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestCalcItemLength(t *testing.T) {
-	expected := len("false -9223372036854775808 -127 -127 -127 -127 -127\n")
+func TestItem(t *testing.T) {
+	expected := "false -9223372036854775808 -128 -128 -128 -128 -128\n"
 
-	require.Equal(t, expected, calcMaxItemLength(5))
+	actual := calcMaxItemLength[int8](5)
+	require.Len(t, expected, actual)
+
+	buffer := prepareItem[int8](
+		make([]byte, actual),
+		-9223372036854775808,
+		nil,
+		-128,
+		-128,
+		-128,
+		-128,
+		-128,
+	)
+	require.Equal(t, expected, string(buffer))
 }

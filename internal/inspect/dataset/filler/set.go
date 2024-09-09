@@ -31,15 +31,16 @@ func NewSet[Type types.USI8](setters ...func() []Type) *Set[Type] {
 }
 
 // Fills arguments with values ​from set.
-func (bnd *Set[Type]) Fill(args []int64) (bool, error) {
+func (bnd *Set[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 	if bnd.completed {
 		return true, nil
 	}
 
-	bnd.extendIndices(args)
+	bnd.extendIndices(args64)
 
-	for id := range args {
-		args[id] = int64(bnd.set[bnd.indices[id]])
+	for id := range args64 {
+		args[id] = bnd.set[bnd.indices[id]]
+		args64[id] = int64(bnd.set[bnd.indices[id]])
 	}
 
 	if bnd.isIncreasedToMax() {

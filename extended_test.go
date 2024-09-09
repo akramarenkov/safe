@@ -1221,7 +1221,7 @@ func TestMulMCollectDataset(t *testing.T) {
 		ReferenceLimits: map[int64]uint{
 			0: 6,
 		},
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet[int8](),
 			filler.NewSet(
 				func() []int8 {
@@ -1624,7 +1624,7 @@ func TestDivMCollectDataset(t *testing.T) {
 		ReferenceLimits: map[int64]uint{
 			0: 1 << 15,
 		},
-		Fillers: []filler.Filler{
+		Fillers: []filler.Filler[int8]{
 			filler.NewSet[int8](),
 			filler.NewSet(
 				func() []int8 {

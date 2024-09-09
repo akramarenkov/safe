@@ -15,7 +15,8 @@ func TestRand(t *testing.T) {
 func testRandInt(t *testing.T) {
 	const argsQuantity = 3
 
-	args := make([]int64, argsQuantity)
+	args := make([]int8, argsQuantity)
+	args64 := make([]int64, argsQuantity)
 	previous := make([]int64, argsQuantity)
 
 	filler := NewRand[int8]()
@@ -23,14 +24,14 @@ func testRandInt(t *testing.T) {
 	negative := 0
 
 	for range 1 << 16 {
-		copy(previous, args)
+		copy(previous, args64)
 
-		completed, err := filler.Fill(args)
+		completed, err := filler.Fill(args, args64)
 		require.NoError(t, err)
 		require.False(t, completed)
-		require.NotEqual(t, previous, args)
+		require.NotEqual(t, previous, args64)
 
-		for _, arg := range args {
+		for _, arg := range args64 {
 			if arg < 0 {
 				negative++
 			}
@@ -46,20 +47,21 @@ func testRandInt(t *testing.T) {
 func testRandUint(t *testing.T) {
 	const argsQuantity = 3
 
-	args := make([]int64, argsQuantity)
+	args := make([]uint8, argsQuantity)
+	args64 := make([]int64, argsQuantity)
 	previous := make([]int64, argsQuantity)
 
 	filler := NewRand[uint8]()
 
 	for range 1 << 16 {
-		copy(previous, args)
+		copy(previous, args64)
 
-		completed, err := filler.Fill(args)
+		completed, err := filler.Fill(args, args64)
 		require.NoError(t, err)
 		require.False(t, completed)
-		require.NotEqual(t, previous, args)
+		require.NotEqual(t, previous, args64)
 
-		for _, arg := range args {
+		for _, arg := range args64 {
 			require.LessOrEqual(t, arg, int64(math.MaxUint8))
 			require.GreaterOrEqual(t, arg, int64(0))
 		}
@@ -67,12 +69,15 @@ func testRandUint(t *testing.T) {
 }
 
 func BenchmarkRand(b *testing.B) {
-	args := make([]int64, 3)
+	const argsQuantity = 3
 
-	filler := NewRand[uint8]()
+	args := make([]int8, argsQuantity)
+	args64 := make([]int64, argsQuantity)
+
+	filler := NewRand[int8]()
 
 	for range b.N {
-		if _, err := filler.Fill(args); err != nil {
+		if _, err := filler.Fill(args, args64); err != nil {
 			require.NoError(b, err)
 		}
 	}
