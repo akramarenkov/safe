@@ -512,6 +512,60 @@ func BenchmarkSub3(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkSub3UReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSub3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result = first + second + third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSub3OnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSub3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Sub3(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSub3U(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSub3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Sub3U(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkSubM2Args(b *testing.B) {
 	result := int8(0)
 
@@ -619,6 +673,24 @@ func BenchmarkSubMU2Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				result, _ = SubMU(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubMU3Args(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSub3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubMU(first, second, third)
+				}
 			}
 		}
 	}

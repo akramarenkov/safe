@@ -167,6 +167,21 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 	return 0, ErrOverflow
 }
 
+// Subtracts three unsigned integers (subtrahend, deductible from minuend) and
+// determines whether an overflow has occurred or not.
+//
+// Slightly faster than the [Sub3] function.
+//
+// In case of overflow, an error is returned.
+func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Type, error) {
+	interim, err := SubU(minuend, subtrahend)
+	if err != nil {
+		return 0, err
+	}
+
+	return SubU(interim, deductible)
+}
+
 // Subtracts several integers (subtrahends from minuend) and determines whether an
 // overflow has occurred or not.
 //
@@ -226,7 +241,7 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 // Subtracts several unsigned integers (subtrahends from minuend) and determines
 // whether an overflow has occurred or not.
 //
-// Slower than the [SubU] function, faster than the [SubM] function.
+// Slower than the [SubU], [Sub3U] functions, faster than the [SubM] function.
 //
 // In case of overflow, an error is returned.
 func SubMU[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {

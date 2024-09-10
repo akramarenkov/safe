@@ -561,6 +561,34 @@ func testSub3Uint(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
+func TestSub3U(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Sub3U(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1] - args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
 func TestSubM(t *testing.T) {
 	testSubMInt(t, false)
 	testSubMInt(t, true)
