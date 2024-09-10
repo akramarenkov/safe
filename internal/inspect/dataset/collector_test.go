@@ -296,9 +296,9 @@ func TestItem(t *testing.T) {
 	expected := "false -9223372036854775808 -128 -128 -128 -128 -128\n"
 
 	actual := calcMaxItemLength[int8](5)
-	require.Len(t, expected, actual)
+	require.Equal(t, len(expected), actual)
 
-	buffer := prepareItem[int8](
+	item := prepareItem[int8](
 		make([]byte, actual),
 		-9223372036854775808,
 		nil,
@@ -308,5 +308,5 @@ func TestItem(t *testing.T) {
 		-128,
 		-128,
 	)
-	require.Equal(t, expected, string(buffer))
+	require.Equal(t, expected, string(item))
 }

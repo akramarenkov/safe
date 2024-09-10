@@ -2,10 +2,10 @@ package filler
 
 import (
 	"crypto/rand"
-	"math"
 	"math/big"
 
 	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/intspan"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
@@ -21,7 +21,7 @@ type Rand[Type types.USI8] struct {
 // Data in this filler never ends, so it must be specified last.
 func NewRand[Type types.USI8]() *Rand[Type] {
 	rnd := &Rand[Type]{
-		maxRand: big.NewInt(math.MaxUint8 + 1),
+		maxRand: big.NewInt(intspan.MaxUint8 + 1),
 	}
 
 	return rnd
@@ -38,7 +38,7 @@ func (rnd *Rand[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 
 	if is.Signed[Type]() {
 		conv = func(value *big.Int) (Type, int64) {
-			conv := int64(math.MaxInt8) - value.Int64()
+			conv := int64(intspan.MaxInt8) - value.Int64()
 			return Type(conv), conv
 		}
 	}

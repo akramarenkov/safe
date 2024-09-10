@@ -1,5 +1,5 @@
 // Internal package with assist functions that verify variables to corresponds
-// some values.
+// some conditions.
 package is
 
 import (

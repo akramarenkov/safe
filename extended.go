@@ -39,6 +39,20 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
+// Adds three unsigned integers and determines whether an overflow has occurred or not.
+//
+// Slightly faster than the [Add3] function.
+//
+// In case of overflow, an error is returned.
+func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
+	interim, err := AddU(first, second)
+	if err != nil {
+		return 0, err
+	}
+
+	return AddU(interim, third)
+}
+
 // Adds up several integers and determines whether an overflow has occurred or not.
 //
 // The function modifies the variadic input arguments. By default, a copy of
@@ -102,7 +116,7 @@ func sortAddM[Type constraints.Integer](addends []Type) {
 // Adds up several unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Slower than the [AddU] function, faster than the [AddM] function.
+// Slower than the [AddU], [Add3U] functions, faster than the [AddM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {

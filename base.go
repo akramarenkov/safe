@@ -18,7 +18,7 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 	// unsigned numbers, see internal/research/add. For signed numbers it turns out a
 	// little more complicated as indicated in the conditions below
 
-	// When adding positive and negative numbers simultaneously, overflow is impossible
+	// When adding signed numbers of different signs, overflow is impossible
 	switch {
 	case first > 0 && second > 0:
 		if sum < first {
@@ -59,6 +59,7 @@ func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 
 	// When adding or subtracting two integers, only one times overflow is possible
 
+	// When subtracting signed numbers of the same sign, overflow is impossible
 	switch {
 	case subtrahend > 0:
 		if diff > minuend {

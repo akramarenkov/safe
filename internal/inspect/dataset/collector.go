@@ -10,6 +10,7 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/intspan"
 )
 
 // Options of collecting. A reference function and writer must be specified.
@@ -295,11 +296,21 @@ func prepareItem[Type types.USI8](
 
 func calcMaxItemLength[Type types.USI8](argsQuantity int) int {
 	const (
-		maxFaultLen     = len("false")
-		maxReferenceLen = len(" -9223372036854775808")
-		maxArgLen       = len(" -128")
-		maxNewLineLen   = len("\n")
+		maxFaultLen        = len("false")
+		maxReferenceLen    = len(" -9223372036854775808")
+		maxArgSeparatorLen = len(" ")
+		maxNewLineLen      = len("\n")
 	)
 
-	return maxFaultLen + maxReferenceLen + maxArgLen*argsQuantity + maxNewLineLen
+	min, _ := intspan.Get[Type]()
+
+	maxArgLen := len(strconv.FormatInt(int64(min), consts.DecimalBase))
+
+	length := maxFaultLen +
+		maxReferenceLen +
+		maxArgSeparatorLen*argsQuantity +
+		maxArgLen*argsQuantity +
+		maxNewLineLen
+
+	return length
 }

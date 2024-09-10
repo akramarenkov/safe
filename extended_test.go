@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/consts"
+	"github.com/akramarenkov/safe/internal/env"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
@@ -52,6 +53,34 @@ func testAdd3Uint(t *testing.T) {
 
 		Inspected: func(args ...uint8) (uint8, error) {
 			return Add3(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func TestAdd3U(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Add3U(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
@@ -287,7 +316,7 @@ func testAddMDataset(t *testing.T, unmodify bool) {
 }
 
 func TestAddMCollectDataset(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataset) == "" {
+	if os.Getenv(env.CollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -314,7 +343,7 @@ func TestAddMCollectDataset(t *testing.T) {
 
 func TestAddM4Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -378,7 +407,7 @@ func testAddM4ArgsUint(t *testing.T, unmodify bool) {
 
 func TestAddM5Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -740,7 +769,7 @@ func testSubMDataset(t *testing.T, unmodify bool) {
 }
 
 func TestSubMCollectDataset(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataset) == "" {
+	if os.Getenv(env.CollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -767,7 +796,7 @@ func TestSubMCollectDataset(t *testing.T) {
 
 func TestSubM4Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -831,7 +860,7 @@ func testSubM4ArgsUint(t *testing.T, unmodify bool) {
 
 func TestSubM5Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -1199,7 +1228,7 @@ func testMulMDataset(t *testing.T, unmodify bool) {
 }
 
 func TestMulMCollectDataset(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataset) == "" {
+	if os.Getenv(env.CollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -1238,7 +1267,7 @@ func TestMulMCollectDataset(t *testing.T) {
 
 func TestMulM4Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -1302,7 +1331,7 @@ func testMulM4ArgsUint(t *testing.T, unmodify bool) {
 
 func TestMulM5Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -1598,7 +1627,7 @@ func TestDivMDataset(t *testing.T) {
 }
 
 func TestDivMCollectDataset(t *testing.T) {
-	if os.Getenv(consts.EnvCollectDataset) == "" {
+	if os.Getenv(env.CollectDataset) == "" {
 		t.SkipNow()
 	}
 
@@ -1641,7 +1670,7 @@ func TestDivMCollectDataset(t *testing.T) {
 
 func TestDivM4Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -1711,7 +1740,7 @@ func testDivM4ArgsUint(t *testing.T) {
 
 func TestDivM5Args(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 

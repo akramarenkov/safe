@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/consts"
+	"github.com/akramarenkov/safe/internal/env"
 	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/stretchr/testify/require"
 )
@@ -41,7 +41,7 @@ func TestIsValid5(t *testing.T) {
 
 func TestDo5(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
@@ -219,7 +219,7 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 
 func BenchmarkDo5(b *testing.B) {
 	// It is impossible to test in automatic mode in an acceptable time
-	if os.Getenv(consts.EnvEnableLongTest) == "" {
+	if os.Getenv(env.EnableLongTest) == "" {
 		b.SkipNow()
 	}
 

@@ -123,6 +123,60 @@ func BenchmarkAdd3(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkAdd3UReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAdd3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result = first + second + third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAdd3OnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAdd3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Add3(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAdd3U(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAdd3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Add3U(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkAddM2Args(b *testing.B) {
 	result := int8(0)
 
@@ -230,6 +284,24 @@ func BenchmarkAddUM2Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				result, _ = AddUM(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddUM3Args(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAdd3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddUM(first, second, third)
+				}
 			}
 		}
 	}
@@ -1165,6 +1237,202 @@ func BenchmarkPow(b *testing.B) {
 
 	for range b.N {
 		result, _ = Pow(uint64(14), 14)
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDivReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) / third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDiv(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddDiv(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDivUReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAddDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) / third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDivOnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAddDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddDiv(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDivU(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAddDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddDivU(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDivReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanSubDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) / third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDiv(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanSubDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubDiv(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDivUReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSubDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) / third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDivOnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSubDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubDiv(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDivU(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanSubDivU()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubDivU(first, second, third)
+				}
+			}
+		}
 	}
 
 	require.NotNil(b, result)

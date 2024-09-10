@@ -5,14 +5,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/consts"
+	"github.com/akramarenkov/safe/internal/env"
 )
 
 // Benchmark spans used for benchmarking with more or less full and uniform coverage.
 
 // In order not to create a false full coverage in which there are no error checks.
 func testBenchSpanSkip(t *testing.T) {
-	if os.Getenv(consts.EnvEnableBenchSpanTest) == "" {
+	if os.Getenv(env.EnableBenchSpanTest) == "" {
 		t.SkipNow()
 	}
 }
@@ -65,6 +65,25 @@ func TestBenchSpanAdd3(t *testing.T) {
 		for _, second := range level2 {
 			for _, third := range level3 {
 				_, _ = Add3(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanAdd3U() ([]uint8, []uint8, []uint8) {
+	span := []uint8{255, 1, 2, 3}
+	return span, span, span
+}
+
+func TestBenchSpanAdd3U(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanAdd3U()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = Add3U(first, second, third)
 			}
 		}
 	}
@@ -473,5 +492,81 @@ func TestBenchSpanFToI(t *testing.T) {
 
 	for _, number := range span {
 		_, _ = FToI[int](number)
+	}
+}
+
+func benchSpanAddDiv() ([]int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127, 0, -1, 1}
+	return span, span, span
+}
+
+func TestBenchSpanAddDiv(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = AddDiv(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanAddDivU() ([]uint8, []uint8, []uint8) {
+	span := []uint8{255, 254, 0, 1, 2}
+	return span, span, span
+}
+
+func TestBenchSpanAddDivU(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanAddDivU()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = AddDivU(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanSubDiv() ([]int8, []int8, []int8) {
+	span := []int8{127, 126, -128, -127, 0, -1, 1}
+	return span, span, span
+}
+
+func TestBenchSpanSubDiv(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanSubDiv()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = SubDiv(first, second, third)
+			}
+		}
+	}
+}
+
+func benchSpanSubDivU() ([]uint8, []uint8, []uint8) {
+	span := []uint8{255, 254, 0, 1, 2}
+	return span, span, span
+}
+
+func TestBenchSpanSubDivU(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanSubDivU()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = SubDivU(first, second, third)
+			}
+		}
 	}
 }
