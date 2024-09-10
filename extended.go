@@ -119,7 +119,7 @@ func sortAddM[Type constraints.Integer](addends []Type) {
 // Slower than the [AddU], [Add3U] functions, faster than the [AddM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
-func AddUM[Type constraints.Unsigned](addends ...Type) (Type, error) {
+func AddMU[Type constraints.Unsigned](addends ...Type) (Type, error) {
 	if len(addends) == 0 {
 		return 0, ErrMissingArguments
 	}
@@ -229,7 +229,7 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 // Slower than the [SubU] function, faster than the [SubM] function.
 //
 // In case of overflow, an error is returned.
-func SubUM[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
+func SubMU[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
 	diff := minuend
 
 	for _, subtrahend := range subtrahends {
@@ -347,7 +347,7 @@ func sortMulM[Type constraints.Integer](factors []Type) {
 // Faster than the [MulM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
-func MulUM[Type constraints.Unsigned](factors ...Type) (Type, error) {
+func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	if len(factors) == 0 {
 		return 0, ErrMissingArguments
 	}

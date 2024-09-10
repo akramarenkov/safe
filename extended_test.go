@@ -469,11 +469,11 @@ func testAddM5ArgsUint(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddUM(t *testing.T) {
+func TestAddMU(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: AddUM[uint8],
+		Inspected: AddMU[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -495,8 +495,8 @@ func TestAddUM(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddUMError(t *testing.T) {
-	_, err := AddUM[uint]()
+func TestAddMUError(t *testing.T) {
+	_, err := AddMU[uint]()
 	require.Error(t, err)
 }
 
@@ -922,8 +922,8 @@ func testSubM5ArgsUint(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubUM(t *testing.T) {
-	diff, err := SubUM(uint(math.MaxUint))
+func TestSubMU(t *testing.T) {
+	diff, err := SubMU(uint(math.MaxUint))
 	require.NoError(t, err)
 	require.Equal(t, uint(math.MaxUint), diff)
 
@@ -931,7 +931,7 @@ func TestSubUM(t *testing.T) {
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
-			return SubUM(args[0], args[1], args[2])
+			return SubMU(args[0], args[1], args[2])
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] - args[1] - args[2], nil
@@ -1393,11 +1393,11 @@ func testMulM5ArgsUint(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulUM(t *testing.T) {
+func TestMulMU(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: MulUM[uint8],
+		Inspected: MulMU[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},
@@ -1419,8 +1419,8 @@ func TestMulUM(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulUMError(t *testing.T) {
-	_, err := MulUM[uint]()
+func TestMulMUError(t *testing.T) {
+	_, err := MulMU[uint]()
 	require.Error(t, err)
 }
 

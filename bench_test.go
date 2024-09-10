@@ -275,7 +275,7 @@ func benchmarkAddM(b *testing.B, unmodify bool) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkAddUM2Args(b *testing.B) {
+func BenchmarkAddMU2Args(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2 := benchSpanAddU()
@@ -283,7 +283,7 @@ func BenchmarkAddUM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = AddUM(first, second)
+				result, _ = AddMU(first, second)
 			}
 		}
 	}
@@ -291,7 +291,7 @@ func BenchmarkAddUM2Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkAddUM3Args(b *testing.B) {
+func BenchmarkAddMU3Args(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAdd3U()
@@ -300,7 +300,7 @@ func BenchmarkAddUM3Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				for _, third := range level3 {
-					result, _ = AddUM(first, second, third)
+					result, _ = AddMU(first, second, third)
 				}
 			}
 		}
@@ -309,10 +309,10 @@ func BenchmarkAddUM3Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkAddUMReference(b *testing.B) {
+func BenchmarkAddMUReference(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanAddUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -336,7 +336,7 @@ func BenchmarkAddUMReference(b *testing.B) {
 func BenchmarkAddMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanAddUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -365,10 +365,10 @@ func BenchmarkAddMOnlyUnsigned(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkAddUM(b *testing.B) {
+func BenchmarkAddMU(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanAddUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -377,7 +377,7 @@ func BenchmarkAddUM(b *testing.B) {
 					for _, fourth := range level4 {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
-								result, _ = AddUM(
+								result, _ = AddMU(
 									first,
 									second,
 									third,
@@ -610,7 +610,7 @@ func benchmarkSubM(b *testing.B, unmodify bool) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkSubUM2Args(b *testing.B) {
+func BenchmarkSubMU2Args(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2 := benchSpanSubU()
@@ -618,7 +618,7 @@ func BenchmarkSubUM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = SubUM(first, second)
+				result, _ = SubMU(first, second)
 			}
 		}
 	}
@@ -626,10 +626,10 @@ func BenchmarkSubUM2Args(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkSubUMReference(b *testing.B) {
+func BenchmarkSubMUReference(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanSubUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -653,7 +653,7 @@ func BenchmarkSubUMReference(b *testing.B) {
 func BenchmarkSubMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanSubUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -682,10 +682,10 @@ func BenchmarkSubMOnlyUnsigned(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkSubUM(b *testing.B) {
+func BenchmarkSubMU(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanSubUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -694,7 +694,7 @@ func BenchmarkSubUM(b *testing.B) {
 					for _, fourth := range level4 {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
-								result, _ = SubUM(
+								result, _ = SubMU(
 									first,
 									second,
 									third,
@@ -879,10 +879,10 @@ func benchmarkMulM(b *testing.B, unmodify bool) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulUMReference(b *testing.B) {
+func BenchmarkMulMUReference(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanMulUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -906,7 +906,7 @@ func BenchmarkMulUMReference(b *testing.B) {
 func BenchmarkMulMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanMulUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -935,10 +935,10 @@ func BenchmarkMulMOnlyUnsigned(b *testing.B) {
 	require.NotNil(b, result)
 }
 
-func BenchmarkMulUM(b *testing.B) {
+func BenchmarkMulMU(b *testing.B) {
 	result := uint8(0)
 
-	level1, level2, level3, level4, level5, level6 := benchSpanMulUM()
+	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -947,7 +947,7 @@ func BenchmarkMulUM(b *testing.B) {
 					for _, fourth := range level4 {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
-								result, _ = MulUM(
+								result, _ = MulMU(
 									first,
 									second,
 									third,
