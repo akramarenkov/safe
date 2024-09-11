@@ -14,7 +14,7 @@ import (
 )
 
 // Options of collecting. A reference function and writer must be specified.
-type Collector[Type types.USI8] struct {
+type Collector[Type types.UpToUSI32] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
 	// Quantity of dataset items which not produce overflow of inspected function
@@ -94,7 +94,7 @@ func (clctr Collector[Type]) Collect() error {
 
 	clctr.ReferenceLimits = maps.Clone(clctr.ReferenceLimits)
 
-	clctr.min, clctr.max = inspect.PickUpSpan[Type, int64]()
+	clctr.min, clctr.max = inspect.ConvSpan[Type, int64]()
 
 	clctr.args = make([]Type, clctr.ArgsQuantity)
 	clctr.args64 = make([]int64, clctr.ArgsQuantity)
@@ -271,7 +271,7 @@ func WriteItem[Type types.USI8](
 	return nil
 }
 
-func prepareItem[Type types.USI8](
+func prepareItem[Type types.UpToUSI32](
 	buffer []byte,
 	reference int64,
 	fault error,
@@ -294,7 +294,7 @@ func prepareItem[Type types.USI8](
 	return buffer
 }
 
-func calcMaxItemLength[Type types.USI8](argsQuantity int) int {
+func calcMaxItemLength[Type types.UpToUSI32](argsQuantity int) int {
 	const (
 		maxFaultLen        = len("false")
 		maxReferenceLen    = len(" -9223372036854775808")
@@ -302,7 +302,7 @@ func calcMaxItemLength[Type types.USI8](argsQuantity int) int {
 		maxNewLineLen      = len("\n")
 	)
 
-	min, _ := intspan.Get[Type]()
+	min, _, _ := intspan.Get[Type]()
 
 	maxArgLen := len(strconv.FormatInt(int64(min), consts.DecimalBase))
 

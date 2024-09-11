@@ -11,10 +11,10 @@ var (
 )
 
 // Filler that always returns an error.
-type Faulty[Type types.USI8] struct{}
+type Faulty[Type types.UpToUSI32] struct{}
 
 // Creates filler that always returns an error.
-func NewFaulty[Type types.USI8]() *Faulty[Type] {
+func NewFaulty[Type types.UpToUSI32]() *Faulty[Type] {
 	return &Faulty[Type]{}
 }
 

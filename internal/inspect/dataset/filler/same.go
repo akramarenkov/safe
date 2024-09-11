@@ -5,7 +5,7 @@ import (
 )
 
 // Filler that always returns the same item.
-type Same[Type types.USI8] struct {
+type Same[Type types.UpToUSI32] struct {
 	max   int
 	value Type
 }
@@ -14,7 +14,7 @@ type Same[Type types.USI8] struct {
 //
 // Arguments are filled with 'value' value, after 'max' number of calls method Fill
 // will stop filling arguments and will return true.
-func NewSame[Type types.USI8](value Type, max int) *Same[Type] {
+func NewSame[Type types.UpToUSI32](value Type, max int) *Same[Type] {
 	sm := &Same[Type]{
 		max:   max,
 		value: value,

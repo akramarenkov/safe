@@ -5,7 +5,11 @@ import (
 )
 
 // Returns values from begin to end inclusive.
-func Span[Type types.USI8](begin Type, end Type) []Type {
+//
+// Allocating slices larger than 2^16 for tests is expensive.
+func Span[Type types.UpToUSI16](begin Type, end Type) []Type {
+	// The target type is obviously smaller than int type, so there can be no integer
+	// overflow here
 	span := make([]Type, 0, int(end)-int(begin)+1)
 
 	for value := begin; value < end; value++ {

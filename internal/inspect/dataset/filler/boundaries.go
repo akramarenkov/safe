@@ -7,8 +7,8 @@ import (
 )
 
 // Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
-func Boundaries[Type types.USI8]() []Type {
-	min, max := intspan.Get[Type]()
+func Boundaries[Type types.UpToUSI32]() []Type {
+	min, max, _ := intspan.Get[Type]()
 
 	zero := Type(0)
 

@@ -11,6 +11,11 @@ type USI16 interface {
 	~int16 | ~uint16
 }
 
+// Constraints by up to 16-bit integer types.
+type UpToUSI16 interface {
+	USI8 | USI16
+}
+
 // Constraints by 32-bit integer types.
 type USI32 interface {
 	~int32 | ~uint32

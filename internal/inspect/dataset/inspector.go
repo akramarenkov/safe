@@ -11,11 +11,12 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/intspan"
 	"github.com/akramarenkov/safe/internal/is"
 )
 
 // Options of inspecting. A inspected function and reader must be specified.
-type Inspector[Type types.USI8] struct {
+type Inspector[Type types.UpToUSI32] struct {
 	// Inspected function
 	Inspected func(args ...Type) (Type, error)
 	// Reader associated with dataset source
@@ -48,7 +49,7 @@ func (insp Inspector[Type]) IsValid() error {
 }
 
 // Performs inspecting with dataset from file.
-func InspectFromFile[Type types.USI8](
+func InspectFromFile[Type types.UpToUSI32](
 	path string,
 	inspected func(args ...Type) (Type, error),
 ) (types.Result[Type, Type, int64], error) {
@@ -73,7 +74,7 @@ func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 		return types.Result[Type, Type, int64]{}, err
 	}
 
-	insp.min, insp.max = inspect.PickUpSpan[Type, int64]()
+	insp.min, insp.max = inspect.ConvSpan[Type, int64]()
 
 	insp.args = reusable.New[Type](0)
 	insp.argsDup = reusable.New[Type](0)
@@ -136,9 +137,11 @@ func (insp *Inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 	return fault, reference, args, nil
 }
 
-func parseArg[Type types.USI8](field string) (Type, error) {
+func parseArg[Type types.UpToUSI32](field string) (Type, error) {
+	_, _, bitSize := intspan.Get[Type]()
+
 	if is.Signed[Type]() {
-		arg, err := strconv.ParseInt(field, consts.DecimalBase, 8)
+		arg, err := strconv.ParseInt(field, consts.DecimalBase, bitSize)
 		if err != nil {
 			return 0, err
 		}
@@ -146,7 +149,7 @@ func parseArg[Type types.USI8](field string) (Type, error) {
 		return Type(arg), nil
 	}
 
-	arg, err := strconv.ParseUint(field, consts.DecimalBase, 8)
+	arg, err := strconv.ParseUint(field, consts.DecimalBase, bitSize)
 	if err != nil {
 		return 0, err
 	}

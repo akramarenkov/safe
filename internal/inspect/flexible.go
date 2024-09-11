@@ -52,7 +52,7 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) Do() (
 		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
 	}
 
-	opts.min, opts.max = PickUpSpan[TypeTo, TypeRef]()
+	opts.min, opts.max = ConvSpan[TypeTo, TypeRef]()
 
 	opts.argsFrom = make([]TypeFrom, opts.LoopsQuantity)
 	opts.argsRef = make([]TypeRef, opts.LoopsQuantity)
@@ -175,7 +175,7 @@ func getSpan[TypeFrom types.UpToUSI32, TypeRef types.SIF64](
 	span func() (TypeFrom, TypeFrom),
 ) (TypeRef, TypeRef) {
 	if span == nil {
-		return PickUpSpan[TypeFrom, TypeRef]()
+		return ConvSpan[TypeFrom, TypeRef]()
 	}
 
 	begin, end := span()

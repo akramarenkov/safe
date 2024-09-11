@@ -42,7 +42,7 @@ func (opts Opts5[Type]) Do() (types.Result[Type, Type, int64], error) {
 		return types.Result[Type, Type, int64]{}, err
 	}
 
-	opts.min, opts.max = PickUpSpan[Type, int64]()
+	opts.min, opts.max = ConvSpan[Type, int64]()
 
 	return opts.main(), nil
 }
