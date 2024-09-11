@@ -90,30 +90,6 @@ func TestDoError(t *testing.T) {
 
 	_, err := opts.Do()
 	require.Error(t, err)
-
-	opts = Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-		Inspected:     testInspected3Int,
-		Reference:     testReference3,
-		Span: func() (int64, int64) {
-			return -129, 127
-		},
-	}
-
-	_, err = opts.Do()
-	require.Error(t, err)
-
-	opts = Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-		Inspected:     testInspected3Int,
-		Reference:     testReference3,
-		Span: func() (int64, int64) {
-			return -128, 128
-		},
-	}
-
-	_, err = opts.Do()
-	require.Error(t, err)
 }
 
 func TestDoNegativeConclusion(t *testing.T) {
@@ -260,8 +236,7 @@ func testLoopInt(t *testing.T) {
 		return false
 	}
 
-	stop, err := loop[int64](levels, nil, do)
-	require.NoError(t, err)
+	stop := loop[int64](levels, nil, do)
 	require.False(t, stop)
 }
 
@@ -280,8 +255,7 @@ func testLoopUint(t *testing.T) {
 		return false
 	}
 
-	stop, err := loop[int64](levels, nil, do)
-	require.NoError(t, err)
+	stop := loop[int64](levels, nil, do)
 	require.False(t, stop)
 }
 
@@ -304,12 +278,11 @@ func testLoopSpanInt(t *testing.T) {
 		return false
 	}
 
-	span := func() (int64, int64) {
+	span := func() (int8, int8) {
 		return begin, end
 	}
 
-	stop, err := loop(levels, span, do)
-	require.NoError(t, err)
+	stop := loop[int64](levels, span, do)
 	require.False(t, stop)
 }
 
@@ -332,12 +305,11 @@ func testLoopSpanUint(t *testing.T) {
 		return false
 	}
 
-	span := func() (int64, int64) {
+	span := func() (uint8, uint8) {
 		return begin, end
 	}
 
-	stop, err := loop(levels, span, do)
-	require.NoError(t, err)
+	stop := loop[int64](levels, span, do)
 	require.False(t, stop)
 }
 
@@ -356,8 +328,7 @@ func testLoopFloatU16(t *testing.T) {
 		return false
 	}
 
-	stop, err := loop[float64](levels, nil, do)
-	require.NoError(t, err)
+	stop := loop[float64](levels, nil, do)
 	require.False(t, stop)
 }
 
@@ -381,8 +352,7 @@ func TestLoopFloatU32(t *testing.T) {
 		return false
 	}
 
-	stop, err := loop[float64](levels, nil, do)
-	require.NoError(t, err)
+	stop := loop[float64](levels, nil, do)
 	require.False(t, stop)
 }
 
@@ -397,12 +367,10 @@ func TestLoopZero(t *testing.T) {
 		return false
 	}
 
-	stop, err := loop[int64](0, nil, do, 1)
-	require.NoError(t, err)
+	stop := loop[int64](0, nil, do, 1)
 	require.False(t, stop)
 
-	stop, err = loop[int64](0, nil, doU, 1)
-	require.NoError(t, err)
+	stop = loop[int64](0, nil, doU, 1)
 	require.False(t, stop)
 }
 
@@ -423,13 +391,11 @@ func TestLoopStop(t *testing.T) {
 		return args[1] == 1
 	}
 
-	stop, err := loop[int64](2, nil, do)
-	require.NoError(t, err)
+	stop := loop[int64](2, nil, do)
 	require.True(t, stop)
 	require.Equal(t, expected, actual)
 
-	stop, err = loop[int64](2, nil, doU)
-	require.NoError(t, err)
+	stop = loop[int64](2, nil, doU)
 	require.True(t, stop)
 	require.Equal(t, expectedU, actualU)
 }
@@ -451,8 +417,6 @@ func BenchmarkDo(b *testing.B) {
 		result, err = opts.Do()
 	}
 
-	b.StopTimer()
-
 	require.NoError(b, err)
 	require.NoError(b, result.Conclusion)
 }
@@ -471,10 +435,8 @@ func BenchmarkLoop(b *testing.B) {
 	}
 
 	for range b.N {
-		_, _ = loop[int64](3, nil, do)
+		_ = loop[int64](3, nil, do)
 	}
-
-	b.StopTimer()
 
 	require.NotZero(b, quantity)
 }
@@ -504,8 +466,6 @@ func BenchmarkLoopFixed(b *testing.B) {
 		}
 	}
 
-	b.StopTimer()
-
 	require.NotZero(b, quantity)
 }
 
@@ -533,8 +493,6 @@ func BenchmarkLoopFixedArgsFixed(b *testing.B) {
 			}
 		}
 	}
-
-	b.StopTimer()
 
 	require.NotZero(b, quantity)
 }

@@ -223,8 +223,6 @@ func BenchmarkDo4(b *testing.B) {
 		result, err = opts.Do()
 	}
 
-	b.StopTimer()
-
 	require.NoError(b, err)
 	require.NoError(b, result.Conclusion)
 }

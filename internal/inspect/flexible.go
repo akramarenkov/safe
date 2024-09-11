@@ -16,7 +16,7 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	// Function that returns a reference value
 	Reference func(args ...TypeRef) (TypeRef, error)
 	// Optional function that customize arg values span
-	Span func() (TypeRef, TypeRef)
+	Span func() (TypeFrom, TypeFrom)
 
 	// Minimum and maximum value for specified TypeTo type
 	min TypeRef
@@ -57,19 +57,13 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) Do() (
 	opts.argsFrom = make([]TypeFrom, opts.LoopsQuantity)
 	opts.argsRef = make([]TypeRef, opts.LoopsQuantity)
 
-	if err := opts.main(); err != nil {
-		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
-	}
+	opts.main()
 
 	return opts.result, nil
 }
 
-func (opts *Opts[TypeFrom, TypeTo, TypeRef]) main() error {
-	if _, err := loop(opts.LoopsQuantity, opts.Span, opts.do); err != nil {
-		return err
-	}
-
-	return nil
+func (opts *Opts[TypeFrom, TypeTo, TypeRef]) main() {
+	_ = loop[TypeRef](opts.LoopsQuantity, opts.Span, opts.do)
 }
 
 func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
@@ -144,57 +138,47 @@ func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 
 func loop[TypeRef types.SIF64, TypeFrom types.UpToUSI32](
 	level uint,
-	span func() (TypeRef, TypeRef),
+	span func() (TypeFrom, TypeFrom),
 	do func(args ...TypeFrom) bool,
 	args ...TypeFrom,
-) (bool, error) {
+) bool {
 	if level == 0 {
-		return do(args...), nil
+		return do(args...)
 	}
 
 	level--
 
 	args = append(args, 0)
 
-	begin, end, err := getSpan[TypeFrom](span)
-	if err != nil {
-		return false, err
-	}
+	begin, end := getSpan[TypeFrom, TypeRef](span)
 
 	for number := begin; number <= end; number++ {
 		args[len(args)-1] = TypeFrom(number)
 
 		if level == 0 {
 			if stop := do(args...); stop {
-				return true, nil
+				return true
 			}
 
 			continue
 		}
 
-		// The only error that can occur will be detected on the first (topmost) call
-		if stop, _ := loop(level, span, do, args...); stop {
-			return true, nil
+		if stop := loop[TypeRef](level, span, do, args...); stop {
+			return true
 		}
 	}
 
-	return false, nil
+	return false
 }
 
 func getSpan[TypeFrom types.UpToUSI32, TypeRef types.SIF64](
-	span func() (TypeRef, TypeRef),
-) (TypeRef, TypeRef, error) {
-	begin, end := PickUpSpan[TypeFrom, TypeRef]()
-
+	span func() (TypeFrom, TypeFrom),
+) (TypeRef, TypeRef) {
 	if span == nil {
-		return begin, end, nil
+		return PickUpSpan[TypeFrom, TypeRef]()
 	}
 
-	beginCustom, endCustom := span()
+	begin, end := span()
 
-	if beginCustom < begin || endCustom > end {
-		return 0, 0, ErrInvalidCustomSpan
-	}
-
-	return beginCustom, endCustom, nil
+	return TypeRef(begin), TypeRef(end)
 }

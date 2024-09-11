@@ -1937,7 +1937,7 @@ func TestPow(t *testing.T) {
 
 			return reference, nil
 		},
-		Span: func() (float64, float64) {
+		Span: func() (int32, int32) {
 			return math.MinInt8, math.MaxInt8
 		},
 	}
