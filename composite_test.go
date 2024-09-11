@@ -77,10 +77,6 @@ func testAddDivUint(t *testing.T) {
 }
 
 func TestAddDivU(t *testing.T) {
-	testAddDivU(t)
-}
-
-func testAddDivU(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
