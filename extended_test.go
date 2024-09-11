@@ -1043,6 +1043,34 @@ func testMul3Uint(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
+func TestMul3U(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Mul3U(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1] * args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
 func TestMulM(t *testing.T) {
 	testMulMInt(t, false)
 	testMulMInt(t, true)

@@ -853,6 +853,60 @@ func BenchmarkMul3(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkMul3UReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanMul3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result = first * second * third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkMul3OnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanMul3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Mul3(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkMul3U(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanMul3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = Mul3U(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkMulM2Args(b *testing.B) {
 	result := int8(0)
 
@@ -943,6 +997,24 @@ func benchmarkMulM(b *testing.B, unmodify bool) {
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkMulMU3Args(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanMul3U()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = MulMU(first, second, third)
 				}
 			}
 		}

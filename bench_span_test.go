@@ -327,6 +327,25 @@ func TestBenchSpanMul3(t *testing.T) {
 	}
 }
 
+func benchSpanMul3U() ([]uint8, []uint8, []uint8) {
+	span := []uint8{0, 255, 1, 2, 3}
+	return span, span, span
+}
+
+func TestBenchSpanMul3U(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanMul3U()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = Mul3U(first, second, third)
+			}
+		}
+	}
+}
+
 func benchSpanMulM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
 	span := []int8{0, 2, -128, -1, 3, 1, 1}
 	return span, span, span, span, span, span

@@ -287,6 +287,25 @@ func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
+// Multiplies three unsigned integers and determines whether an overflow has occurred or
+// not.
+//
+// Slightly faster than the [Mul3] function.
+//
+// In case of overflow, an error is returned.
+func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
+	if third == 0 {
+		return 0, nil
+	}
+
+	interim, err := Mul(first, second)
+	if err != nil {
+		return 0, err
+	}
+
+	return Mul(interim, third)
+}
+
 // Multiplies several integers and determines whether an overflow has occurred or not.
 //
 // The function modifies the variadic input arguments. By default, a copy of
@@ -359,7 +378,7 @@ func sortMulM[Type constraints.Integer](factors []Type) {
 // Multiplies several unsigned integers and determines whether an overflow has
 // occurred or not.
 //
-// Faster than the [MulM] function.
+// Slower than the [Mul3U] function, faster than the [MulM] function.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
