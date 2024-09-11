@@ -293,6 +293,11 @@ func TestWriteItemError(t *testing.T) {
 }
 
 func TestItem(t *testing.T) {
+	testItemInt(t)
+	testItemUint(t)
+}
+
+func testItemInt(t *testing.T) {
 	expected := "false -9223372036854775808 -128 -128 -128 -128 -128\n"
 
 	actual := calcMaxItemLength[int8](5)
@@ -307,6 +312,25 @@ func TestItem(t *testing.T) {
 		-128,
 		-128,
 		-128,
+	)
+	require.Equal(t, expected, string(item))
+}
+
+func testItemUint(t *testing.T) {
+	expected := "false -9223372036854775808 255 255 255 255 255\n"
+
+	actual := calcMaxItemLength[uint8](5)
+	require.Equal(t, len(expected), actual)
+
+	item := prepareItem[uint8](
+		make([]byte, actual),
+		-9223372036854775808,
+		nil,
+		255,
+		255,
+		255,
+		255,
+		255,
 	)
 	require.Equal(t, expected, string(item))
 }

@@ -302,9 +302,12 @@ func calcMaxItemLength[Type types.UpToUSI32](argsQuantity int) int {
 		maxNewLineLen      = len("\n")
 	)
 
-	min, _, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
-	maxArgLen := len(strconv.FormatInt(int64(min), consts.DecimalBase))
+	maxArgLen := max(
+		len(strconv.FormatInt(int64(minimum), consts.DecimalBase)),
+		len(strconv.FormatInt(int64(maximum), consts.DecimalBase)),
+	)
 
 	length := maxFaultLen +
 		maxReferenceLen +
