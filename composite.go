@@ -21,7 +21,7 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 
 	// If overflow occurs during addition, the addition arguments have the same signs
 
-	min, max := intspan.Get[Type]()
+	min, max, _ := intspan.Get[Type]()
 
 	overflowed := first + second
 
@@ -163,7 +163,7 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 	// If an overflow occurs during subtraction and the subtraction arguments are
 	// signed, then they have different signs
 
-	min, max := intspan.Get[Type]()
+	min, max, _ := intspan.Get[Type]()
 
 	overflowed := minuend - subtrahend
 
