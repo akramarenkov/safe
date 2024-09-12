@@ -1564,6 +1564,46 @@ func BenchmarkSubDiv(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkSubDivRemReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanSubDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) % third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkSubDivRem(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanSubDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = SubDivRem(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkSubDivUReference(b *testing.B) {
 	result := uint8(0)
 

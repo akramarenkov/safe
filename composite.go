@@ -219,7 +219,9 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 			return 0, err
 		}
 
-		return interim + (rm+re)/divisor, nil
+		quotient := interim + (rm+re)/divisor
+
+		return quotient, nil
 	}
 
 	if is.Min(divisor) {
@@ -255,7 +257,65 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 		return 0, err
 	}
 
-	return interim + (rm+re)/divisor, nil
+	quotient := interim + (rm+re)/divisor
+
+	return quotient, nil
+}
+
+// Calculates the remainder of dividing the difference of two integers by divisor and
+// determines whether an overflow has occurred or not.
+//
+// In case of overflow or divisor equal to zero, an error is returned.
+func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor Type) (Type, error) {
+	if divisor == 0 {
+		return 0, ErrDivisionByZero
+	}
+
+	if diff, err := Sub(minuend, subtrahend); err == nil {
+		return diff % divisor, nil
+	}
+
+	if !is.Signed[Type]() {
+		excess := subtrahend - minuend
+
+		if excess%divisor == 0 {
+			return 0, nil
+		}
+
+		return 0, ErrOverflow
+	}
+
+	min, max, _ := intspan.Get[Type]()
+
+	overflowed := minuend - subtrahend
+
+	if subtrahend > 0 {
+		excess := -(max - overflowed + 1)
+
+		rm := min % divisor
+		re := excess % divisor
+
+		remainder := (rm + re) % divisor
+
+		return remainder, nil
+	}
+
+	if is.Min(divisor) {
+		return overflowed - divisor, nil
+	}
+
+	excess := -(min - overflowed) + 1
+
+	rm := max % divisor
+	re := excess % divisor
+
+	if excess < 0 {
+		re = -re
+	}
+
+	remainder := (rm + re) % divisor
+
+	return remainder, nil
 }
 
 // Calculates the quotient of dividing the difference of two unsigned integers by
