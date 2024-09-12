@@ -20,11 +20,11 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 
 	// When adding signed numbers of different signs, overflow is impossible
 	switch {
-	case first > 0 && second > 0:
+	case first|second > 0: // first > 0 && second > 0
 		if sum < first {
 			return 0, ErrOverflow
 		}
-	case first < 0 && second < 0:
+	case first&second < 0: // first < 0 && second < 0
 		if sum > first {
 			return 0, ErrOverflow
 		}
