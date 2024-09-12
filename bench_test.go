@@ -1426,6 +1426,46 @@ func BenchmarkAddDiv(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkAddDivRemReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + second) % third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddDivRem(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddDivRem(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkAddDivUReference(b *testing.B) {
 	result := uint8(0)
 

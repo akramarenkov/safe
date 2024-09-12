@@ -552,6 +552,20 @@ func TestBenchSpanAddDiv(t *testing.T) {
 	}
 }
 
+func TestBenchSpanAddDivRem(t *testing.T) {
+	testBenchSpanSkip(t)
+
+	level1, level2, level3 := benchSpanAddDiv()
+
+	for _, first := range level1 {
+		for _, second := range level2 {
+			for _, third := range level3 {
+				_, _ = AddDivRem(first, second, third)
+			}
+		}
+	}
+}
+
 func benchSpanAddDivU() ([]uint8, []uint8, []uint8) {
 	span := []uint8{255, 254, 0, 1, 2}
 	return span, span, span

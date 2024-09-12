@@ -44,9 +44,6 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 			// If the divisor is equal to the minimum (negative) value for the given
 			// type, then when dividing the sum of two positive arguments (in case of
 			// overflow during addition), the result is always -1
-			//
-			// For the future: the remainder of the division is equal to
-			// overflowed - divisor
 			return -Type(1), nil
 		}
 
@@ -65,8 +62,6 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 
 		quotient := interim + (rm+re)/divisor
 
-		// For the future: the remainder of the division is equal to
-		// (rm + re) % divisor
 		return quotient, nil
 	}
 
@@ -89,9 +84,48 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 
 	quotient := interim + (rm+re)/divisor
 
-	// For the future: the remainder of the division is equal to
-	// (rm + re) % divisor
 	return quotient, nil
+}
+
+// Calculates the remainder of dividing the sum of two integers by divisor.
+//
+// In case of divisor equal to zero, an error is returned.
+func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) (Type, error) {
+	if divisor == 0 {
+		return 0, ErrDivisionByZero
+	}
+
+	if sum, err := Add(first, second); err == nil {
+		return sum % divisor, nil
+	}
+
+	min, max, _ := intspan.Get[Type]()
+
+	overflowed := first + second
+
+	if first > 0 {
+		if is.Min(divisor) {
+			return overflowed - divisor, nil
+		}
+
+		excess := -(min - overflowed) + 1
+
+		rm := max % divisor
+		re := excess % divisor
+
+		remainder := (rm + re) % divisor
+
+		return remainder, nil
+	}
+
+	excess := -(max - overflowed + 1)
+
+	rm := min % divisor
+	re := excess % divisor
+
+	remainder := (rm + re) % divisor
+
+	return remainder, nil
 }
 
 // Calculates the quotient of dividing the sum of two unsigned integers by divisor and
