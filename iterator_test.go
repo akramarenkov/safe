@@ -50,24 +50,6 @@ func testIterStep(t *testing.T, step int8) {
 }
 
 func TestIterStepPanic(t *testing.T) {
-	require.Panics(
-		t,
-		func() {
-			for number := range IterStep(1, 2, -1) {
-				_ = number
-			}
-		},
-	)
-
-	require.Panics(
-		t,
-		func() {
-			for number := range IterStep(1, 2, 0) {
-				_ = number
-			}
-		},
-	)
-
 	func() {
 		defer func() {
 			require.Equal(t, ErrIterStepNegative, recover())
