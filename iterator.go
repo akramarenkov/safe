@@ -12,7 +12,7 @@ import (
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
-func Iter[Type constraints.Integer](begin Type, end Type) iter.Seq[Type] {
+func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator.Iter(begin, end)
 }
 
@@ -23,6 +23,6 @@ func Iter[Type constraints.Integer](begin Type, end Type) iter.Seq[Type] {
 // will be incremented.
 //
 // If a zero or negative step is specified, the iterator will panic.
-func IterStep[Type constraints.Integer](begin Type, end Type, step Type) iter.Seq[Type] {
+func IterStep[Type constraints.Integer](begin, end, step Type) iter.Seq[Type] {
 	return iterator.IterStep(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
 }

@@ -12,7 +12,7 @@ import (
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
-func Iter[Type constraints.Integer](begin Type, end Type) iter.Seq[Type] {
+func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	forward := func(yield func(Type) bool) {
 		for number := begin; number < end; number++ {
 			if !yield(number) {
