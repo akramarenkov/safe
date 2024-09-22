@@ -12,6 +12,6 @@ func Span[Type types.UpToUSI32](begin Type, end Type) []Type {
 		span = append(span, value)
 	}
 
-	// prevents infinite loop when end is equal max value of type
+	// prevents infinite loop when end is equal maximum value of type
 	return append(span, end)
 }

@@ -8,11 +8,11 @@ import (
 )
 
 func TestMin(t *testing.T) {
-	TestMinInt(t)
-	TestMinUint(t)
+	testMinInt(t)
+	testMinUint(t)
 }
 
-func TestMinInt(t *testing.T) {
+func testMinInt(t *testing.T) {
 	for number := math.MinInt8; number <= math.MaxInt8; number++ {
 		if number == math.MinInt8 {
 			require.True(t, Min(int8(number)))
@@ -23,7 +23,7 @@ func TestMinInt(t *testing.T) {
 	}
 }
 
-func TestMinUint(t *testing.T) {
+func testMinUint(t *testing.T) {
 	for number := 0; number <= math.MaxUint8; number++ {
 		if number == 0 {
 			require.True(t, Min(uint8(number)))

@@ -33,8 +33,8 @@ type Collector[Type types.UpToUSI32] struct {
 	Fillers []filler.Filler[Type]
 
 	// Minimum and maximum value for specified type
-	min int64
-	max int64
+	minimum int64
+	maximum int64
 
 	// Arguments buffers, used to decrease allocations
 	args      []Type
@@ -94,7 +94,7 @@ func (clctr Collector[Type]) Collect() error {
 
 	clctr.ReferenceLimits = maps.Clone(clctr.ReferenceLimits)
 
-	clctr.min, clctr.max = inspect.ConvSpan[Type, int64]()
+	clctr.minimum, clctr.maximum = inspect.ConvSpan[Type, int64]()
 
 	clctr.args = make([]Type, clctr.ArgsQuantity)
 	clctr.args64 = make([]int64, clctr.ArgsQuantity)
@@ -166,7 +166,7 @@ func (clctr *Collector[Type]) isUseArgs() bool {
 		return false
 	}
 
-	if reference > clctr.max || reference < clctr.min {
+	if reference > clctr.maximum || reference < clctr.minimum {
 		if clctr.OverflowedItemsQuantity <= 0 {
 			return false
 		}

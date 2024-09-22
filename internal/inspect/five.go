@@ -19,8 +19,8 @@ type Opts5[Type types.USI8] struct {
 	Reference Reference5
 
 	// Minimum and maximum value for specified type
-	min int64
-	max int64
+	minimum int64
+	maximum int64
 }
 
 // Validates options. A reference and inspected functions must be specified.
@@ -42,7 +42,7 @@ func (opts Opts5[Type]) Do() (types.Result[Type, Type, int64], error) {
 		return types.Result[Type, Type, int64]{}, err
 	}
 
-	opts.min, opts.max = ConvSpan[Type, int64]()
+	opts.minimum, opts.maximum = ConvSpan[Type, int64]()
 
 	return opts.main(), nil
 }
@@ -63,9 +63,9 @@ func (opts *Opts5[Type]) main() types.Result[Type, Type, int64] {
 	// definitely write all the first numbers and not block on writing even without
 	// reading these first numbers
 	//
-	// opts.max and opts.min accept values ​​in the range int8|uint8, and themselves have
-	// type int64, so overflow is impossible
-	firsts := make(chan int64, opts.max-opts.min)
+	// opts.maximum and opts.minimum accept values ​​in the range int8|uint8, and
+	// themselves have type int64, so overflow is impossible
+	firsts := make(chan int64, opts.maximum-opts.minimum)
 
 	for range parallelization {
 		wg.Add(1)
@@ -77,7 +77,7 @@ func (opts *Opts5[Type]) main() types.Result[Type, Type, int64] {
 		}()
 	}
 
-	for first := opts.min; first <= opts.max; first++ {
+	for first := opts.minimum; first <= opts.maximum; first++ {
 		firsts <- first
 	}
 
@@ -114,10 +114,10 @@ func (opts *Opts5[Type]) loop(firsts chan int64) types.Result[Type, Type, int64]
 	result := types.Result[Type, Type, int64]{}
 
 	for first := range firsts {
-		for second := opts.min; second <= opts.max; second++ {
-			for third := opts.min; third <= opts.max; third++ {
-				for fourth := opts.min; fourth <= opts.max; fourth++ {
-					for fifth := opts.min; fifth <= opts.max; fifth++ {
+		for second := opts.minimum; second <= opts.maximum; second++ {
+			for third := opts.minimum; third <= opts.maximum; third++ {
+				for fourth := opts.minimum; fourth <= opts.maximum; fourth++ {
+					for fifth := opts.minimum; fifth <= opts.maximum; fifth++ {
 						reference, fault := opts.Reference(
 							first,
 							second,
@@ -156,7 +156,7 @@ func (opts *Opts5[Type]) loop(firsts chan int64) types.Result[Type, Type, int64]
 							continue
 						}
 
-						if reference > opts.max || reference < opts.min {
+						if reference > opts.maximum || reference < opts.minimum {
 							if err == nil {
 								result.Actual = actual
 								result.Conclusion = ErrErrorExpected

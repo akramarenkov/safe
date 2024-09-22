@@ -19,8 +19,8 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	Span func() (TypeFrom, TypeFrom)
 
 	// Minimum and maximum value for specified TypeTo type
-	min TypeRef
-	max TypeRef
+	minimum TypeRef
+	maximum TypeRef
 
 	// Buffers used to decrease allocations
 	argsFrom []TypeFrom
@@ -52,7 +52,7 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) Do() (
 		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
 	}
 
-	opts.min, opts.max = ConvSpan[TypeTo, TypeRef]()
+	opts.minimum, opts.maximum = ConvSpan[TypeTo, TypeRef]()
 
 	opts.argsFrom = make([]TypeFrom, opts.LoopsQuantity)
 	opts.argsRef = make([]TypeRef, opts.LoopsQuantity)
@@ -70,7 +70,7 @@ func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 	// Protection against changes from the inspected and reference functions
 	copy(opts.argsFrom, args)
 
-	for id := range len(args) {
+	for id := range args {
 		opts.argsRef[id] = TypeRef(args[id])
 	}
 
@@ -93,7 +93,7 @@ func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 		return false
 	}
 
-	if reference > opts.max || reference < opts.min {
+	if reference > opts.maximum || reference < opts.minimum {
 		if err == nil {
 			opts.result.Actual = actual
 			opts.result.Conclusion = ErrErrorExpected

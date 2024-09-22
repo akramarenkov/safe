@@ -23,8 +23,8 @@ type Inspector[Type types.UpToUSI32] struct {
 	Reader io.Reader
 
 	// Minimum and maximum value for specified type
-	min int64
-	max int64
+	minimum int64
+	maximum int64
 
 	// Buffers used to decrease allocations
 	args    *reusable.Buffer[Type]
@@ -74,7 +74,7 @@ func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 		return types.Result[Type, Type, int64]{}, err
 	}
 
-	insp.min, insp.max = inspect.ConvSpan[Type, int64]()
+	insp.minimum, insp.maximum = inspect.ConvSpan[Type, int64]()
 
 	insp.args = reusable.New[Type](0)
 	insp.argsDup = reusable.New[Type](0)
@@ -177,7 +177,7 @@ func (insp *Inspector[Type]) process(fault bool, reference int64, args ...Type) 
 		return true
 	}
 
-	if reference > insp.max || reference < insp.min {
+	if reference > insp.maximum || reference < insp.minimum {
 		if err == nil {
 			insp.result.Actual = actual
 			insp.result.Args = args

@@ -21,7 +21,7 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 
 	// If overflow occurs during addition, the addition arguments have the same signs
 
-	min, max, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
 	overflowed := first + second
 
@@ -47,10 +47,10 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 			return -Type(1), nil
 		}
 
-		excess := -(min - overflowed) + 1
+		excess := -(minimum - overflowed) + 1
 
-		qm := max / divisor
-		rm := max % divisor
+		qm := maximum / divisor
+		rm := maximum % divisor
 
 		qe := excess / divisor
 		re := excess % divisor
@@ -65,14 +65,14 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 		return quotient, nil
 	}
 
-	excess := -(max - overflowed + 1)
+	excess := -(maximum - overflowed + 1)
 
-	qm, err := Div(min, divisor)
+	qm, err := Div(minimum, divisor)
 	if err != nil {
 		return 0, err
 	}
 
-	rm := min % divisor
+	rm := minimum % divisor
 
 	qe := excess / divisor
 	re := excess % divisor
@@ -99,7 +99,7 @@ func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) 
 		return sum % divisor, nil
 	}
 
-	min, max, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
 	overflowed := first + second
 
@@ -108,9 +108,9 @@ func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) 
 			return overflowed - divisor, nil
 		}
 
-		excess := -(min - overflowed) + 1
+		excess := -(minimum - overflowed) + 1
 
-		rm := max % divisor
+		rm := maximum % divisor
 		re := excess % divisor
 
 		remainder := (rm + re) % divisor
@@ -118,9 +118,9 @@ func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) 
 		return remainder, nil
 	}
 
-	excess := -(max - overflowed + 1)
+	excess := -(maximum - overflowed + 1)
 
-	rm := min % divisor
+	rm := minimum % divisor
 	re := excess % divisor
 
 	remainder := (rm + re) % divisor
@@ -149,10 +149,10 @@ func AddDivU[Type constraints.Unsigned](first Type, second Type, divisor Type) (
 	// For unsigned types, the maximum value for the type in case of overflow can be
 	// calculated
 	complement := second - excess
-	max := first + complement
+	maximum := first + complement
 
-	qm := max / divisor
-	rm := max % divisor
+	qm := maximum / divisor
+	rm := maximum % divisor
 
 	qe := excess / divisor
 	re := excess % divisor
@@ -197,19 +197,19 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 	// If an overflow occurs during subtraction and the subtraction arguments are
 	// signed, then they have different signs
 
-	min, max, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
 	overflowed := minuend - subtrahend
 
 	if subtrahend > 0 {
-		excess := -(max - overflowed + 1)
+		excess := -(maximum - overflowed + 1)
 
-		qm, err := Div(min, divisor)
+		qm, err := Div(minimum, divisor)
 		if err != nil {
 			return 0, err
 		}
 
-		rm := min % divisor
+		rm := minimum % divisor
 
 		qe := excess / divisor
 		re := excess % divisor
@@ -233,10 +233,10 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 	// equal to the minimum value for the given type. In this case, the result of
 	// the calculation is equal to the minimum value for the given type. This value
 	// will be used in the division, and the result of the division will be inverted
-	excess := -(min - overflowed) + 1
+	excess := -(minimum - overflowed) + 1
 
-	qm := max / divisor
-	rm := max % divisor
+	qm := maximum / divisor
+	rm := maximum % divisor
 
 	qe := excess / divisor
 	re := excess % divisor
@@ -285,14 +285,14 @@ func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor 
 		return 0, ErrOverflow
 	}
 
-	min, max, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
 	overflowed := minuend - subtrahend
 
 	if subtrahend > 0 {
-		excess := -(max - overflowed + 1)
+		excess := -(maximum - overflowed + 1)
 
-		rm := min % divisor
+		rm := minimum % divisor
 		re := excess % divisor
 
 		remainder := (rm + re) % divisor
@@ -304,9 +304,9 @@ func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor 
 		return overflowed - divisor, nil
 	}
 
-	excess := -(min - overflowed) + 1
+	excess := -(minimum - overflowed) + 1
 
-	rm := max % divisor
+	rm := maximum % divisor
 	re := excess % divisor
 
 	if excess < 0 {

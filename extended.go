@@ -208,8 +208,8 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 
 	for len(subtrahends) != 2 {
 		found := false
-		max := Type(0)
-		maxID := 0
+		maximum := Type(0)
+		maximumID := 0
 
 		for id, subtrahend := range subtrahends {
 			interim, err := Sub(minuend, subtrahend)
@@ -217,16 +217,16 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 				continue
 			}
 
-			if interim > max || !found {
+			if interim > maximum || !found {
 				found = true
-				max = interim
-				maxID = id
+				maximum = interim
+				maximumID = id
 			}
 		}
 
 		if found {
-			minuend = max
-			subtrahends[0], subtrahends[maxID] = subtrahends[maxID], subtrahends[0]
+			minuend = maximum
+			subtrahends[0], subtrahends[maximumID] = subtrahends[maximumID], subtrahends[0]
 			subtrahends = subtrahends[1:]
 
 			continue

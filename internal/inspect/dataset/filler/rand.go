@@ -13,21 +13,21 @@ import (
 //
 // Data in this filler never ends, so it must be specified last.
 type Rand[Type types.UpToUSI32] struct {
-	bitSize int
-	max     int64
-	maxRand *big.Int
+	bitSize     int
+	maximum     int64
+	maximumRand *big.Int
 }
 
 // Creates filler that fill arguments with random values.
 //
 // Data in this filler never ends, so it must be specified last.
 func NewRand[Type types.UpToUSI32]() *Rand[Type] {
-	_, max, bitSize := intspan.Get[Type]()
+	_, maximum, bitSize := intspan.Get[Type]()
 
 	rnd := &Rand[Type]{
-		bitSize: bitSize,
-		max:     int64(max),
-		maxRand: big.NewInt(1 << bitSize),
+		bitSize:     bitSize,
+		maximum:     int64(maximum),
+		maximumRand: big.NewInt(1 << bitSize),
 	}
 
 	return rnd
@@ -44,13 +44,13 @@ func (rnd *Rand[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 
 	if is.Signed[Type]() {
 		conv = func(value *big.Int) (Type, int64) {
-			conv := rnd.max - value.Int64()
+			conv := rnd.maximum - value.Int64()
 			return Type(conv), conv
 		}
 	}
 
 	for id := range args64 {
-		value, err := rand.Int(rand.Reader, rnd.maxRand)
+		value, err := rand.Int(rand.Reader, rnd.maximumRand)
 		if err != nil {
 			return false, err
 		}

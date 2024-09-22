@@ -260,7 +260,7 @@ func IsSequenceLosslessly[TypeTo constraints.Float, TypeFrom constraints.Integer
 		}
 	}
 
-	// prevents infinite loop when end is equal max value of type
+	// prevents infinite loop when end is equal maximum value of type
 	return passThroughFloat[TypeTo](end) == end, nil
 }
 

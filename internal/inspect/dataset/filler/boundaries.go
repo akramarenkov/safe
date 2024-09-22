@@ -8,35 +8,35 @@ import (
 
 // Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
 func Boundaries[Type types.UpToUSI32]() []Type {
-	min, max, _ := intspan.Get[Type]()
+	minimum, maximum, _ := intspan.Get[Type]()
 
 	zero := Type(0)
 
 	if is.Signed[Type]() {
 		boundaries := []Type{
-			min,
-			min + 1,
-			min + 2,
+			minimum,
+			minimum + 1,
+			minimum + 2,
 			zero - 2,
 			zero - 1,
 			zero,
 			zero + 1,
 			zero + 2,
-			max - 2,
-			max - 1,
-			max,
+			maximum - 2,
+			maximum - 1,
+			maximum,
 		}
 
 		return boundaries
 	}
 
 	boundaries := []Type{
-		min,
-		min + 1,
-		min + 2,
-		max - 2,
-		max - 1,
-		max,
+		minimum,
+		minimum + 1,
+		minimum + 2,
+		maximum - 2,
+		maximum - 1,
+		maximum,
 	}
 
 	return boundaries
