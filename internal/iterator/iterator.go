@@ -8,7 +8,7 @@ import (
 )
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values from begin to end inclusive.
+// iterating over integer values from begin to end inclusive with a step one.
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
