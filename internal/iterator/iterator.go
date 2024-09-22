@@ -8,7 +8,7 @@ import (
 )
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values.
+// iterating over integer values from begin to end inclusive.
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
@@ -41,7 +41,8 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values with the ability to specify the iteration step.
+// iterating over integer values from begin to end inclusive with the ability to
+// specify the iteration step.
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
