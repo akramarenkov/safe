@@ -44,6 +44,9 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // iterating over integer values from begin to end inclusive with the ability to
 // specify the iteration step.
 //
+// As in a regular loop, if the step is not a multiple of the begin-end range, the end
+// value will not be returned.
+//
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
 //
