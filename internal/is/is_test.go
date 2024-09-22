@@ -4,6 +4,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/iterator"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,24 +14,24 @@ func TestMin(t *testing.T) {
 }
 
 func testMinInt(t *testing.T) {
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
+	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MinInt8 {
-			require.True(t, Min(int8(number)))
+			require.True(t, Min(number))
 			continue
 		}
 
-		require.False(t, Min(int8(number)))
+		require.False(t, Min(number))
 	}
 }
 
 func testMinUint(t *testing.T) {
-	for number := 0; number <= math.MaxUint8; number++ {
+	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == 0 {
-			require.True(t, Min(uint8(number)))
+			require.True(t, Min(number))
 			continue
 		}
 
-		require.False(t, Min(uint8(number)))
+		require.False(t, Min(number))
 	}
 }
 
@@ -40,24 +41,24 @@ func TestMax(t *testing.T) {
 }
 
 func testMaxInt(t *testing.T) {
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
+	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MaxInt8 {
-			require.True(t, Max(int8(number)))
+			require.True(t, Max(number))
 			continue
 		}
 
-		require.False(t, Max(int8(number)))
+		require.False(t, Max(number))
 	}
 }
 
 func testMaxUint(t *testing.T) {
-	for number := 0; number <= math.MaxUint8; number++ {
+	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == math.MaxUint8 {
-			require.True(t, Max(uint8(number)))
+			require.True(t, Max(number))
 			continue
 		}
 
-		require.False(t, Max(uint8(number)))
+		require.False(t, Max(number))
 	}
 }
 
@@ -67,19 +68,19 @@ func TestMinusOne(t *testing.T) {
 }
 
 func testMinusOneInt(t *testing.T) {
-	for number := math.MinInt8; number <= math.MaxInt8; number++ {
+	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == -1 {
-			require.True(t, MinusOne(int8(number)))
+			require.True(t, MinusOne(number))
 			continue
 		}
 
-		require.False(t, MinusOne(int8(number)))
+		require.False(t, MinusOne(number))
 	}
 }
 
 func testMinusOneUint(t *testing.T) {
-	for number := 0; number <= math.MaxUint8; number++ {
-		require.False(t, MinusOne(uint8(number)))
+	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
+		require.False(t, MinusOne(number))
 	}
 }
 

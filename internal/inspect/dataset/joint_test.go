@@ -121,3 +121,13 @@ func testInspectedUint(args ...uint8) (uint8, error) {
 
 	return uint8(reference), nil
 }
+
+func testInspectedUnsafe[Type types.USI8](args ...Type) Type {
+	sum := Type(0)
+
+	for _, arg := range args {
+		sum += arg
+	}
+
+	return sum
+}

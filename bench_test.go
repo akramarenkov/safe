@@ -1245,30 +1245,36 @@ func BenchmarkNegate(b *testing.B) {
 func BenchmarkIToIReference(b *testing.B) {
 	result := int8(0)
 	resultU := uint8(0)
+	resultU2 := uint8(0)
 
 	s8, u8, u16 := benchSpanIToI()
 
 	for range b.N {
 		for _, number := range s8 {
+			//nolint:gosec // Unsafe conversion used to compare with safe
 			resultU = uint8(number)
 		}
 
 		for _, number := range u8 {
+			//nolint:gosec // Unsafe conversion used to compare with safe
 			result = int8(number)
 		}
 
 		for _, number := range u16 {
-			resultU = uint8(number)
+			//nolint:gosec // Unsafe conversion used to compare with safe
+			resultU2 = uint8(number)
 		}
 	}
 
 	require.NotNil(b, result)
 	require.NotNil(b, resultU)
+	require.NotNil(b, resultU2)
 }
 
 func BenchmarkIToI(b *testing.B) {
 	result := int8(0)
 	resultU := uint8(0)
+	resultU2 := uint8(0)
 
 	s8, u8, u16 := benchSpanIToI()
 
@@ -1282,12 +1288,13 @@ func BenchmarkIToI(b *testing.B) {
 		}
 
 		for _, number := range u16 {
-			resultU, _ = IToI[uint8](number)
+			resultU2, _ = IToI[uint8](number)
 		}
 	}
 
 	require.NotNil(b, result)
 	require.NotNil(b, resultU)
+	require.NotNil(b, resultU2)
 }
 
 func BenchmarkIToFReference(b *testing.B) {

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/iterator"
 
 	"github.com/stretchr/testify/require"
 )
@@ -40,9 +41,9 @@ func TestInspector(t *testing.T) {
 func testInspectorInt(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	for first := math.MinInt8; first <= math.MaxInt8; first++ {
-		for second := math.MinInt8; second <= math.MaxInt8; second++ {
-			require.NoError(t, WriteItem(buffer, testReference, int8(first), int8(second)))
+	for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
+		for second := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
+			require.NoError(t, WriteItem(buffer, testReference, first, second))
 		}
 	}
 
@@ -69,9 +70,9 @@ func testInspectorInt(t *testing.T) {
 func testInspectorUint(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	for first := 0; first <= math.MaxUint8; first++ {
-		for second := 0; second <= math.MaxUint8; second++ {
-			require.NoError(t, WriteItem(buffer, testReference, uint8(first), uint8(second)))
+	for first := range iterator.Iter[uint8](0, math.MaxUint8) {
+		for second := range iterator.Iter[uint8](0, math.MaxUint8) {
+			require.NoError(t, WriteItem(buffer, testReference, first, second))
 		}
 	}
 
@@ -157,7 +158,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	errorExpected := func(args ...int8) (int8, error) {
-		return int8(testReference8(args...)), nil
+		return testInspectedUnsafe(args...), nil
 	}
 
 	unexpectedError := func(...int8) (int8, error) {
@@ -181,9 +182,9 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 	collect := func(reference Reference) {
 		buffer.Reset()
 
-		for first := math.MinInt8; first <= math.MaxInt8; first++ {
-			for second := math.MinInt8; second <= math.MaxInt8; second++ {
-				require.NoError(t, WriteItem(buffer, reference, int8(first), int8(second)))
+		for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
+			for second := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
+				require.NoError(t, WriteItem(buffer, reference, first, second))
 			}
 		}
 	}

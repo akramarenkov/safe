@@ -3,6 +3,7 @@ package safe
 import (
 	"iter"
 
+	"github.com/akramarenkov/safe/internal/iterator"
 	"golang.org/x/exp/constraints"
 )
 
@@ -12,31 +13,7 @@ import (
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
 func Iter[Type constraints.Integer](begin Type, end Type) iter.Seq[Type] {
-	forward := func(yield func(Type) bool) {
-		for number := begin; number < end; number++ {
-			if !yield(number) {
-				return
-			}
-		}
-
-		yield(end)
-	}
-
-	backward := func(yield func(Type) bool) {
-		for number := begin; number > end; number-- {
-			if !yield(number) {
-				return
-			}
-		}
-
-		yield(end)
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator.Iter(begin, end)
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -47,51 +24,5 @@ func Iter[Type constraints.Integer](begin Type, end Type) iter.Seq[Type] {
 //
 // If a zero or negative step is specified, the iterator will panic.
 func IterStep[Type constraints.Integer](begin Type, end Type, step Type) iter.Seq[Type] {
-	if step < 0 {
-		panic(ErrIterStepNegative)
-	}
-
-	if step == 0 {
-		panic(ErrIterStepZero)
-	}
-
-	forward := func(yield func(Type) bool) {
-		previous := begin
-
-		for number := begin; number <= end; number += step {
-			// integer overflow
-			if number < previous {
-				return
-			}
-
-			previous = number
-
-			if !yield(number) {
-				return
-			}
-		}
-	}
-
-	backward := func(yield func(Type) bool) {
-		previous := begin
-
-		for number := begin; number >= end; number -= step {
-			// integer overflow
-			if number > previous {
-				return
-			}
-
-			previous = number
-
-			if !yield(number) {
-				return
-			}
-		}
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator.IterStep(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
 }

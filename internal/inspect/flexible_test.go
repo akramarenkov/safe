@@ -444,7 +444,7 @@ func BenchmarkLoop(b *testing.B) {
 func BenchmarkLoopFixed(b *testing.B) {
 	quantity := 0
 
-	do := func(args ...int8) bool {
+	do := func(args ...int) bool {
 		sum := args[0] + args[1] + args[2]
 
 		if sum == 0 {
@@ -458,7 +458,7 @@ func BenchmarkLoopFixed(b *testing.B) {
 		for first := math.MinInt8; first <= math.MaxInt8; first++ {
 			for second := math.MinInt8; second <= math.MaxInt8; second++ {
 				for third := math.MinInt8; third <= math.MaxInt8; third++ {
-					if stop := do(int8(first), int8(second), int8(third)); stop {
+					if stop := do(first, second, third); stop {
 						return
 					}
 				}
@@ -472,7 +472,7 @@ func BenchmarkLoopFixed(b *testing.B) {
 func BenchmarkLoopFixedArgsFixed(b *testing.B) {
 	quantity := 0
 
-	do := func(first, second, third int8) bool {
+	do := func(first, second, third int) bool {
 		sum := first + second + third
 
 		if sum == 0 {
@@ -486,7 +486,7 @@ func BenchmarkLoopFixedArgsFixed(b *testing.B) {
 		for first := math.MinInt8; first <= math.MaxInt8; first++ {
 			for second := math.MinInt8; second <= math.MaxInt8; second++ {
 				for third := math.MinInt8; third <= math.MaxInt8; third++ {
-					if stop := do(int8(first), int8(second), int8(third)); stop {
+					if stop := do(first, second, third); stop {
 						return
 					}
 				}

@@ -4,6 +4,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/iterator"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,10 +23,10 @@ func testIncrementorInt(t *testing.T, begin, end int8) {
 	incrementor, err := New(3, begin, end)
 	require.NoError(t, err)
 
-	for first := int(begin); first <= int(end); first++ {
-		for second := int(begin); second <= int(end); second++ {
-			for third := int(begin); third <= int(end); third++ {
-				err := incrementor.Test(int8(first), int8(second), int8(third))
+	for first := range iterator.Iter(begin, end) {
+		for second := range iterator.Iter(begin, end) {
+			for third := range iterator.Iter(begin, end) {
+				err := incrementor.Test(first, second, third)
 				if err != nil {
 					require.NoError(t, err)
 				}
@@ -38,10 +39,10 @@ func testIncrementorUint(t *testing.T, begin, end uint8) {
 	incrementor, err := New(3, begin, end)
 	require.NoError(t, err)
 
-	for first := int(begin); first <= int(end); first++ {
-		for second := int(begin); second <= int(end); second++ {
-			for third := int(begin); third <= int(end); third++ {
-				err := incrementor.Test(uint8(first), uint8(second), uint8(third))
+	for first := range iterator.Iter(begin, end) {
+		for second := range iterator.Iter(begin, end) {
+			for third := range iterator.Iter(begin, end) {
+				err := incrementor.Test(first, second, third)
 				if err != nil {
 					require.NoError(t, err)
 				}

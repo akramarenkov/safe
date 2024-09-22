@@ -23,7 +23,7 @@ linters:
     - godox
     - gofmt
     - goheader
-    #- gosec
+    - gosec
     - gosimple
     - gosmopolitan
     - govet
