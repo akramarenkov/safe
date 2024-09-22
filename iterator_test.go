@@ -74,7 +74,7 @@ func TestIterStepPanic(t *testing.T) {
 func BenchmarkIter(b *testing.B) {
 	number := 0
 
-	for value := range Iter(0, b.N) {
+	for value := range Iter(1, b.N) {
 		number = value
 	}
 
@@ -84,7 +84,7 @@ func BenchmarkIter(b *testing.B) {
 func BenchmarkIterStep(b *testing.B) {
 	number := 0
 
-	for value := range IterStep(0, b.N, 1) {
+	for value := range IterStep(1, b.N, 1) {
 		number = value
 	}
 
