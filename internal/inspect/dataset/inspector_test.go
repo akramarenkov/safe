@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/internal/iterator"
 
 	"github.com/stretchr/testify/require"
@@ -179,7 +180,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 		return 0, inspect.ErrOverflow
 	}
 
-	collect := func(reference Reference) {
+	collect := func(reference types.Reference[int64]) {
 		buffer.Reset()
 
 		for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {

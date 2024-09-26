@@ -7,6 +7,9 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
+// Inspected function with five arguments.
+type Inspected5[Type types.USI8] func(first, second, third, fourth, fifth Type) (Type, error)
+
 // Function with five arguments that returns a reference value.
 type Reference5 func(first, second, third, fourth, fifth int64) (int64, error)
 
@@ -14,7 +17,7 @@ type Reference5 func(first, second, third, fourth, fifth int64) (int64, error)
 // functions must be specified.
 type Opts5[Type types.USI8] struct {
 	// Inspected function with five arguments
-	Inspected func(first, second, third, fourth, fifth Type) (Type, error)
+	Inspected Inspected5[Type]
 	// Function with five arguments that returns a reference value
 	Reference Reference5
 

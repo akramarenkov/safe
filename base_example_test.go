@@ -14,7 +14,6 @@ func ExampleAdd() {
 	sum, err = safe.Add[int8](125, 3)
 	fmt.Println(err)
 	fmt.Println(sum)
-
 	// Output:
 	// <nil>
 	// 127

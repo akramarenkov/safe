@@ -12,9 +12,9 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	LoopsQuantity uint
 
 	// Inspected function
-	Inspected func(args ...TypeFrom) (TypeTo, error)
+	types.Inspected[TypeFrom, TypeTo]
 	// Function that returns a reference value
-	Reference func(args ...TypeRef) (TypeRef, error)
+	types.Reference[TypeRef]
 	// Optional function that customize arg values span
 	Span func() (TypeFrom, TypeFrom)
 

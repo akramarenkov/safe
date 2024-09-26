@@ -21,7 +21,7 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 
 	// If overflow occurs during addition, the addition arguments have the same signs
 
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	overflowed := first + second
 
@@ -99,7 +99,7 @@ func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) 
 		return sum % divisor, nil
 	}
 
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	overflowed := first + second
 
@@ -148,8 +148,9 @@ func AddDivU[Type constraints.Unsigned](first Type, second Type, divisor Type) (
 
 	// For unsigned types, the maximum value for the type in case of overflow can be
 	// calculated
-	complement := second - excess
-	maximum := first + complement
+	// complement := second - excess
+	// maximum := first + complement
+	maximum := ^Type(0)
 
 	qm := maximum / divisor
 	rm := maximum % divisor
@@ -180,6 +181,9 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 		return 0, ErrDivisionByZero
 	}
 
+	// If an overflow occurs during subtraction and the subtraction arguments are
+	// signed, then they have different signs
+
 	// When subtracting unsigned arguments, overflow cannot be compensated by
 	// division because the result of the subtraction and subsequent division must be
 	// negative. Except for one case when the divisor is greater than the difference and
@@ -194,10 +198,7 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 		return 0, ErrOverflow
 	}
 
-	// If an overflow occurs during subtraction and the subtraction arguments are
-	// signed, then they have different signs
-
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	overflowed := minuend - subtrahend
 
@@ -285,7 +286,7 @@ func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor 
 		return 0, ErrOverflow
 	}
 
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	overflowed := minuend - subtrahend
 

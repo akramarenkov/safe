@@ -13,7 +13,6 @@ import (
 //
 // Data in this filler never ends, so it must be specified last.
 type Rand[Type types.UpToUSI32] struct {
-	bitSize     int
 	maximum     int64
 	maximumRand *big.Int
 }
@@ -22,12 +21,11 @@ type Rand[Type types.UpToUSI32] struct {
 //
 // Data in this filler never ends, so it must be specified last.
 func NewRand[Type types.UpToUSI32]() *Rand[Type] {
-	_, maximum, bitSize := intspan.Get[Type]()
+	_, maximum := intspan.Get[Type]()
 
 	rnd := &Rand[Type]{
-		bitSize:     bitSize,
 		maximum:     int64(maximum),
-		maximumRand: big.NewInt(1 << bitSize),
+		maximumRand: big.NewInt(1 << intspan.BitSize[Type]()),
 	}
 
 	return rnd

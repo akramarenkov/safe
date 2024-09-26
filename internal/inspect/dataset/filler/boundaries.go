@@ -8,7 +8,7 @@ import (
 
 // Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
 func Boundaries[Type types.UpToUSI32]() []Type {
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	zero := Type(0)
 

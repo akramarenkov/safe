@@ -22,7 +22,7 @@ type Collector[Type types.UpToUSI32] struct {
 	// Quantity of dataset items which produce overflow of inspected function
 	OverflowedItemsQuantity int
 	// Function that returns a reference value
-	Reference
+	types.Reference[int64]
 	// Quantity limits for reference values
 	ReferenceLimits map[int64]uint
 	// Writer associated with dataset storage
@@ -247,9 +247,9 @@ func (clctr *Collector[Type]) dupArgs64() []int64 {
 }
 
 // Writes dataset item to specified writer.
-func WriteItem[Type types.USI8](
+func WriteItem[Type types.UpToUSI32](
 	writer io.Writer,
-	reference Reference,
+	reference types.Reference[int64],
 	args ...Type,
 ) error {
 	buffer := make([]byte, calcMaxItemLength[Type](len(args)))
@@ -302,7 +302,7 @@ func calcMaxItemLength[Type types.UpToUSI32](argsQuantity int) int {
 		maxNewLineLen      = len("\n")
 	)
 
-	minimum, maximum, _ := intspan.Get[Type]()
+	minimum, maximum := intspan.Get[Type]()
 
 	maxArgLen := max(
 		len(strconv.FormatInt(int64(minimum), consts.DecimalBase)),

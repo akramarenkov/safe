@@ -7,6 +7,9 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
+// Inspected function with four arguments.
+type Inspected4[Type types.USI8] func(first, second, third, fourth Type) (Type, error)
+
 // Function with four arguments that returns a reference value.
 type Reference4 func(first, second, third, fourth int64) (int64, error)
 
@@ -14,7 +17,7 @@ type Reference4 func(first, second, third, fourth int64) (int64, error)
 // functions must be specified.
 type Opts4[Type types.USI8] struct {
 	// Inspected function with four arguments
-	Inspected func(first, second, third, fourth Type) (Type, error)
+	Inspected Inspected4[Type]
 	// Function with four arguments that returns a reference value
 	Reference Reference4
 

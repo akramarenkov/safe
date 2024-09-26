@@ -138,10 +138,10 @@ func (insp *Inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 }
 
 func parseArg[Type types.UpToUSI32](field string) (Type, error) {
-	_, _, bitSize := intspan.Get[Type]()
+	size := intspan.BitSize[Type]()
 
 	if is.Signed[Type]() {
-		arg, err := strconv.ParseInt(field, consts.DecimalBase, bitSize)
+		arg, err := strconv.ParseInt(field, consts.DecimalBase, size)
 		if err != nil {
 			return 0, err
 		}
@@ -149,7 +149,7 @@ func parseArg[Type types.UpToUSI32](field string) (Type, error) {
 		return Type(arg), nil
 	}
 
-	arg, err := strconv.ParseUint(field, consts.DecimalBase, bitSize)
+	arg, err := strconv.ParseUint(field, consts.DecimalBase, size)
 	if err != nil {
 		return 0, err
 	}

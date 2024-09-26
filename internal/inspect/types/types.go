@@ -26,6 +26,12 @@ type SIF64 interface {
 	~int64 | ~float64
 }
 
+// Inspected function.
+type Inspected[TypeFrom, TypeTo UpToUSI32] func(args ...TypeFrom) (TypeTo, error)
+
+// Function that returns a reference value.
+type Reference[TypeRef SIF64] func(args ...TypeRef) (TypeRef, error)
+
 // Inspection result.
 type Result[TypeFrom, TypeTo UpToUSI32, TypeRef SIF64] struct {
 	// Value returned by the inspected function. Filled in if its value is not
