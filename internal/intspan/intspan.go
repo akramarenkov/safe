@@ -30,6 +30,7 @@ const (
 	minInt8  = -1 << (bitSize8 - 1)
 )
 
+// Returns minimum and maximum values of specified type.
 func Get[Type constraints.Integer]() (Type, Type) {
 	if !is.Signed[Type]() {
 		return 0, ^Type(0) // return 0, Type(0)-1
@@ -65,6 +66,7 @@ func Get[Type constraints.Integer]() (Type, Type) {
 	return convMinInt8, convMaxInt8
 }
 
+// Returns bit size for specified type.
 func BitSize[Type constraints.Integer]() int {
 	refMaxInt64 := int64(maxInt64)
 	refMaxInt32 := int32(maxInt32)
