@@ -10,7 +10,7 @@ import (
 // determines whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
-func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Type, error) {
+func AddDiv[Type constraints.Integer](first, second, divisor Type) (Type, error) {
 	if sum, err := Add(first, second); err == nil {
 		return Div(sum, divisor)
 	}
@@ -90,7 +90,7 @@ func AddDiv[Type constraints.Integer](first Type, second Type, divisor Type) (Ty
 // Calculates the remainder of dividing the sum of two integers by divisor.
 //
 // In case of divisor equal to zero, an error is returned.
-func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) (Type, error) {
+func AddDivRem[Type constraints.Integer](first, second, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
 	}
@@ -134,7 +134,7 @@ func AddDivRem[Type constraints.Integer](first Type, second Type, divisor Type) 
 // Slightly faster than the [AddDiv] function.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
-func AddDivU[Type constraints.Unsigned](first Type, second Type, divisor Type) (Type, error) {
+func AddDivU[Type constraints.Unsigned](first, second, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
 	}
@@ -172,7 +172,7 @@ func AddDivU[Type constraints.Unsigned](first Type, second Type, divisor Type) (
 // determines whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
-func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Type) (Type, error) {
+func SubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {
 	if diff, err := Sub(minuend, subtrahend); err == nil {
 		return Div(diff, divisor)
 	}
@@ -267,7 +267,7 @@ func SubDiv[Type constraints.Integer](minuend Type, subtrahend Type, divisor Typ
 // determines whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
-func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor Type) (Type, error) {
+func SubDivRem[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
 	}
@@ -325,7 +325,7 @@ func SubDivRem[Type constraints.Integer](minuend Type, subtrahend Type, divisor 
 // Slightly faster than the [SubDiv] function.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
-func SubDivU[Type constraints.Unsigned](minuend Type, subtrahend Type, divisor Type) (Type, error) {
+func SubDivU[Type constraints.Unsigned](minuend, subtrahend, divisor Type) (Type, error) {
 	if divisor == 0 {
 		return 0, ErrDivisionByZero
 	}
