@@ -140,6 +140,8 @@ func IterStep[Type constraints.Integer](
 // maximum possible number of iterations is one more than the maximum value for uint64,
 // the return value is truncated to the maximum value for uint64 if the calculated
 // value exceeds it.
+//
+// Like [IterSize] this function panics if a zero or negative step is specified.
 func IterStepSize[Type constraints.Integer](
 	begin Type,
 	end Type,
