@@ -4,6 +4,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/intspec"
 	"github.com/stretchr/testify/require"
 )
 
@@ -57,17 +58,17 @@ func testGetUint(t *testing.T) {
 }
 
 func TestBitSize(t *testing.T) {
-	require.Equal(t, bitSize64, BitSize[int64]())
-	require.Equal(t, bitSize32, BitSize[int32]())
-	require.Equal(t, bitSize16, BitSize[int16]())
-	require.Equal(t, bitSize8, BitSize[int8]())
-	require.Equal(t, bitSizeInt, BitSize[int]())
+	require.Equal(t, intspec.BitSize64, BitSize[int64]())
+	require.Equal(t, intspec.BitSize32, BitSize[int32]())
+	require.Equal(t, intspec.BitSize16, BitSize[int16]())
+	require.Equal(t, intspec.BitSize8, BitSize[int8]())
+	require.Equal(t, intspec.BitSizeInt, BitSize[int]())
 
-	require.Equal(t, bitSize64, BitSize[uint64]())
-	require.Equal(t, bitSize32, BitSize[uint32]())
-	require.Equal(t, bitSize16, BitSize[uint16]())
-	require.Equal(t, bitSize8, BitSize[uint8]())
-	require.Equal(t, bitSizeInt, BitSize[uint]())
+	require.Equal(t, intspec.BitSize64, BitSize[uint64]())
+	require.Equal(t, intspec.BitSize32, BitSize[uint32]())
+	require.Equal(t, intspec.BitSize16, BitSize[uint16]())
+	require.Equal(t, intspec.BitSize8, BitSize[uint8]())
+	require.Equal(t, intspec.BitSizeInt, BitSize[uint]())
 }
 
 func BenchmarkGet(b *testing.B) {

@@ -4,6 +4,7 @@ package iterator
 import (
 	"iter"
 
+	"github.com/akramarenkov/safe/internal/intspec"
 	"golang.org/x/exp/constraints"
 )
 
@@ -38,6 +39,27 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	}
 
 	return forward
+}
+
+func IterSize[Type constraints.Integer](begin, end Type) int {
+	bc := toUint64(begin)
+	ec := toUint64(end)
+
+	size := ec - bc
+
+	if bc > ec {
+		size = bc - ec
+	}
+
+	if begin^end < 0 { // begin < 0 && end > 0 || begin > 0 && end < 0
+		size = ec + bc
+	}
+
+	if size == intspec.MaxUint64 {
+		return toInt(size)
+	}
+
+	return toInt(size + 1)
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
