@@ -40,13 +40,13 @@ func IterStep[Type constraints.Integer](begin, end, step Type) iter.Seq[Type] {
 	return iterator.IterStep(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
 }
 
-// Calculates the number of iterations when using [IterSize]. The return value is
+// Calculates the number of iterations when using [IterStep]. The return value is
 // intended to be used as the size parameter in the make call, so, and because the
 // maximum possible number of iterations is one more than the maximum value for uint64,
 // the return value is truncated to the maximum value for uint64 if the calculated
 // value exceeds it.
 //
-// Like [IterSize] this function panics if a zero or negative step is specified.
+// Like [IterStep] this function panics if a zero or negative step is specified.
 func IterStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 	return iterator.IterStepSize(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
 }
