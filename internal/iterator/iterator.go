@@ -41,7 +41,7 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return forward
 }
 
-// Calculates the number of iterations when using [Iter]. The resulting value is
+// Calculates the number of iterations when using [Iter]. The return value is
 // intended to be used as the size parameter in the make call, so, and because the
 // maximum possible number of iterations is one more than the maximum value for uint64,
 // the return value is truncated to the maximum value for uint64 if the calculated
@@ -135,7 +135,7 @@ func IterStep[Type constraints.Integer](
 	return forward
 }
 
-// Calculates the number of iterations when using [IterSize]. The resulting value is
+// Calculates the number of iterations when using [IterSize]. The return value is
 // intended to be used as the size parameter in the make call, so, and because the
 // maximum possible number of iterations is one more than the maximum value for uint64,
 // the return value is truncated to the maximum value for uint64 if the calculated

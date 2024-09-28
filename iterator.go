@@ -16,6 +16,15 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator.Iter(begin, end)
 }
 
+// Calculates the number of iterations when using [Iter]. The return value is
+// intended to be used as the size parameter in the make call, so, and because the
+// maximum possible number of iterations is one more than the maximum value for uint64,
+// the return value is truncated to the maximum value for uint64 if the calculated
+// value exceeds it.
+func IterSize[Type constraints.Integer](begin, end Type) uint64 {
+	return iterator.IterSize(begin, end)
+}
+
 // A range iterator for safely (without infinite loops due to counter overflow)
 // iterating over integer values from begin to end inclusive with the ability to
 // specify the iteration step.
@@ -29,4 +38,15 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // If a zero or negative step is specified, the iterator will panic.
 func IterStep[Type constraints.Integer](begin, end, step Type) iter.Seq[Type] {
 	return iterator.IterStep(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
+}
+
+// Calculates the number of iterations when using [IterSize]. The return value is
+// intended to be used as the size parameter in the make call, so, and because the
+// maximum possible number of iterations is one more than the maximum value for uint64,
+// the return value is truncated to the maximum value for uint64 if the calculated
+// value exceeds it.
+//
+// Like [IterSize] this function panics if a zero or negative step is specified.
+func IterStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
+	return iterator.IterStepSize(begin, end, step, ErrIterStepNegative, ErrIterStepZero)
 }

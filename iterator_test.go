@@ -22,6 +22,71 @@ func TestIter(t *testing.T) {
 	require.Equal(t, int(end)+1, reference)
 }
 
+func TestIterSize(t *testing.T) {
+	require.Equal(
+		t,
+		uint64(math.MaxUint64-1),
+		IterSize[int64](math.MinInt64+2, math.MaxInt64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64-1),
+		IterSize[int64](math.MaxInt64, math.MinInt64+2),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64-1),
+		IterSize[uint64](2, math.MaxUint64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64-1),
+		IterSize[uint64](math.MaxUint64, 2),
+	)
+
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[int64](math.MinInt64+1, math.MaxInt64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[int64](math.MaxInt64, math.MinInt64+1),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[uint64](1, math.MaxUint64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[uint64](math.MaxUint64, 1),
+	)
+
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[int64](math.MinInt64, math.MaxInt64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[int64](math.MaxInt64, math.MinInt64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[uint64](0, math.MaxUint64),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterSize[uint64](math.MaxUint64, 0),
+	)
+}
+
 func TestIterStep(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
 		testIterStep(t, step)
@@ -36,7 +101,7 @@ func testIterStep(t *testing.T, step int8) {
 	reference := int(begin)
 
 	expectedIterations := (int(end)-int(begin))/int(step) + 1
-	expectedReference := int(begin) + expectedIterations*int(step)
+	expectedFinalReference := int(begin) + expectedIterations*int(step)
 
 	for number := range IterStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
@@ -46,7 +111,7 @@ func testIterStep(t *testing.T, step int8) {
 	}
 
 	require.Equal(t, expectedIterations, iterations, "step: %v", step)
-	require.Equal(t, expectedReference, reference, "step: %v", step)
+	require.Equal(t, expectedFinalReference, reference, "step: %v", step)
 }
 
 func TestIterStepPanic(t *testing.T) {
@@ -71,6 +136,69 @@ func TestIterStepPanic(t *testing.T) {
 	}()
 }
 
+func TestIterStepSize(t *testing.T) {
+	require.Equal(
+		t,
+		uint64(4611686018427387904),
+		IterStepSize[int64](math.MinInt64, math.MaxInt64, 4),
+	)
+	require.Equal(
+		t,
+		uint64(4611686018427387904),
+		IterStepSize[int64](math.MaxInt64, math.MinInt64, 4),
+	)
+
+	require.Equal(
+		t,
+		uint64(4611686018427387904),
+		IterStepSize[uint64](0, math.MaxUint64, 4),
+	)
+	require.Equal(
+		t,
+		uint64(4611686018427387904),
+		IterStepSize[uint64](math.MaxUint64, 0, 4),
+	)
+
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterStepSize[int64](math.MinInt64, math.MaxInt64, 1),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterStepSize[int64](math.MaxInt64, math.MinInt64, 1),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterStepSize[uint64](0, math.MaxUint64, 1),
+	)
+	require.Equal(
+		t,
+		uint64(math.MaxUint64),
+		IterStepSize[uint64](math.MaxUint64, 0, 1),
+	)
+}
+
+func TestIterStepSizePanic(t *testing.T) {
+	func() {
+		defer func() {
+			require.Equal(t, ErrIterStepNegative, recover())
+		}()
+
+		_ = IterStepSize(1, 2, -1)
+	}()
+
+	func() {
+		defer func() {
+			require.Equal(t, ErrIterStepZero, recover())
+		}()
+
+		_ = IterStepSize(1, 2, 0)
+	}()
+}
+
 func BenchmarkIter(b *testing.B) {
 	number := 0
 
@@ -81,6 +209,16 @@ func BenchmarkIter(b *testing.B) {
 	require.NotZero(b, number)
 }
 
+func BenchmarkIterSize(b *testing.B) {
+	size := uint64(0)
+
+	for range b.N {
+		size = IterSize(0, b.N)
+	}
+
+	require.NotZero(b, size)
+}
+
 func BenchmarkIterStep(b *testing.B) {
 	number := 0
 
@@ -89,4 +227,14 @@ func BenchmarkIterStep(b *testing.B) {
 	}
 
 	require.NotZero(b, number)
+}
+
+func BenchmarkIterStepSize(b *testing.B) {
+	size := uint64(0)
+
+	for range b.N {
+		size = IterStepSize(0, b.N, 1)
+	}
+
+	require.NotZero(b, size)
 }
