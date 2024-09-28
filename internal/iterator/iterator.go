@@ -42,17 +42,18 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 }
 
 func IterSize[Type constraints.Integer](begin, end Type) int {
-	bc := toUint64(begin)
-	ec := toUint64(end)
+	beginU64 := toUint64(begin)
+	endU64 := toUint64(end)
 
-	size := ec - bc
+	size := endU64 - beginU64
 
-	if bc > ec {
-		size = bc - ec
+	if beginU64 > endU64 {
+		size = beginU64 - endU64
 	}
 
-	if begin^end < 0 { // begin < 0 && end > 0 || begin > 0 && end < 0
-		size = ec + bc
+	// begin < 0 && end > 0 || begin > 0 && end < 0
+	if begin^end < 0 {
+		size = endU64 + beginU64
 	}
 
 	if size == intspec.MaxUint64 {
@@ -127,4 +128,48 @@ func IterStep[Type constraints.Integer](
 	}
 
 	return forward
+}
+
+func IterStepSize[Type constraints.Integer](
+	begin Type,
+	end Type,
+	step Type,
+	stepNegative error,
+	stepZero error,
+) int {
+	if step < 0 {
+		panic(stepNegative)
+	}
+
+	if step == 0 {
+		panic(stepZero)
+	}
+
+	beginU64 := toUint64(begin)
+	endU64 := toUint64(end)
+	stepU64 := uint64(step)
+
+	size := endU64 - beginU64
+
+	if beginU64 > endU64 {
+		size = beginU64 - endU64
+	}
+
+	// begin < 0 && end > 0 || begin > 0 && end < 0
+	if begin^end < 0 {
+		size = endU64 + beginU64
+	}
+
+	if size == intspec.MaxUint64 {
+		if stepU64 == 1 {
+			return toInt(size)
+		}
+
+		quotient := size / stepU64
+		remainder := size % stepU64
+
+		return toInt(quotient + (remainder+1)/stepU64)
+	}
+
+	return toInt((size + 1) / stepU64)
 }
