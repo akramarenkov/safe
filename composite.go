@@ -6,6 +6,35 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// Calculates the value of the expression first + second - subtrahend and determines
+// whether an overflow has occurred or not.
+//
+// In case of overflow, an error is returned.
+func AddSub[Type constraints.Integer](first, second, subtrahend Type) (Type, error) {
+	if interim, err := Add(first, second); err == nil {
+		return Sub(interim, subtrahend)
+	}
+
+	if interim, err := Sub(first, subtrahend); err == nil {
+		if sum, err := Add(interim, second); err == nil {
+			return sum, nil
+		}
+	}
+
+	if interim, err := Sub(second, subtrahend); err == nil {
+		if sum, err := Add(interim, first); err == nil {
+			return sum, nil
+		}
+	}
+
+	interim, err := Sub(subtrahend, first)
+	if err != nil {
+		return 0, err
+	}
+
+	return Sub(second, interim)
+}
+
 // Calculates the quotient of dividing the sum of two integers by divisor and
 // determines whether an overflow has occurred or not.
 //

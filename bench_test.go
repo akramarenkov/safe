@@ -1393,6 +1393,42 @@ func BenchmarkPow(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkAddSubReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAddSub()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result = first + second - third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddSub(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2, level3 := benchSpanAddSub()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddSub(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkAddDivReference(b *testing.B) {
 	result := int8(0)
 

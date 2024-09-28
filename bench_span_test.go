@@ -135,6 +135,11 @@ func benchSpanFToI() []float64 {
 	return span
 }
 
+func benchSpanAddSub() ([]uint8, []uint8, []uint8) {
+	span := []uint8{0, 1, 2, 254, 255}
+	return span, span, span
+}
+
 func benchSpanAddDiv() ([]int8, []int8, []int8) {
 	span := []int8{-128, -127, -1, 0, 1, 126, 127}
 	return span, span, span
