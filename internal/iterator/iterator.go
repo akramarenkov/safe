@@ -41,7 +41,12 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return forward
 }
 
-func IterSize[Type constraints.Integer](begin, end Type) int {
+// Calculates the number of iterations when using [Iter]. The resulting value is
+// intended to be used as the size parameter in the make call, so, and because the
+// maximum possible number of iterations is one more than the maximum value for uint64,
+// the return value is truncated to the maximum value for uint64 if the calculated
+// value exceeds it.
+func IterSize[Type constraints.Integer](begin, end Type) uint64 {
 	beginU64 := toUint64(begin)
 	endU64 := toUint64(end)
 
@@ -57,10 +62,10 @@ func IterSize[Type constraints.Integer](begin, end Type) int {
 	}
 
 	if size == intspec.MaxUint64 {
-		return toInt(size)
+		return size
 	}
 
-	return toInt(size + 1)
+	return size + 1
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -130,13 +135,18 @@ func IterStep[Type constraints.Integer](
 	return forward
 }
 
+// Calculates the number of iterations when using [IterSize]. The resulting value is
+// intended to be used as the size parameter in the make call, so, and because the
+// maximum possible number of iterations is one more than the maximum value for uint64,
+// the return value is truncated to the maximum value for uint64 if the calculated
+// value exceeds it.
 func IterStepSize[Type constraints.Integer](
 	begin Type,
 	end Type,
 	step Type,
 	stepNegative error,
 	stepZero error,
-) int {
+) uint64 {
 	if step < 0 {
 		panic(stepNegative)
 	}
@@ -162,14 +172,14 @@ func IterStepSize[Type constraints.Integer](
 
 	if size == intspec.MaxUint64 {
 		if stepU64 == 1 {
-			return toInt(size)
+			return size
 		}
 
 		quotient := size / stepU64
 		remainder := size % stepU64
 
-		return toInt(quotient + (remainder+1)/stepU64)
+		return quotient + (remainder+1)/stepU64
 	}
 
-	return toInt((size + 1) / stepU64)
+	return (size + 1) / stepU64
 }

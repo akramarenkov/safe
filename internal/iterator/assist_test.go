@@ -16,9 +16,3 @@ func TestToUint64(t *testing.T) {
 	require.Equal(t, uint64(-(math.MinInt64 + 1)), toUint64[int64](math.MinInt64+1))
 	require.Equal(t, uint64(-math.MinInt64), toUint64[int64](math.MinInt64))
 }
-
-func TestToInt(t *testing.T) {
-	require.Equal(t, math.MaxInt-1, toInt(math.MaxInt-1))
-	require.Equal(t, math.MaxInt, toInt(math.MaxInt))
-	require.Equal(t, math.MaxInt, toInt(math.MaxInt+1))
-}
