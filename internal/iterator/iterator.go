@@ -47,8 +47,8 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // the return value is truncated to the maximum value for uint64 if the calculated
 // value exceeds it.
 func IterSize[Type constraints.Integer](begin, end Type) uint64 {
-	beginU64 := toUint64(begin)
-	endU64 := toUint64(end)
+	beginU64 := u64(begin)
+	endU64 := u64(end)
 
 	size := endU64 - beginU64
 
@@ -157,8 +157,8 @@ func IterStepSize[Type constraints.Integer](
 		panic(stepZero)
 	}
 
-	beginU64 := toUint64(begin)
-	endU64 := toUint64(end)
+	beginU64 := u64(begin)
+	endU64 := u64(end)
 	stepU64 := uint64(step)
 
 	size := endU64 - beginU64
