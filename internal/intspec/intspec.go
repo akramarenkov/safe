@@ -14,6 +14,7 @@ const (
 	MaxUint32 = 1<<BitSize32 - 1
 	MaxUint16 = 1<<BitSize16 - 1
 	MaxUint8  = 1<<BitSize8 - 1
+	MaxUint   = 1<<BitSizeInt - 1
 
 	MaxInt64 = 1<<(BitSize64-1) - 1
 	MinInt64 = -1 << (BitSize64 - 1)
