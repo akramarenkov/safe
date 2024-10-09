@@ -244,3 +244,24 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 
 	return converted, nil
 }
+
+// Shifts an integer left to specified shift count and determines whether an overflow
+// has occurred or not.
+//
+// Shift count is also checked for negativity.
+//
+// In case of overflow or shift count is negative, an error is returned.
+func Shift[Type, CountType constraints.Integer](number Type, count CountType) (Type, error) {
+	if count < 0 {
+		return 0, ErrNegativeShift
+	}
+
+	shifted := number << count
+	reverted := shifted >> count
+
+	if reverted != number {
+		return 0, ErrOverflow
+	}
+
+	return shifted, nil
+}

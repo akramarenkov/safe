@@ -2,6 +2,7 @@ package safe
 
 import (
 	"math"
+	"math/big"
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect"
@@ -725,4 +726,155 @@ func TestFToISpecial(t *testing.T) {
 
 	_, err = FToI[uint64](math.NaN())
 	require.Error(t, err)
+}
+
+func TestShift(t *testing.T) {
+	testShiftInt(t)
+	testShiftUint(t)
+	testShiftIntViaFloat(t)
+	testShiftUintViaFloat(t)
+}
+
+func testShiftInt(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return Shift(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] < 0 {
+				return 0, ErrNegativeShift
+			}
+
+			shift, err := IToI[uint](args[1])
+			require.NoError(t, err)
+
+			shifted := new(big.Int).Lsh(big.NewInt(args[0]), shift)
+
+			if !shifted.IsInt64() {
+				return 0, ErrOverflow
+			}
+
+			return shifted.Int64(), nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testShiftUint(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Shift(args[0], args[1])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			shift, err := IToI[uint](args[1])
+			require.NoError(t, err)
+
+			number := new(big.Int).Lsh(big.NewInt(args[0]), shift)
+
+			if !number.IsInt64() {
+				return 0, ErrOverflow
+			}
+
+			return number.Int64(), nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testShiftIntViaFloat(t *testing.T) {
+	opts := inspect.Opts[int8, int8, float64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return Shift(args[0], args[1])
+		},
+		Reference: func(args ...float64) (float64, error) {
+			if args[1] < 0 {
+				return 0, ErrNegativeShift
+			}
+
+			reference := args[0] * math.Pow(2, args[1])
+			require.False(t, math.IsNaN(reference))
+
+			return reference, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testShiftUintViaFloat(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, float64]{
+		LoopsQuantity: 2,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return Shift(args[0], args[1])
+		},
+		Reference: func(args ...float64) (float64, error) {
+			reference := args[0] * math.Pow(2, args[1])
+			require.False(t, math.IsNaN(reference))
+
+			return reference, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
 }

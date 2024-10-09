@@ -1704,3 +1704,39 @@ func BenchmarkSubDivU(b *testing.B) {
 
 	require.NotNil(b, result)
 }
+
+func BenchmarkShiftReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2 := benchSpanShift()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				if second < 0 {
+					continue
+				}
+
+				result = first << second
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkShift(b *testing.B) {
+	result := int8(0)
+
+	level1, level2 := benchSpanShift()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				result, _ = Shift(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
