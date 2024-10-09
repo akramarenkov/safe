@@ -14,7 +14,7 @@ jobs:
         with:
           go-version: '1.23'
       - run: | 
-          go test -coverprofile=coverage.out -covermode=atomic ./...
+          go test -v -coverprofile=coverage.out -covermode=atomic -timeout=1h ./...
 
           for dir in v[0-9]*;
           do
@@ -22,7 +22,7 @@ jobs:
 
             cd "${dir}" || continue
 
-            go test -coverprofile="../coverage-${dir}.out" -covermode=atomic ./...
+            go test -v -coverprofile="../coverage-${dir}.out" -covermode=atomic -timeout=1h ./...
 
             cd ..
           done
