@@ -4,7 +4,7 @@ package iterator
 import (
 	"iter"
 
-	"github.com/akramarenkov/safe/internal/intspec"
+	"github.com/akramarenkov/safe/intspec"
 	"golang.org/x/exp/constraints"
 )
 

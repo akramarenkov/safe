@@ -3,8 +3,8 @@
 package intspan
 
 import (
-	"github.com/akramarenkov/safe/internal/intspec"
 	"github.com/akramarenkov/safe/internal/is"
+	"github.com/akramarenkov/safe/intspec"
 	"golang.org/x/exp/constraints"
 )
 

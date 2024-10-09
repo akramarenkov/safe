@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/intspec"
+	"github.com/akramarenkov/safe/intspec"
 	"github.com/stretchr/testify/require"
 )
 

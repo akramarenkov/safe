@@ -1,8 +1,9 @@
-// Internal package with constants for minimum, maximum values ​​and bit size of integer
-// types used to avoid including the entire math library because of a few constants.
+// Package with constants for minimum, maximum values ​​and bit size of integer
+// types.
+//
+// Used to avoid including the entire math package because of a few constants.
 package intspec
 
-// Testing code intentionally uses constants from the math library for cross-validation.
 const (
 	BitSize64  = 64
 	BitSize32  = 32
