@@ -658,11 +658,12 @@ func TestFToI(t *testing.T) {
 	}
 
 	for _, addition := range additions {
-		testFToI(t, addition)
+		testFToIInt(t, addition)
+		testFToIUint(t, addition)
 	}
 }
 
-func testFToI(t *testing.T, addition float64) {
+func testFToIInt(t *testing.T, addition float64) {
 	effective := func(result types.Result[int16, int8, int64]) float64 {
 		if len(result.Args) == 0 {
 			return 0
@@ -684,6 +685,52 @@ func testFToI(t *testing.T, addition float64) {
 			}
 
 			return FToI[int8](float64(args[0]) + addition)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"addition: %v, effective: %v, reference: %v, actual: %v, args: %v, err: %v",
+		addition,
+		effective(result),
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testFToIUint(t *testing.T, addition float64) {
+	effective := func(result types.Result[int16, uint8, int64]) float64 {
+		if len(result.Args) == 0 {
+			return 0
+		}
+
+		if result.Args[0] < 0 {
+			return float64(result.Args[0]) - addition
+		}
+
+		return float64(result.Args[0]) + addition
+	}
+
+	opts := inspect.Opts[int16, uint8, int64]{
+		LoopsQuantity: 1,
+
+		Inspected: func(args ...int16) (uint8, error) {
+			if args[0] < 0 {
+				return FToI[uint8](float64(args[0]) - addition)
+			}
+
+			return FToI[uint8](float64(args[0]) + addition)
 		},
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
