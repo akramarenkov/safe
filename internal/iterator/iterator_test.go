@@ -8,17 +8,17 @@ import (
 )
 
 func TestIter(t *testing.T) {
-	testIterForwardInt(t)
-	testIterBackwardInt(t)
+	testIterForwardSig(t)
+	testIterBackwardSig(t)
 
-	testIterForwardUint(t)
-	testIterBackwardUint(t)
+	testIterForwardUns(t)
+	testIterBackwardUns(t)
 
 	testIterForwardPartial(t)
 	testIterBackwardPartial(t)
 }
 
-func testIterForwardInt(t *testing.T) {
+func testIterForwardSig(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -33,7 +33,7 @@ func testIterForwardInt(t *testing.T) {
 	require.Equal(t, int(end)+1, reference)
 }
 
-func testIterBackwardInt(t *testing.T) {
+func testIterBackwardSig(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -48,7 +48,7 @@ func testIterBackwardInt(t *testing.T) {
 	require.Equal(t, int(end)-1, reference)
 }
 
-func testIterForwardUint(t *testing.T) {
+func testIterForwardUns(t *testing.T) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
 
@@ -63,7 +63,7 @@ func testIterForwardUint(t *testing.T) {
 	require.Equal(t, int(end)+1, reference)
 }
 
-func testIterBackwardUint(t *testing.T) {
+func testIterBackwardUns(t *testing.T) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
 
@@ -117,12 +117,12 @@ func testIterBackwardPartial(t *testing.T) {
 }
 
 func TestIterSize(t *testing.T) {
-	testIterSizeInt(t)
-	testIterSizeUint(t)
+	testIterSizeSig(t)
+	testIterSizeUns(t)
 	testIterSizeMax(t)
 }
 
-func testIterSizeInt(t *testing.T) {
+func testIterSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			reference := int(end) - int(begin) + 1
@@ -146,7 +146,7 @@ func testIterSizeInt(t *testing.T) {
 	}
 }
 
-func testIterSizeUint(t *testing.T) {
+func testIterSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
 			reference := uint64(end) - uint64(begin) + 1
@@ -229,13 +229,13 @@ func testIterSizeMax(t *testing.T) {
 
 func TestIterStep(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
-		testIterStepForwardInt(t, step)
-		testIterStepBackwardInt(t, step)
+		testIterStepForwardSig(t, step)
+		testIterStepBackwardSig(t, step)
 	}
 
 	for step := range Iter[uint8](1, math.MaxUint8) {
-		testIterStepForwardUint(t, step)
-		testIterStepBackwardUint(t, step)
+		testIterStepForwardUns(t, step)
+		testIterStepBackwardUns(t, step)
 	}
 
 	testIterStepForwardPartial(t)
@@ -260,7 +260,7 @@ func TestIterStep(t *testing.T) {
 	)
 }
 
-func testIterStepForwardInt(t *testing.T, step int8) {
+func testIterStepForwardSig(t *testing.T, step int8) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -281,7 +281,7 @@ func testIterStepForwardInt(t *testing.T, step int8) {
 	require.Equal(t, expectedFinalReference, reference, "step: %v", step)
 }
 
-func testIterStepBackwardInt(t *testing.T, step int8) {
+func testIterStepBackwardSig(t *testing.T, step int8) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -302,7 +302,7 @@ func testIterStepBackwardInt(t *testing.T, step int8) {
 	require.Equal(t, expectedFinalReference, reference, "step: %v", step)
 }
 
-func testIterStepForwardUint(t *testing.T, step uint8) {
+func testIterStepForwardUns(t *testing.T, step uint8) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
 
@@ -323,7 +323,7 @@ func testIterStepForwardUint(t *testing.T, step uint8) {
 	require.Equal(t, expectedFinalReference, reference, "step: %v", step)
 }
 
-func testIterStepBackwardUint(t *testing.T, step uint8) {
+func testIterStepBackwardUns(t *testing.T, step uint8) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
 
@@ -383,8 +383,8 @@ func testIterStepBackwardPartial(t *testing.T) {
 }
 
 func TestIterStepSize(t *testing.T) {
-	testIterStepSizeInt(t)
-	testIterStepSizeUint(t)
+	testIterStepSizeSig(t)
+	testIterStepSizeUns(t)
 	testIterStepSizeMax(t)
 
 	require.Panics(
@@ -402,7 +402,7 @@ func TestIterStepSize(t *testing.T) {
 	)
 }
 
-func testIterStepSizeInt(t *testing.T) {
+func testIterStepSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			for step := range Iter[int8](1, math.MaxInt8) {
@@ -435,7 +435,7 @@ func testIterStepSizeInt(t *testing.T) {
 	}
 }
 
-func testIterStepSizeUint(t *testing.T) {
+func testIterStepSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
 			for step := range Iter[uint8](1, math.MaxUint8) {

@@ -25,7 +25,7 @@ func TestFile(t *testing.T) {
 	err := collector.CollectToFile(filePath)
 	require.NoError(t, err)
 
-	result, err := InspectFromFile(filePath, testInspectedInt)
+	result, err := InspectFromFile(filePath, testInspectedSig)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -62,7 +62,7 @@ func BenchmarkDataset(b *testing.B) {
 	}
 
 	inspector := Inspector[int8]{
-		Inspected: testInspectedInt,
+		Inspected: testInspectedSig,
 		Reader:    buffer,
 	}
 
@@ -102,7 +102,7 @@ func testReference8[Type types.USI8](args ...Type) int64 {
 	return reference
 }
 
-func testInspectedInt(args ...int8) (int8, error) {
+func testInspectedSig(args ...int8) (int8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
@@ -112,7 +112,7 @@ func testInspectedInt(args ...int8) (int8, error) {
 	return int8(reference), nil
 }
 
-func testInspectedUint(args ...uint8) (uint8, error) {
+func testInspectedUns(args ...uint8) (uint8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxUint8 || reference < 0 {

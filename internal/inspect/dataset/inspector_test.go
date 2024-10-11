@@ -35,11 +35,11 @@ func TestInspectorIsValid(t *testing.T) {
 }
 
 func TestInspector(t *testing.T) {
-	testInspectorInt(t)
-	testInspectorUint(t)
+	testInspectorSig(t)
+	testInspectorUns(t)
 }
 
-func testInspectorInt(t *testing.T) {
+func testInspectorSig(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
@@ -49,7 +49,7 @@ func testInspectorInt(t *testing.T) {
 	}
 
 	inspector := Inspector[int8]{
-		Inspected: testInspectedInt,
+		Inspected: testInspectedSig,
 		Reader:    buffer,
 	}
 
@@ -68,7 +68,7 @@ func testInspectorInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testInspectorUint(t *testing.T) {
+func testInspectorUns(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := range iterator.Iter[uint8](0, math.MaxUint8) {
@@ -78,7 +78,7 @@ func testInspectorUint(t *testing.T) {
 	}
 
 	inspector := Inspector[uint8]{
-		Inspected: testInspectedUint,
+		Inspected: testInspectedUns,
 		Reader:    buffer,
 	}
 
@@ -103,15 +103,15 @@ func TestInspectorError(t *testing.T) {
 	_, err := inspector.Inspect()
 	require.Error(t, err)
 
-	testInspectorConvertErrorInt(t)
-	testInspectorConvertErrorUint(t)
+	testInspectorConvertErrorSig(t)
+	testInspectorConvertErrorUns(t)
 }
 
-func testInspectorConvertErrorInt(t *testing.T) {
+func testInspectorConvertErrorSig(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	inspector := Inspector[int8]{
-		Inspected: testInspectedInt,
+		Inspected: testInspectedSig,
 		Reader:    buffer,
 	}
 
@@ -140,11 +140,11 @@ func testInspectorConvertErrorInt(t *testing.T) {
 	require.Error(t, err)
 }
 
-func testInspectorConvertErrorUint(t *testing.T) {
+func testInspectorConvertErrorUns(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	inspector := Inspector[uint8]{
-		Inspected: testInspectedUint,
+		Inspected: testInspectedUns,
 		Reader:    buffer,
 	}
 
@@ -222,7 +222,7 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 
 	collect(referenceFault)
 
-	inspector.Inspected = testInspectedInt
+	inspector.Inspected = testInspectedSig
 
 	result, err = inspector.Inspect()
 	require.NoError(t, err)
@@ -233,6 +233,6 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 func TestInspectorFileError(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "dataset")
 
-	_, err := InspectFromFile(filePath, testInspectedInt)
+	_, err := InspectFromFile(filePath, testInspectedSig)
 	require.Error(t, err)
 }

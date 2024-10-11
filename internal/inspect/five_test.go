@@ -45,13 +45,13 @@ func TestDo5(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testDo5Int(t)
-	testDo5Uint(t)
+	testDo5Sig(t)
+	testDo5Uns(t)
 }
 
-func testDo5Int(t *testing.T) {
+func testDo5Sig(t *testing.T) {
 	opts := Opts5[int8]{
-		Inspected: testInspected5Int,
+		Inspected: testInspected5Sig,
 		Reference: testReference5,
 	}
 
@@ -70,9 +70,9 @@ func testDo5Int(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDo5Uint(t *testing.T) {
+func testDo5Uns(t *testing.T) {
 	opts := Opts5[uint8]{
-		Inspected: testInspected5Uint,
+		Inspected: testInspected5Uns,
 		Reference: testReference5,
 	}
 
@@ -99,11 +99,11 @@ func TestDo5Error(t *testing.T) {
 }
 
 func TestDo5NegativeConclusion(t *testing.T) {
-	testDo5NegativeConclusionInt(t)
-	testDo5NegativeConclusionUint(t)
+	testDo5NegativeConclusionSig(t)
+	testDo5NegativeConclusionUns(t)
 }
 
-func testDo5NegativeConclusionInt(t *testing.T) {
+func testDo5NegativeConclusionSig(t *testing.T) {
 	errorExpected := func(first, second, third, fourth, fifth int8) (int8, error) {
 		return first + second + third + fourth + fifth, nil
 	}
@@ -151,7 +151,7 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected5Int
+	opts.Inspected = testInspected5Sig
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -160,7 +160,7 @@ func testDo5NegativeConclusionInt(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDo5NegativeConclusionUint(t *testing.T) {
+func testDo5NegativeConclusionUns(t *testing.T) {
 	errorExpected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
 		return first + second + third + fourth + fifth, nil
 	}
@@ -208,7 +208,7 @@ func testDo5NegativeConclusionUint(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected5Uint
+	opts.Inspected = testInspected5Uns
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -224,7 +224,7 @@ func BenchmarkDo5(b *testing.B) {
 	}
 
 	opts := Opts5[int8]{
-		Inspected: testInspected5Int,
+		Inspected: testInspected5Sig,
 		Reference: testReference5,
 	}
 
@@ -245,7 +245,7 @@ func testReference5(first, second, third, fourth, fifth int64) (int64, error) {
 	return first + second + third + fourth + fifth, nil
 }
 
-func testInspected5Int(first, second, third, fourth, fifth int8) (int8, error) {
+func testInspected5Sig(first, second, third, fourth, fifth int8) (int8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
 		int64(fifth)
 
@@ -256,7 +256,7 @@ func testInspected5Int(first, second, third, fourth, fifth int8) (int8, error) {
 	return int8(reference), nil
 }
 
-func testInspected5Uint(first, second, third, fourth, fifth uint8) (uint8, error) {
+func testInspected5Uns(first, second, third, fourth, fifth uint8) (uint8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth) +
 		int64(fifth)
 

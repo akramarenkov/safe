@@ -8,11 +8,11 @@ import (
 )
 
 func TestRand(t *testing.T) {
-	testRandInt(t)
-	testRandUint(t)
+	testRandSig(t)
+	testRandUns(t)
 }
 
-func testRandInt(t *testing.T) {
+func testRandSig(t *testing.T) {
 	const argsQuantity = 3
 
 	args := make([]int8, argsQuantity)
@@ -44,7 +44,7 @@ func testRandInt(t *testing.T) {
 	require.NotZero(t, negative)
 }
 
-func testRandUint(t *testing.T) {
+func testRandUns(t *testing.T) {
 	const argsQuantity = 3
 
 	args := make([]uint8, argsQuantity)

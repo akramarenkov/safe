@@ -33,15 +33,15 @@ func TestIsValid(t *testing.T) {
 }
 
 func TestDo(t *testing.T) {
-	testDoInt(t)
-	testDoUint(t)
+	testDoSig(t)
+	testDoUns(t)
 }
 
-func testDoInt(t *testing.T) {
+func testDoSig(t *testing.T) {
 	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: testInspected3Int,
+		Inspected: testInspected3Sig,
 		Reference: testReference3,
 	}
 
@@ -60,11 +60,11 @@ func testDoInt(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDoUint(t *testing.T) {
+func testDoUns(t *testing.T) {
 	opts := Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: testInspected3Uint,
+		Inspected: testInspected3Uns,
 		Reference: testReference3,
 	}
 
@@ -93,11 +93,11 @@ func TestDoError(t *testing.T) {
 }
 
 func TestDoNegativeConclusion(t *testing.T) {
-	testDoNegativeConclusionInt(t)
-	testDoNegativeConclusionUint(t)
+	testDoNegativeConclusionSig(t)
+	testDoNegativeConclusionUns(t)
 }
 
-func testDoNegativeConclusionInt(t *testing.T) {
+func testDoNegativeConclusionSig(t *testing.T) {
 	errorExpected := func(args ...int8) (int8, error) {
 		return args[0] + args[1], nil
 	}
@@ -146,7 +146,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected2Int
+	opts.Inspected = testInspected2Sig
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -155,7 +155,7 @@ func testDoNegativeConclusionInt(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDoNegativeConclusionUint(t *testing.T) {
+func testDoNegativeConclusionUns(t *testing.T) {
 	errorExpected := func(args ...uint8) (uint8, error) {
 		return args[0] + args[1], nil
 	}
@@ -204,7 +204,7 @@ func testDoNegativeConclusionUint(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected2Uint
+	opts.Inspected = testInspected2Uns
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -214,14 +214,14 @@ func testDoNegativeConclusionUint(t *testing.T) {
 }
 
 func TestLoop(t *testing.T) {
-	testLoopInt(t)
-	testLoopUint(t)
-	testLoopSpanInt(t)
-	testLoopSpanUint(t)
+	testLoopSig(t)
+	testLoopUns(t)
+	testLoopSpanSig(t)
+	testLoopSpanUns(t)
 	testLoopFloatU16(t)
 }
 
-func testLoopInt(t *testing.T) {
+func testLoopSig(t *testing.T) {
 	const levels = 3
 
 	incrementor, err := incrementor.New[int8](levels, math.MinInt8, math.MaxInt8)
@@ -240,7 +240,7 @@ func testLoopInt(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopUint(t *testing.T) {
+func testLoopUns(t *testing.T) {
 	const levels = 3
 
 	incrementor, err := incrementor.New[uint8](levels, 0, math.MaxUint8)
@@ -259,7 +259,7 @@ func testLoopUint(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopSpanInt(t *testing.T) {
+func testLoopSpanSig(t *testing.T) {
 	const (
 		levels = 3
 		begin  = -1
@@ -286,7 +286,7 @@ func testLoopSpanInt(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopSpanUint(t *testing.T) {
+func testLoopSpanUns(t *testing.T) {
 	const (
 		levels = 3
 		begin  = 1
@@ -404,7 +404,7 @@ func BenchmarkDo(b *testing.B) {
 	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: testInspected3Int,
+		Inspected: testInspected3Sig,
 		Reference: testReference3,
 	}
 
@@ -505,7 +505,7 @@ func testReference3(args ...int64) (int64, error) {
 	return args[0] + args[1] + args[2], nil
 }
 
-func testInspected2Int(args ...int8) (int8, error) {
+func testInspected2Sig(args ...int8) (int8, error) {
 	reference := int64(args[0]) + int64(args[1])
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
@@ -515,7 +515,7 @@ func testInspected2Int(args ...int8) (int8, error) {
 	return int8(reference), nil
 }
 
-func testInspected2Uint(args ...uint8) (uint8, error) {
+func testInspected2Uns(args ...uint8) (uint8, error) {
 	reference := int64(args[0]) + int64(args[1])
 
 	if reference > math.MaxUint8 || reference < 0 {
@@ -525,7 +525,7 @@ func testInspected2Uint(args ...uint8) (uint8, error) {
 	return uint8(reference), nil
 }
 
-func testInspected3Int(args ...int8) (int8, error) {
+func testInspected3Sig(args ...int8) (int8, error) {
 	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
@@ -535,7 +535,7 @@ func testInspected3Int(args ...int8) (int8, error) {
 	return int8(reference), nil
 }
 
-func testInspected3Uint(args ...uint8) (uint8, error) {
+func testInspected3Uns(args ...uint8) (uint8, error) {
 	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
 
 	if reference > math.MaxUint8 || reference < 0 {

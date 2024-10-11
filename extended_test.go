@@ -15,11 +15,11 @@ import (
 )
 
 func TestAdd3(t *testing.T) {
-	testAdd3Int(t)
-	testAdd3Uint(t)
+	testAdd3Sig(t)
+	testAdd3Uns(t)
 }
 
-func testAdd3Int(t *testing.T) {
+func testAdd3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -47,7 +47,7 @@ func testAdd3Int(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAdd3Uint(t *testing.T) {
+func testAdd3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -104,13 +104,13 @@ func TestAdd3U(t *testing.T) {
 }
 
 func TestAddM(t *testing.T) {
-	testAddMInt(t, false)
-	testAddMInt(t, true)
-	testAddMUint(t, false)
-	testAddMUint(t, true)
+	testAddMSig(t, false)
+	testAddMSig(t, true)
+	testAddMUns(t, false)
+	testAddMUns(t, true)
 }
 
-func testAddMInt(t *testing.T, unmodify bool) {
+func testAddMSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -190,7 +190,7 @@ func testAddMInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUint(t *testing.T, unmodify bool) {
+func testAddMUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -347,13 +347,13 @@ func TestAddM4Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testAddM4ArgsInt(t, false)
-	testAddM4ArgsInt(t, true)
-	testAddM4ArgsUint(t, false)
-	testAddM4ArgsUint(t, true)
+	testAddM4ArgsSig(t, false)
+	testAddM4ArgsSig(t, true)
+	testAddM4ArgsUns(t, false)
+	testAddM4ArgsUns(t, true)
 }
 
-func testAddM4ArgsInt(t *testing.T, unmodify bool) {
+func testAddM4ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return AddM(unmodify, first, second, third, fourth)
@@ -379,7 +379,7 @@ func testAddM4ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddM4ArgsUint(t *testing.T, unmodify bool) {
+func testAddM4ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return AddM(unmodify, first, second, third, fourth)
@@ -411,13 +411,13 @@ func TestAddM5Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testAddM5ArgsInt(t, false)
-	testAddM5ArgsInt(t, true)
-	testAddM5ArgsUint(t, false)
-	testAddM5ArgsUint(t, true)
+	testAddM5ArgsSig(t, false)
+	testAddM5ArgsSig(t, true)
+	testAddM5ArgsUns(t, false)
+	testAddM5ArgsUns(t, true)
 }
 
-func testAddM5ArgsInt(t *testing.T, unmodify bool) {
+func testAddM5ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return AddM(unmodify, first, second, third, fourth, fifth)
@@ -443,7 +443,7 @@ func testAddM5ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddM5ArgsUint(t *testing.T, unmodify bool) {
+func testAddM5ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return AddM(unmodify, first, second, third, fourth, fifth)
@@ -501,11 +501,11 @@ func TestAddMUError(t *testing.T) {
 }
 
 func TestSub3(t *testing.T) {
-	testSub3Int(t)
-	testSub3Uint(t)
+	testSub3Sig(t)
+	testSub3Uns(t)
 }
 
-func testSub3Int(t *testing.T) {
+func testSub3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -533,7 +533,7 @@ func testSub3Int(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSub3Uint(t *testing.T) {
+func testSub3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -590,13 +590,13 @@ func TestSub3U(t *testing.T) {
 }
 
 func TestSubM(t *testing.T) {
-	testSubMInt(t, false)
-	testSubMInt(t, true)
-	testSubMUint(t, false)
-	testSubMUint(t, true)
+	testSubMSig(t, false)
+	testSubMSig(t, true)
+	testSubMUns(t, false)
+	testSubMUns(t, true)
 }
 
-func testSubMInt(t *testing.T, unmodify bool) {
+func testSubMSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -676,7 +676,7 @@ func testSubMInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMUint(t *testing.T, unmodify bool) {
+func testSubMUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -828,13 +828,13 @@ func TestSubM4Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testSubM4ArgsInt(t, false)
-	testSubM4ArgsInt(t, true)
-	testSubM4ArgsUint(t, false)
-	testSubM4ArgsUint(t, true)
+	testSubM4ArgsSig(t, false)
+	testSubM4ArgsSig(t, true)
+	testSubM4ArgsUns(t, false)
+	testSubM4ArgsUns(t, true)
 }
 
-func testSubM4ArgsInt(t *testing.T, unmodify bool) {
+func testSubM4ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return SubM(unmodify, first, second, third, fourth)
@@ -860,7 +860,7 @@ func testSubM4ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubM4ArgsUint(t *testing.T, unmodify bool) {
+func testSubM4ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return SubM(unmodify, first, second, third, fourth)
@@ -892,13 +892,13 @@ func TestSubM5Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testSubM5ArgsInt(t, false)
-	testSubM5ArgsInt(t, true)
-	testSubM5ArgsUint(t, false)
-	testSubM5ArgsUint(t, true)
+	testSubM5ArgsSig(t, false)
+	testSubM5ArgsSig(t, true)
+	testSubM5ArgsUns(t, false)
+	testSubM5ArgsUns(t, true)
 }
 
-func testSubM5ArgsInt(t *testing.T, unmodify bool) {
+func testSubM5ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return SubM(unmodify, first, second, third, fourth, fifth)
@@ -924,7 +924,7 @@ func testSubM5ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubM5ArgsUint(t *testing.T, unmodify bool) {
+func testSubM5ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return SubM(unmodify, first, second, third, fourth, fifth)
@@ -983,11 +983,11 @@ func TestSubMU(t *testing.T) {
 }
 
 func TestMul3(t *testing.T) {
-	testMul3Int(t)
-	testMul3Uint(t)
+	testMul3Sig(t)
+	testMul3Uns(t)
 }
 
-func testMul3Int(t *testing.T) {
+func testMul3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -1015,7 +1015,7 @@ func testMul3Int(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMul3Uint(t *testing.T) {
+func testMul3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1072,13 +1072,13 @@ func TestMul3U(t *testing.T) {
 }
 
 func TestMulM(t *testing.T) {
-	testMulMInt(t, false)
-	testMulMInt(t, true)
-	testMulMUint(t, false)
-	testMulMUint(t, true)
+	testMulMSig(t, false)
+	testMulMSig(t, true)
+	testMulMUns(t, false)
+	testMulMUns(t, true)
 }
 
-func testMulMInt(t *testing.T, unmodify bool) {
+func testMulMSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1158,7 +1158,7 @@ func testMulMInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMUint(t *testing.T, unmodify bool) {
+func testMulMUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1327,13 +1327,13 @@ func TestMulM4Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testMulM4ArgsInt(t, false)
-	testMulM4ArgsInt(t, true)
-	testMulM4ArgsUint(t, false)
-	testMulM4ArgsUint(t, true)
+	testMulM4ArgsSig(t, false)
+	testMulM4ArgsSig(t, true)
+	testMulM4ArgsUns(t, false)
+	testMulM4ArgsUns(t, true)
 }
 
-func testMulM4ArgsInt(t *testing.T, unmodify bool) {
+func testMulM4ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return MulM(unmodify, first, second, third, fourth)
@@ -1359,7 +1359,7 @@ func testMulM4ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulM4ArgsUint(t *testing.T, unmodify bool) {
+func testMulM4ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return MulM(unmodify, first, second, third, fourth)
@@ -1391,13 +1391,13 @@ func TestMulM5Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testMulM5ArgsInt(t, false)
-	testMulM5ArgsInt(t, true)
-	testMulM5ArgsUint(t, false)
-	testMulM5ArgsUint(t, true)
+	testMulM5ArgsSig(t, false)
+	testMulM5ArgsSig(t, true)
+	testMulM5ArgsUns(t, false)
+	testMulM5ArgsUns(t, true)
 }
 
-func testMulM5ArgsInt(t *testing.T, unmodify bool) {
+func testMulM5ArgsSig(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return MulM(unmodify, first, second, third, fourth, fifth)
@@ -1423,7 +1423,7 @@ func testMulM5ArgsInt(t *testing.T, unmodify bool) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulM5ArgsUint(t *testing.T, unmodify bool) {
+func testMulM5ArgsUns(t *testing.T, unmodify bool) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return MulM(unmodify, first, second, third, fourth, fifth)
@@ -1481,11 +1481,11 @@ func TestMulMUError(t *testing.T) {
 }
 
 func TestDivM(t *testing.T) {
-	testDivMInt(t)
-	testDivMUint(t)
+	testDivMSig(t)
+	testDivMUns(t)
 }
 
-func testDivMInt(t *testing.T) {
+func testDivMSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1573,7 +1573,7 @@ func testDivMInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMUint(t *testing.T) {
+func testDivMUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1730,11 +1730,11 @@ func TestDivM4Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testDivM4ArgsInt(t)
-	testDivM4ArgsUint(t)
+	testDivM4ArgsSig(t)
+	testDivM4ArgsUns(t)
 }
 
-func testDivM4ArgsInt(t *testing.T) {
+func testDivM4ArgsSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return DivM(first, second, third, fourth)
@@ -1764,7 +1764,7 @@ func testDivM4ArgsInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivM4ArgsUint(t *testing.T) {
+func testDivM4ArgsUns(t *testing.T) {
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return DivM(first, second, third, fourth)
@@ -1800,11 +1800,11 @@ func TestDivM5Args(t *testing.T) {
 		t.SkipNow()
 	}
 
-	testDivM5ArgsInt(t)
-	testDivM5ArgsUint(t)
+	testDivM5ArgsSig(t)
+	testDivM5ArgsUns(t)
 }
 
-func testDivM5ArgsInt(t *testing.T) {
+func testDivM5ArgsSig(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return DivM(first, second, third, fourth, fifth)
@@ -1834,7 +1834,7 @@ func testDivM5ArgsInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivM5ArgsUint(t *testing.T) {
+func testDivM5ArgsUns(t *testing.T) {
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return DivM(first, second, third, fourth, fifth)

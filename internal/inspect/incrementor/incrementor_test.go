@@ -9,17 +9,17 @@ import (
 )
 
 func TestIncrementor(t *testing.T) {
-	testIncrementorInt(t, math.MinInt8, math.MaxInt8)
-	testIncrementorUint(t, 0, math.MaxUint8)
-	testIncrementorInt(t, 0, 0)
-	testIncrementorUint(t, 0, 0)
-	testIncrementorInt(t, 0, 1)
-	testIncrementorUint(t, 0, 1)
-	testIncrementorInt(t, -1, 0)
-	testIncrementorInt(t, -1, 1)
+	testIncrementorSig(t, math.MinInt8, math.MaxInt8)
+	testIncrementorUns(t, 0, math.MaxUint8)
+	testIncrementorSig(t, 0, 0)
+	testIncrementorUns(t, 0, 0)
+	testIncrementorSig(t, 0, 1)
+	testIncrementorUns(t, 0, 1)
+	testIncrementorSig(t, -1, 0)
+	testIncrementorSig(t, -1, 1)
 }
 
-func testIncrementorInt(t *testing.T, begin, end int8) {
+func testIncrementorSig(t *testing.T, begin, end int8) {
 	incrementor, err := New(3, begin, end)
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func testIncrementorInt(t *testing.T, begin, end int8) {
 	}
 }
 
-func testIncrementorUint(t *testing.T, begin, end uint8) {
+func testIncrementorUns(t *testing.T, begin, end uint8) {
 	incrementor, err := New(3, begin, end)
 	require.NoError(t, err)
 

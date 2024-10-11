@@ -38,13 +38,13 @@ func TestIsValid4(t *testing.T) {
 }
 
 func TestDo4(t *testing.T) {
-	testDo4Int(t)
-	testDo4Uint(t)
+	testDo4Sig(t)
+	testDo4Uns(t)
 }
 
-func testDo4Int(t *testing.T) {
+func testDo4Sig(t *testing.T) {
 	opts := Opts4[int8]{
-		Inspected: testInspected4Int,
+		Inspected: testInspected4Sig,
 		Reference: testReference4,
 	}
 
@@ -63,9 +63,9 @@ func testDo4Int(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDo4Uint(t *testing.T) {
+func testDo4Uns(t *testing.T) {
 	opts := Opts4[uint8]{
-		Inspected: testInspected4Uint,
+		Inspected: testInspected4Uns,
 		Reference: testReference4,
 	}
 
@@ -92,11 +92,11 @@ func TestDo4Error(t *testing.T) {
 }
 
 func TestDo4NegativeConclusion(t *testing.T) {
-	testDo4NegativeConclusionInt(t)
-	testDo4NegativeConclusionUint(t)
+	testDo4NegativeConclusionSig(t)
+	testDo4NegativeConclusionUns(t)
 }
 
-func testDo4NegativeConclusionInt(t *testing.T) {
+func testDo4NegativeConclusionSig(t *testing.T) {
 	errorExpected := func(first, second, third, fourth int8) (int8, error) {
 		return first + second + third + fourth, nil
 	}
@@ -143,7 +143,7 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected4Int
+	opts.Inspected = testInspected4Sig
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -152,7 +152,7 @@ func testDo4NegativeConclusionInt(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDo4NegativeConclusionUint(t *testing.T) {
+func testDo4NegativeConclusionUns(t *testing.T) {
 	errorExpected := func(first, second, third, fourth uint8) (uint8, error) {
 		return first + second + third + fourth, nil
 	}
@@ -199,7 +199,7 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected4Uint
+	opts.Inspected = testInspected4Uns
 	opts.Reference = referenceFault
 
 	result, err = opts.Do()
@@ -210,7 +210,7 @@ func testDo4NegativeConclusionUint(t *testing.T) {
 
 func BenchmarkDo4(b *testing.B) {
 	opts := Opts4[int8]{
-		Inspected: testInspected4Int,
+		Inspected: testInspected4Sig,
 		Reference: testReference4,
 	}
 
@@ -231,7 +231,7 @@ func testReference4(first, second, third, fourth int64) (int64, error) {
 	return first + second + third + fourth, nil
 }
 
-func testInspected4Int(first, second, third, fourth int8) (int8, error) {
+func testInspected4Sig(first, second, third, fourth int8) (int8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
@@ -241,7 +241,7 @@ func testInspected4Int(first, second, third, fourth int8) (int8, error) {
 	return int8(reference), nil
 }
 
-func testInspected4Uint(first, second, third, fourth uint8) (uint8, error) {
+func testInspected4Uns(first, second, third, fourth uint8) (uint8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 	if reference > math.MaxUint8 || reference < 0 {

@@ -9,11 +9,11 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	testGetInt(t)
-	testGetUint(t)
+	testGetSig(t)
+	testGetUns(t)
 }
 
-func testGetInt(t *testing.T) {
+func testGetSig(t *testing.T) {
 	minimum64, maximum64 := Get[int64]()
 	require.Equal(t, int64(math.MinInt64), minimum64)
 	require.Equal(t, int64(math.MaxInt64), maximum64)
@@ -35,7 +35,7 @@ func testGetInt(t *testing.T) {
 	require.Equal(t, math.MaxInt, maximum)
 }
 
-func testGetUint(t *testing.T) {
+func testGetUns(t *testing.T) {
 	minimum64, maximum64 := Get[uint64]()
 	require.Equal(t, uint64(0), minimum64)
 	require.Equal(t, uint64(math.MaxUint64), maximum64)

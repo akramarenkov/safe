@@ -12,11 +12,11 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	testAddInt(t)
-	testAddUint(t)
+	testAddSig(t)
+	testAddUns(t)
 }
 
-func testAddInt(t *testing.T) {
+func testAddSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -44,7 +44,7 @@ func testAddInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddUint(t *testing.T) {
+func testAddUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -101,11 +101,11 @@ func TestAddU(t *testing.T) {
 }
 
 func TestSub(t *testing.T) {
-	testSubInt(t)
-	testSubUint(t)
+	testSubSig(t)
+	testSubUns(t)
 }
 
-func testSubInt(t *testing.T) {
+func testSubSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -133,7 +133,7 @@ func testSubInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubUint(t *testing.T) {
+func testSubUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -190,11 +190,11 @@ func TestSubU(t *testing.T) {
 }
 
 func TestMul(t *testing.T) {
-	testMulInt(t)
-	testMulUint(t)
+	testMulSig(t)
+	testMulUns(t)
 }
 
-func testMulInt(t *testing.T) {
+func testMulSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -222,7 +222,7 @@ func testMulInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulUint(t *testing.T) {
+func testMulUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -251,11 +251,11 @@ func testMulUint(t *testing.T) {
 }
 
 func TestDiv(t *testing.T) {
-	testDivInt(t)
-	testDivUint(t)
+	testDivSig(t)
+	testDivUns(t)
 }
 
-func testDivInt(t *testing.T) {
+func testDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -287,7 +287,7 @@ func testDivInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivUint(t *testing.T) {
+func testDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -320,11 +320,11 @@ func testDivUint(t *testing.T) {
 }
 
 func TestNegate(t *testing.T) {
-	testNegateInt(t)
-	testNegateUint(t)
+	testNegateSig(t)
+	testNegateUns(t)
 }
 
-func testNegateInt(t *testing.T) {
+func testNegateSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -352,7 +352,7 @@ func testNegateInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testNegateUint(t *testing.T) {
+func testNegateUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -658,12 +658,12 @@ func TestFToI(t *testing.T) {
 	}
 
 	for _, addition := range additions {
-		testFToIInt(t, addition)
-		testFToIUint(t, addition)
+		testFToISig(t, addition)
+		testFToIUns(t, addition)
 	}
 }
 
-func testFToIInt(t *testing.T, addition float64) {
+func testFToISig(t *testing.T, addition float64) {
 	effective := func(result types.Result[int16, int8, int64]) float64 {
 		if len(result.Args) == 0 {
 			return 0
@@ -709,7 +709,7 @@ func testFToIInt(t *testing.T, addition float64) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testFToIUint(t *testing.T, addition float64) {
+func testFToIUns(t *testing.T, addition float64) {
 	effective := func(result types.Result[int16, uint8, int64]) float64 {
 		if len(result.Args) == 0 {
 			return 0
@@ -776,13 +776,13 @@ func TestFToISpecial(t *testing.T) {
 }
 
 func TestShift(t *testing.T) {
-	testShiftInt(t)
-	testShiftUint(t)
+	testShiftSig(t)
+	testShiftUns(t)
 	testShiftIntViaFloat(t)
 	testShiftUintViaFloat(t)
 }
 
-func testShiftInt(t *testing.T) {
+func testShiftSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -823,7 +823,7 @@ func testShiftInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testShiftUint(t *testing.T) {
+func testShiftUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 

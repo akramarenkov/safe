@@ -8,11 +8,11 @@ import (
 )
 
 func TestAddSub(t *testing.T) {
-	testAddSubInt(t)
-	testAddSubUint(t)
+	testAddSubSig(t)
+	testAddSubUns(t)
 }
 
-func testAddSubInt(t *testing.T) {
+func testAddSubSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -40,7 +40,7 @@ func testAddSubInt(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddSubUint(t *testing.T) {
+func testAddSubUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -69,11 +69,11 @@ func testAddSubUint(t *testing.T) {
 }
 
 func TestAddDiv(t *testing.T) {
-	testAddDivInt(t)
-	testAddDivUint(t)
+	testAddDivSig(t)
+	testAddDivUns(t)
 }
 
-func testAddDivInt(t *testing.T) {
+func testAddDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -105,7 +105,7 @@ func testAddDivInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddDivUint(t *testing.T) {
+func testAddDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -138,11 +138,11 @@ func testAddDivUint(t *testing.T) {
 }
 
 func TestAddDivRem(t *testing.T) {
-	testAddDivRemInt(t)
-	testAddDivRemUint(t)
+	testAddDivRemSig(t)
+	testAddDivRemUns(t)
 }
 
-func testAddDivRemInt(t *testing.T) {
+func testAddDivRemSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -174,7 +174,7 @@ func testAddDivRemInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddDivRemUint(t *testing.T) {
+func testAddDivRemUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -239,11 +239,11 @@ func TestAddDivU(t *testing.T) {
 }
 
 func TestSubDiv(t *testing.T) {
-	testSubDivInt(t)
-	testSubDivUint(t)
+	testSubDivSig(t)
+	testSubDivUns(t)
 }
 
-func testSubDivInt(t *testing.T) {
+func testSubDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -275,7 +275,7 @@ func testSubDivInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testSubDivUint(t *testing.T) {
+func testSubDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -308,11 +308,11 @@ func testSubDivUint(t *testing.T) {
 }
 
 func TestSubDivRem(t *testing.T) {
-	testSubDivRemInt(t)
-	testSubDivRemUint(t)
+	testSubDivRemSig(t)
+	testSubDivRemUns(t)
 }
 
-func testSubDivRemInt(t *testing.T) {
+func testSubDivRemSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -344,7 +344,7 @@ func testSubDivRemInt(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testSubDivRemUint(t *testing.T) {
+func testSubDivRemUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 

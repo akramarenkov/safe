@@ -9,11 +9,11 @@ import (
 )
 
 func TestMin(t *testing.T) {
-	testMinInt(t)
-	testMinUint(t)
+	testMinSig(t)
+	testMinUns(t)
 }
 
-func testMinInt(t *testing.T) {
+func testMinSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MinInt8 {
 			require.True(t, Min(number))
@@ -24,7 +24,7 @@ func testMinInt(t *testing.T) {
 	}
 }
 
-func testMinUint(t *testing.T) {
+func testMinUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == 0 {
 			require.True(t, Min(number))
@@ -36,11 +36,11 @@ func testMinUint(t *testing.T) {
 }
 
 func TestMax(t *testing.T) {
-	testMaxInt(t)
-	testMaxUint(t)
+	testMaxSig(t)
+	testMaxUns(t)
 }
 
-func testMaxInt(t *testing.T) {
+func testMaxSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MaxInt8 {
 			require.True(t, Max(number))
@@ -51,7 +51,7 @@ func testMaxInt(t *testing.T) {
 	}
 }
 
-func testMaxUint(t *testing.T) {
+func testMaxUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == math.MaxUint8 {
 			require.True(t, Max(number))
@@ -63,11 +63,11 @@ func testMaxUint(t *testing.T) {
 }
 
 func TestMinusOne(t *testing.T) {
-	testMinusOneInt(t)
-	testMinusOneUint(t)
+	testMinusOneSig(t)
+	testMinusOneUns(t)
 }
 
-func testMinusOneInt(t *testing.T) {
+func testMinusOneSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == -1 {
 			require.True(t, MinusOne(number))
@@ -78,7 +78,7 @@ func testMinusOneInt(t *testing.T) {
 	}
 }
 
-func testMinusOneUint(t *testing.T) {
+func testMinusOneUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		require.False(t, MinusOne(number))
 	}
