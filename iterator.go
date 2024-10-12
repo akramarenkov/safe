@@ -16,6 +16,18 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator.Iter(begin, end)
 }
 
+// A range iterator for safely (without infinite loops due to counter overflow)
+// iterating over integer values from begin to end inclusive with a step one.
+//
+// If begin is greater than end, the return value will be decremented, otherwise it
+// will be incremented.
+//
+// Unlike [Iter], it returns, in addition to the main integer, its index in the
+// begin-end sequence.
+func Iter2[Type constraints.Integer](begin, end Type) iter.Seq2[uint64, Type] {
+	return iterator.Iter2(begin, end)
+}
+
 // Calculates the number of iterations when using [Iter]. The return value is
 // intended to be used as the size parameter in the make call, so, and because the
 // maximum possible number of iterations is one more than the maximum value for uint64,

@@ -116,6 +116,133 @@ func testIterBackwardPartial(t *testing.T) {
 	require.Equal(t, 0, reference)
 }
 
+func TestIter2(t *testing.T) {
+	testIter2ForwardSig(t)
+	testIter2BackwardSig(t)
+
+	testIter2ForwardUns(t)
+	testIter2BackwardUns(t)
+
+	testIter2ForwardPartial(t)
+	testIter2BackwardPartial(t)
+}
+
+func testIter2ForwardSig(t *testing.T) {
+	begin := int8(math.MinInt8)
+	end := int8(math.MaxInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		reference++
+		referenceID++
+	}
+
+	require.Equal(t, int(end)+1, reference)
+}
+
+func testIter2BackwardSig(t *testing.T) {
+	begin := int8(math.MaxInt8)
+	end := int8(math.MinInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		reference--
+		referenceID++
+	}
+
+	require.Equal(t, int(end)-1, reference)
+}
+
+func testIter2ForwardUns(t *testing.T) {
+	begin := uint8(0)
+	end := uint8(math.MaxUint8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		reference++
+		referenceID++
+	}
+
+	require.Equal(t, int(end)+1, reference)
+}
+
+func testIter2BackwardUns(t *testing.T) {
+	begin := uint8(math.MaxUint8)
+	end := uint8(0)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		reference--
+		referenceID++
+	}
+
+	require.Equal(t, int(end)-1, reference)
+}
+
+func testIter2ForwardPartial(t *testing.T) {
+	begin := int8(math.MinInt8)
+	end := int8(math.MaxInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		if number == 0 {
+			break
+		}
+
+		reference++
+		referenceID++
+	}
+
+	require.Equal(t, 0, reference)
+}
+
+func testIter2BackwardPartial(t *testing.T) {
+	begin := int8(math.MaxInt8)
+	end := int8(math.MinInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		if number == 0 {
+			break
+		}
+
+		reference--
+		referenceID++
+	}
+
+	require.Equal(t, 0, reference)
+}
+
 func TestIterSize(t *testing.T) {
 	testIterSizeSig(t)
 	testIterSizeUns(t)
@@ -513,6 +640,16 @@ func BenchmarkIter(b *testing.B) {
 	number := 0
 
 	for value := range Iter(0, b.N) {
+		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIter2(b *testing.B) {
+	number := 0
+
+	for _, value := range Iter2(0, b.N) {
 		number = value
 	}
 

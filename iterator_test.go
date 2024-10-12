@@ -22,6 +22,24 @@ func TestIter(t *testing.T) {
 	require.Equal(t, int(end)+1, reference)
 }
 
+func TestIter2(t *testing.T) {
+	begin := int8(math.MinInt8)
+	end := int8(math.MaxInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	for id, number := range Iter2(begin, end) {
+		require.Equal(t, reference, int(number))
+		require.Equal(t, referenceID, id)
+
+		reference++
+		referenceID++
+	}
+
+	require.Equal(t, int(end)+1, reference)
+}
+
 func TestIterSize(t *testing.T) {
 	require.Equal(
 		t,
@@ -202,7 +220,17 @@ func TestIterStepSizePanic(t *testing.T) {
 func BenchmarkIter(b *testing.B) {
 	number := 0
 
-	for value := range Iter(1, b.N) {
+	for value := range Iter(0, b.N) {
+		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIter2(b *testing.B) {
+	number := 0
+
+	for _, value := range Iter2(0, b.N) {
 		number = value
 	}
 
@@ -222,7 +250,7 @@ func BenchmarkIterSize(b *testing.B) {
 func BenchmarkIterStep(b *testing.B) {
 	number := 0
 
-	for value := range IterStep(1, b.N, 1) {
+	for value := range IterStep(0, b.N, 1) {
 		number = value
 	}
 
