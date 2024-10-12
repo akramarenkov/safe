@@ -82,38 +82,40 @@ func testIterForwardPartial(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
+	breakAt := 3
 	reference := int(begin)
 
 	for number := range Iter(begin, end) {
 		require.Equal(t, reference, int(number))
 
-		if number == 0 {
+		if int(number) == breakAt {
 			break
 		}
 
 		reference++
 	}
 
-	require.Equal(t, 0, reference)
+	require.Equal(t, breakAt, reference)
 }
 
 func testIterBackwardPartial(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
+	breakAt := 3
 	reference := int(begin)
 
 	for number := range Iter(begin, end) {
 		require.Equal(t, reference, int(number))
 
-		if number == 0 {
+		if int(number) == breakAt {
 			break
 		}
 
 		reference--
 	}
 
-	require.Equal(t, 0, reference)
+	require.Equal(t, breakAt, reference)
 }
 
 func TestIter2(t *testing.T) {
@@ -203,6 +205,7 @@ func testIter2ForwardPartial(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
+	breakAt := 3
 	reference := int(begin)
 	referenceID := uint64(0)
 
@@ -210,7 +213,7 @@ func testIter2ForwardPartial(t *testing.T) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
-		if number == 0 {
+		if int(number) == breakAt {
 			break
 		}
 
@@ -218,13 +221,14 @@ func testIter2ForwardPartial(t *testing.T) {
 		referenceID++
 	}
 
-	require.Equal(t, 0, reference)
+	require.Equal(t, breakAt, reference)
 }
 
 func testIter2BackwardPartial(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
+	breakAt := 3
 	reference := int(begin)
 	referenceID := uint64(0)
 
@@ -232,7 +236,7 @@ func testIter2BackwardPartial(t *testing.T) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
-		if number == 0 {
+		if int(number) == breakAt {
 			break
 		}
 
@@ -240,13 +244,28 @@ func testIter2BackwardPartial(t *testing.T) {
 		referenceID++
 	}
 
-	require.Equal(t, 0, reference)
+	require.Equal(t, breakAt, reference)
 }
 
 func TestIterSize(t *testing.T) {
+	testIterSizeMan(t)
 	testIterSizeSig(t)
 	testIterSizeUns(t)
 	testIterSizeMax(t)
+}
+
+func testIterSizeMan(t *testing.T) {
+	require.Equal(t, uint64(3), IterSize[int8](-1, 1))
+	require.Equal(t, uint64(3), IterSize[int8](1, -1))
+	require.Equal(t, uint64(6), IterSize[int8](-2, 3))
+	require.Equal(t, uint64(6), IterSize[int8](3, -2))
+	require.Equal(t, uint64(256), IterSize[int8](-128, 127))
+
+	require.Equal(t, uint64(3), IterSize[uint8](1, 3))
+	require.Equal(t, uint64(3), IterSize[uint8](3, 1))
+	require.Equal(t, uint64(6), IterSize[uint8](1, 6))
+	require.Equal(t, uint64(6), IterSize[uint8](6, 1))
+	require.Equal(t, uint64(256), IterSize[uint8](0, 255))
 }
 
 func testIterSizeSig(t *testing.T) {
@@ -262,7 +281,8 @@ func testIterSizeSig(t *testing.T) {
 			// from the larger value for int8 values
 			referenceU := uint64(reference)
 
-			require.Equal(t,
+			require.Equal(
+				t,
 				referenceU,
 				IterSize(begin, end),
 				"begin: %v, end: %v",
@@ -282,9 +302,14 @@ func testIterSizeUns(t *testing.T) {
 				reference = uint64(begin) - uint64(end) + 1
 			}
 
-			actual := IterSize(begin, end)
-
-			require.Equal(t, reference, actual, "begin: %v, end: %v", begin, end)
+			require.Equal(
+				t,
+				reference,
+				IterSize(begin, end),
+				"begin: %v, end: %v",
+				begin,
+				end,
+			)
 		}
 	}
 }
