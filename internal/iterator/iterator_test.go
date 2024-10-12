@@ -975,7 +975,7 @@ func testIterStepSizeMax(t *testing.T) {
 	)
 }
 
-func BenchmarkReference(b *testing.B) {
+func BenchmarkIterReference(b *testing.B) {
 	number := 0
 
 	for value := range b.N {
