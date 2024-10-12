@@ -706,10 +706,10 @@ func testIterStepSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			for step := range Iter[int8](1, math.MaxInt8) {
-				reference := (int(end) - int(begin) + 1) / int(step)
+				reference := (int(end)-int(begin))/int(step) + 1
 
 				if begin > end {
-					reference = (int(begin) - int(end) + 1) / int(step)
+					reference = (int(begin)-int(end))/int(step) + 1
 				}
 
 				//nolint:gosec // Is the result of subtracting the smaller value
@@ -739,10 +739,10 @@ func testIterStepSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
 			for step := range Iter[uint8](1, math.MaxUint8) {
-				reference := (uint64(end) - uint64(begin) + 1) / uint64(step)
+				reference := (uint64(end)-uint64(begin))/uint64(step) + 1
 
 				if begin > end {
-					reference = (uint64(begin) - uint64(end) + 1) / uint64(step)
+					reference = (uint64(begin)-uint64(end))/uint64(step) + 1
 				}
 
 				actual := IterStepSize(begin, end, step, nil, nil)

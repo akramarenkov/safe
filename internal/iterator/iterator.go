@@ -295,16 +295,9 @@ func IterStepSize[Type constraints.Integer](
 		size = endU64 + beginU64
 	}
 
-	if size == intspec.MaxUint64 {
-		if stepU64 == 1 {
-			return size
-		}
-
-		quotient := size / stepU64
-		remainder := size % stepU64
-
-		return quotient + (remainder+1)/stepU64
+	if size == intspec.MaxUint64 && stepU64 == 1 {
+		return size
 	}
 
-	return (size + 1) / stepU64
+	return size/stepU64 + 1
 }
