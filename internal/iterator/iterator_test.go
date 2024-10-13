@@ -978,7 +978,7 @@ func testIterStepSizeMax(t *testing.T) {
 func BenchmarkIterReference(b *testing.B) {
 	number := 0
 
-	for value := range b.N {
+	for value := 1; value <= b.N; value++ {
 		number = value
 	}
 
@@ -988,8 +988,20 @@ func BenchmarkIterReference(b *testing.B) {
 func BenchmarkIter(b *testing.B) {
 	number := 0
 
-	for value := range Iter(0, b.N) {
+	for value := range Iter(1, b.N) {
 		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIterTwoLevel(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for value := range Iter(1, b.N) {
+			number = value
+		}
 	}
 
 	require.NotZero(b, number)
@@ -998,8 +1010,20 @@ func BenchmarkIter(b *testing.B) {
 func BenchmarkIter2(b *testing.B) {
 	number := 0
 
-	for _, value := range Iter2(0, b.N) {
+	for _, value := range Iter2(1, b.N) {
 		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIter2TwoLevel(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for _, value := range Iter2(1, b.N) {
+			number = value
+		}
 	}
 
 	require.NotZero(b, number)
@@ -1009,7 +1033,7 @@ func BenchmarkIterSize(b *testing.B) {
 	size := uint64(0)
 
 	for range b.N {
-		size = IterSize(0, b.N)
+		size = IterSize(1, b.N)
 	}
 
 	require.NotZero(b, size)
@@ -1018,8 +1042,20 @@ func BenchmarkIterSize(b *testing.B) {
 func BenchmarkIterStep(b *testing.B) {
 	number := 0
 
-	for value := range IterStep(0, b.N, 1, nil, nil) {
+	for value := range IterStep(1, b.N, 1, nil, nil) {
 		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIterStepTwoLevel(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for value := range IterStep(1, b.N, 1, nil, nil) {
+			number = value
+		}
 	}
 
 	require.NotZero(b, number)
@@ -1028,8 +1064,20 @@ func BenchmarkIterStep(b *testing.B) {
 func BenchmarkIterStep2(b *testing.B) {
 	number := 0
 
-	for _, value := range IterStep2(0, b.N, 1, nil, nil) {
+	for _, value := range IterStep2(1, b.N, 1, nil, nil) {
 		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIterStep2TwoLevel(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for _, value := range IterStep2(1, b.N, 1, nil, nil) {
+			number = value
+		}
 	}
 
 	require.NotZero(b, number)
@@ -1039,7 +1087,7 @@ func BenchmarkIterStepSize(b *testing.B) {
 	size := uint64(0)
 
 	for range b.N {
-		size = IterStepSize(0, b.N, 1, nil, nil)
+		size = IterStepSize(1, b.N, 1, nil, nil)
 	}
 
 	require.NotZero(b, size)
