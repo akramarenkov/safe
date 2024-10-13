@@ -1071,7 +1071,7 @@ func BenchmarkIterTwoLevelReference(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for value := 1; value <= b.N; value++ {
+		for value := 1; value <= 1; value++ {
 			number = value
 		}
 	}
@@ -1093,7 +1093,7 @@ func BenchmarkIterTwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for value := range Iter(1, b.N) {
+		for value := range Iter(1, 1) {
 			number = value
 		}
 	}
@@ -1115,7 +1115,7 @@ func BenchmarkIter2TwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for _, value := range Iter2(1, b.N) {
+		for _, value := range Iter2(1, 1) {
 			number = value
 		}
 	}
@@ -1147,7 +1147,7 @@ func BenchmarkIterStepTwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for value := range IterStep(1, b.N, 1, nil, nil) {
+		for value := range IterStep(1, 1, 1, nil, nil) {
 			number = value
 		}
 	}
@@ -1169,7 +1169,7 @@ func BenchmarkIterStep2TwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for _, value := range IterStep2(1, b.N, 1, nil, nil) {
+		for _, value := range IterStep2(1, 1, 1, nil, nil) {
 			number = value
 		}
 	}
