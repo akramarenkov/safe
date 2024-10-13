@@ -205,6 +205,18 @@ func BenchmarkIterReference(b *testing.B) {
 	require.NotZero(b, number)
 }
 
+func BenchmarkIterTwoLevelReference(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for value := 1; value <= b.N; value++ {
+			number = value
+		}
+	}
+
+	require.NotZero(b, number)
+}
+
 func BenchmarkIter(b *testing.B) {
 	number := 0
 

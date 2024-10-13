@@ -14,7 +14,19 @@ import (
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
 func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
-	forward := func(yield func(Type) bool) {
+	iterator := func(yield func(Type) bool) {
+		if begin > end {
+			for number := begin; number > end; number-- {
+				if !yield(number) {
+					return
+				}
+			}
+
+			yield(end)
+
+			return
+		}
+
 		for number := begin; number < end; number++ {
 			if !yield(number) {
 				return
@@ -24,21 +36,7 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 		yield(end)
 	}
 
-	backward := func(yield func(Type) bool) {
-		for number := begin; number > end; number-- {
-			if !yield(number) {
-				return
-			}
-		}
-
-		yield(end)
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -50,7 +48,23 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // Unlike [Iter], it returns, in addition to the main integer, its index in the
 // begin-end sequence.
 func Iter2[Type constraints.Integer](begin, end Type) iter.Seq2[uint64, Type] {
-	forward := func(yield func(uint64, Type) bool) {
+	iterator := func(yield func(uint64, Type) bool) {
+		if begin > end {
+			id := uint64(0)
+
+			for number := begin; number > end; number-- {
+				if !yield(id, number) {
+					return
+				}
+
+				id++
+			}
+
+			yield(id, end)
+
+			return
+		}
+
 		id := uint64(0)
 
 		for number := begin; number < end; number++ {
@@ -64,25 +78,7 @@ func Iter2[Type constraints.Integer](begin, end Type) iter.Seq2[uint64, Type] {
 		yield(id, end)
 	}
 
-	backward := func(yield func(uint64, Type) bool) {
-		id := uint64(0)
-
-		for number := begin; number > end; number-- {
-			if !yield(id, number) {
-				return
-			}
-
-			id++
-		}
-
-		yield(id, end)
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator
 }
 
 // Calculates the number of iterations when using [Iter], [Iter2]. The return
@@ -138,7 +134,26 @@ func IterStep[Type constraints.Integer](
 		panic(stepZero)
 	}
 
-	forward := func(yield func(Type) bool) {
+	iterator := func(yield func(Type) bool) {
+		if begin > end {
+			previous := begin
+
+			for number := begin; number >= end; number -= step {
+				// integer overflow
+				if number > previous {
+					return
+				}
+
+				previous = number
+
+				if !yield(number) {
+					return
+				}
+			}
+
+			return
+		}
+
 		previous := begin
 
 		for number := begin; number <= end; number += step {
@@ -155,28 +170,7 @@ func IterStep[Type constraints.Integer](
 		}
 	}
 
-	backward := func(yield func(Type) bool) {
-		previous := begin
-
-		for number := begin; number >= end; number -= step {
-			// integer overflow
-			if number > previous {
-				return
-			}
-
-			previous = number
-
-			if !yield(number) {
-				return
-			}
-		}
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -208,7 +202,30 @@ func IterStep2[Type constraints.Integer](
 		panic(stepZero)
 	}
 
-	forward := func(yield func(uint64, Type) bool) {
+	iterator := func(yield func(uint64, Type) bool) {
+		if begin > end {
+			id := uint64(0)
+
+			previous := begin
+
+			for number := begin; number >= end; number -= step {
+				// integer overflow
+				if number > previous {
+					return
+				}
+
+				previous = number
+
+				if !yield(id, number) {
+					return
+				}
+
+				id++
+			}
+
+			return
+		}
+
 		id := uint64(0)
 
 		previous := begin
@@ -229,32 +246,7 @@ func IterStep2[Type constraints.Integer](
 		}
 	}
 
-	backward := func(yield func(uint64, Type) bool) {
-		id := uint64(0)
-
-		previous := begin
-
-		for number := begin; number >= end; number -= step {
-			// integer overflow
-			if number > previous {
-				return
-			}
-
-			previous = number
-
-			if !yield(id, number) {
-				return
-			}
-
-			id++
-		}
-	}
-
-	if begin > end {
-		return backward
-	}
-
-	return forward
+	return iterator
 }
 
 // Calculates the number of iterations when using [IterStep], [IterStep2]. The return

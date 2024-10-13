@@ -379,11 +379,13 @@ func TestIterStep(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
 		testIterStepForwardSig(t, step)
 		testIterStepBackwardSig(t, step)
+		testIterStepBackwardSigNotOnEntireRange(t, step)
 	}
 
 	for step := range Iter[uint8](1, math.MaxUint8) {
 		testIterStepForwardUns(t, step)
 		testIterStepBackwardUns(t, step)
+		testIterStepBackwardUnsNotOnEntireRange(t, step)
 	}
 
 	testIterStepForwardPartial(t)
@@ -444,6 +446,24 @@ func testIterStepBackwardSig(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
+func testIterStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
+	begin := int8(math.MaxInt8)
+	end := int8(0)
+
+	reference := int(begin)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for number := range IterStep(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+
+		reference -= int(step)
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
 func testIterStepForwardUns(t *testing.T, step uint8) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
@@ -465,6 +485,24 @@ func testIterStepForwardUns(t *testing.T, step uint8) {
 func testIterStepBackwardUns(t *testing.T, step uint8) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
+
+	reference := int(begin)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for number := range IterStep(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+
+		reference -= int(step)
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
+func testIterStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
+	begin := uint8(math.MaxUint8)
+	end := uint8(math.MaxUint8 / 2)
 
 	reference := int(begin)
 
@@ -524,11 +562,13 @@ func TestIterStep2(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
 		testIterStep2ForwardSig(t, step)
 		testIterStep2BackwardSig(t, step)
+		testIterStep2BackwardSigNotOnEntireRange(t, step)
 	}
 
 	for step := range Iter[uint8](1, math.MaxUint8) {
 		testIterStep2ForwardUns(t, step)
 		testIterStep2BackwardUns(t, step)
+		testIterStep2BackwardUnsNotOnEntireRange(t, step)
 	}
 
 	testIterStep2ForwardPartial(t)
@@ -595,6 +635,27 @@ func testIterStep2BackwardSig(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
+func testIterStep2BackwardSigNotOnEntireRange(t *testing.T, step int8) {
+	begin := int8(math.MaxInt8)
+	end := int8(0)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for id, number := range IterStep2(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+		require.Equal(t, referenceID, id, "step: %v", step)
+
+		reference -= int(step)
+		referenceID++
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
 func testIterStep2ForwardUns(t *testing.T, step uint8) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
@@ -619,6 +680,27 @@ func testIterStep2ForwardUns(t *testing.T, step uint8) {
 func testIterStep2BackwardUns(t *testing.T, step uint8) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for id, number := range IterStep2(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+		require.Equal(t, referenceID, id, "step: %v", step)
+
+		reference -= int(step)
+		referenceID++
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
+func testIterStep2BackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
+	begin := uint8(math.MaxUint8)
+	end := uint8(math.MaxUint8 / 2)
 
 	reference := int(begin)
 	referenceID := uint64(0)
@@ -980,6 +1062,18 @@ func BenchmarkIterReference(b *testing.B) {
 
 	for value := 1; value <= b.N; value++ {
 		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkIterTwoLevelReference(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for value := 1; value <= b.N; value++ {
+			number = value
+		}
 	}
 
 	require.NotZero(b, number)
