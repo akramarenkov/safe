@@ -978,6 +978,29 @@ func testIterStrictIterations(
 	require.Equal(t, expected, actual)
 }
 
+func TestIterStrictSize(t *testing.T) {
+	require.Equal(t, uint64(2), IterStrictSize(1, 0, 1, -1, nil, nil))
+	require.Equal(t, uint64(1), IterStrictSize(1, 1, 1, -1, nil, nil))
+	require.Equal(t, uint64(0), IterStrictSize(1, 2, 1, -1, nil, nil))
+	require.Equal(t, uint64(0), IterStrictSize(1, 0, 1, 0, nil, nil))
+	require.Equal(t, uint64(1), IterStrictSize(1, 1, 1, 0, nil, nil))
+	require.Equal(t, uint64(2), IterStrictSize(1, 2, 1, 0, nil, nil))
+
+	require.Panics(
+		t,
+		func() {
+			_ = IterStrictSize(1, 2, -1, 0, nil, nil)
+		},
+	)
+
+	require.Panics(
+		t,
+		func() {
+			_ = IterStrictSize(1, 2, 0, 0, nil, nil)
+		},
+	)
+}
+
 func BenchmarkIterReference(b *testing.B) {
 	number := 0
 
@@ -1084,4 +1107,14 @@ func BenchmarkIterStrictTwoLevel(b *testing.B) {
 	}
 
 	require.NotZero(b, number)
+}
+
+func BenchmarkIterStrictSize(b *testing.B) {
+	size := uint64(0)
+
+	for range b.N {
+		size = IterStrictSize(1, b.N, 1, 0, nil, nil)
+	}
+
+	require.NotZero(b, size)
 }

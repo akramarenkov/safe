@@ -263,3 +263,29 @@ func IterStrict[Type constraints.Integer](
 
 	return iterator
 }
+
+// Calculates the number of iterations when using [IterStrict]. The return value
+// is intended to be used as the size parameter in the make call, so, and because
+// the maximum possible number of iterations is one more than the maximum value for
+// uint64, the return value is truncated to the maximum value for uint64 if the
+// calculated value exceeds it.
+//
+// Like [IterStrict] this function panics if a zero or negative step is specified.
+func IterStrictSize[Type constraints.Integer](
+	begin Type,
+	end Type,
+	step Type,
+	direction int,
+	stepNegative error,
+	stepZero error,
+) uint64 {
+	if direction < 0 && begin < end {
+		return 0
+	}
+
+	if direction >= 0 && begin > end {
+		return 0
+	}
+
+	return IterStepSize(begin, end, step, stepNegative, stepZero)
+}
