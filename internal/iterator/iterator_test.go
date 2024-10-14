@@ -248,26 +248,26 @@ func testIterSizeMax(t *testing.T) {
 	)
 }
 
-func TestIterStep(t *testing.T) {
+func TestStep(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
-		testIterStepForwardSig(t, step)
-		testIterStepBackwardSig(t, step)
-		testIterStepBackwardSigNotOnEntireRange(t, step)
+		testStepForwardSig(t, step)
+		testStepBackwardSig(t, step)
+		testStepBackwardSigNotOnEntireRange(t, step)
 	}
 
 	for step := range Iter[uint8](1, math.MaxUint8) {
-		testIterStepForwardUns(t, step)
-		testIterStepBackwardUns(t, step)
-		testIterStepBackwardUnsNotOnEntireRange(t, step)
+		testStepForwardUns(t, step)
+		testStepBackwardUns(t, step)
+		testStepBackwardUnsNotOnEntireRange(t, step)
 	}
 
-	testIterStepForwardPartial(t)
-	testIterStepBackwardPartial(t)
+	testStepForwardPartial(t)
+	testStepBackwardPartial(t)
 
 	require.Panics(
 		t,
 		func() {
-			for number := range IterStep(1, 2, -1, nil, nil) {
+			for number := range Step(1, 2, -1, nil, nil) {
 				_ = number
 			}
 		},
@@ -276,14 +276,14 @@ func TestIterStep(t *testing.T) {
 	require.Panics(
 		t,
 		func() {
-			for number := range IterStep(1, 2, 0, nil, nil) {
+			for number := range Step(1, 2, 0, nil, nil) {
 				_ = number
 			}
 		},
 	)
 }
 
-func testIterStepForwardSig(t *testing.T, step int8) {
+func testStepForwardSig(t *testing.T, step int8) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -293,7 +293,7 @@ func testIterStepForwardSig(t *testing.T, step int8) {
 	iterations := (int(end)-int(begin))/int(step) + 1
 	final := int(begin) + iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -304,7 +304,7 @@ func testIterStepForwardSig(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepBackwardSig(t *testing.T, step int8) {
+func testStepBackwardSig(t *testing.T, step int8) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -314,7 +314,7 @@ func testIterStepBackwardSig(t *testing.T, step int8) {
 	iterations := (int(begin)-int(end))/int(step) + 1
 	final := int(begin) - iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -325,7 +325,7 @@ func testIterStepBackwardSig(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
+func testStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
 	begin := int8(math.MaxInt8)
 	end := int8(0)
 
@@ -335,7 +335,7 @@ func testIterStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
 	iterations := (int(begin)-int(end))/int(step) + 1
 	final := int(begin) - iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -346,7 +346,7 @@ func testIterStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepForwardUns(t *testing.T, step uint8) {
+func testStepForwardUns(t *testing.T, step uint8) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
 
@@ -356,7 +356,7 @@ func testIterStepForwardUns(t *testing.T, step uint8) {
 	iterations := (int(end)-int(begin))/int(step) + 1
 	final := int(begin) + iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -367,7 +367,7 @@ func testIterStepForwardUns(t *testing.T, step uint8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepBackwardUns(t *testing.T, step uint8) {
+func testStepBackwardUns(t *testing.T, step uint8) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
 
@@ -377,7 +377,7 @@ func testIterStepBackwardUns(t *testing.T, step uint8) {
 	iterations := (int(begin)-int(end))/int(step) + 1
 	final := int(begin) - iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -388,7 +388,7 @@ func testIterStepBackwardUns(t *testing.T, step uint8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
+func testStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(math.MaxUint8 / 2)
 
@@ -398,7 +398,7 @@ func testIterStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
 	iterations := (int(begin)-int(end))/int(step) + 1
 	final := int(begin) - iterations*int(step)
 
-	for id, number := range IterStep(begin, end, step, nil, nil) {
+	for id, number := range Step(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -409,7 +409,7 @@ func testIterStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStepForwardPartial(t *testing.T) {
+func testStepForwardPartial(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -417,7 +417,7 @@ func testIterStepForwardPartial(t *testing.T) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	for id, number := range IterStep(begin, end, 1, nil, nil) {
+	for id, number := range Step(begin, end, 1, nil, nil) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
@@ -432,7 +432,7 @@ func testIterStepForwardPartial(t *testing.T) {
 	require.Equal(t, breakAt, reference)
 }
 
-func testIterStepBackwardPartial(t *testing.T) {
+func testStepBackwardPartial(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -440,7 +440,7 @@ func testIterStepBackwardPartial(t *testing.T) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	for id, number := range IterStep(begin, end, 1, nil, nil) {
+	for id, number := range Step(begin, end, 1, nil, nil) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
@@ -455,56 +455,56 @@ func testIterStepBackwardPartial(t *testing.T) {
 	require.Equal(t, breakAt, reference)
 }
 
-func TestIterStepSize(t *testing.T) {
-	testIterStepSizeMan(t)
-	testIterStepSizeSig(t)
-	testIterStepSizeUns(t)
-	testIterStepSizeMax(t)
+func TestStepSize(t *testing.T) {
+	testStepSizeMan(t)
+	testStepSizeSig(t)
+	testStepSizeUns(t)
+	testStepSizeMax(t)
 
 	require.Panics(
 		t,
 		func() {
-			_ = IterStepSize(1, 2, -1, nil, nil)
+			_ = StepSize(1, 2, -1, nil, nil)
 		},
 	)
 
 	require.Panics(
 		t,
 		func() {
-			_ = IterStepSize(1, 2, 0, nil, nil)
+			_ = StepSize(1, 2, 0, nil, nil)
 		},
 	)
 }
 
-func testIterStepSizeMan(t *testing.T) {
-	require.Equal(t, uint64(3), IterStepSize[int8](-1, 1, 1, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[int8](1, -1, 1, nil, nil))
-	require.Equal(t, uint64(6), IterStepSize[int8](-2, 3, 1, nil, nil))
-	require.Equal(t, uint64(6), IterStepSize[int8](3, -2, 1, nil, nil))
-	require.Equal(t, uint64(256), IterStepSize[int8](-128, 127, 1, nil, nil))
+func testStepSizeMan(t *testing.T) {
+	require.Equal(t, uint64(3), StepSize[int8](-1, 1, 1, nil, nil))
+	require.Equal(t, uint64(3), StepSize[int8](1, -1, 1, nil, nil))
+	require.Equal(t, uint64(6), StepSize[int8](-2, 3, 1, nil, nil))
+	require.Equal(t, uint64(6), StepSize[int8](3, -2, 1, nil, nil))
+	require.Equal(t, uint64(256), StepSize[int8](-128, 127, 1, nil, nil))
 
-	require.Equal(t, uint64(3), IterStepSize[int8](-2, 5, 3, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[int8](-2, 6, 3, nil, nil))
-	require.Equal(t, uint64(4), IterStepSize[int8](-2, 7, 3, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[int8](-128, 127, 86, nil, nil))
-	require.Equal(t, uint64(86), IterStepSize[int8](-128, 127, 3, nil, nil))
-	require.Equal(t, uint64(128), IterStepSize[int8](-128, 127, 2, nil, nil))
+	require.Equal(t, uint64(3), StepSize[int8](-2, 5, 3, nil, nil))
+	require.Equal(t, uint64(3), StepSize[int8](-2, 6, 3, nil, nil))
+	require.Equal(t, uint64(4), StepSize[int8](-2, 7, 3, nil, nil))
+	require.Equal(t, uint64(3), StepSize[int8](-128, 127, 86, nil, nil))
+	require.Equal(t, uint64(86), StepSize[int8](-128, 127, 3, nil, nil))
+	require.Equal(t, uint64(128), StepSize[int8](-128, 127, 2, nil, nil))
 
-	require.Equal(t, uint64(3), IterStepSize[uint8](1, 3, 1, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[uint8](3, 1, 1, nil, nil))
-	require.Equal(t, uint64(6), IterStepSize[uint8](1, 6, 1, nil, nil))
-	require.Equal(t, uint64(6), IterStepSize[uint8](6, 1, 1, nil, nil))
-	require.Equal(t, uint64(256), IterStepSize[uint8](0, 255, 1, nil, nil))
+	require.Equal(t, uint64(3), StepSize[uint8](1, 3, 1, nil, nil))
+	require.Equal(t, uint64(3), StepSize[uint8](3, 1, 1, nil, nil))
+	require.Equal(t, uint64(6), StepSize[uint8](1, 6, 1, nil, nil))
+	require.Equal(t, uint64(6), StepSize[uint8](6, 1, 1, nil, nil))
+	require.Equal(t, uint64(256), StepSize[uint8](0, 255, 1, nil, nil))
 
-	require.Equal(t, uint64(3), IterStepSize[uint8](2, 9, 3, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[uint8](2, 10, 3, nil, nil))
-	require.Equal(t, uint64(4), IterStepSize[uint8](2, 11, 3, nil, nil))
-	require.Equal(t, uint64(3), IterStepSize[uint8](0, 255, 86, nil, nil))
-	require.Equal(t, uint64(86), IterStepSize[uint8](0, 255, 3, nil, nil))
-	require.Equal(t, uint64(128), IterStepSize[uint8](0, 255, 2, nil, nil))
+	require.Equal(t, uint64(3), StepSize[uint8](2, 9, 3, nil, nil))
+	require.Equal(t, uint64(3), StepSize[uint8](2, 10, 3, nil, nil))
+	require.Equal(t, uint64(4), StepSize[uint8](2, 11, 3, nil, nil))
+	require.Equal(t, uint64(3), StepSize[uint8](0, 255, 86, nil, nil))
+	require.Equal(t, uint64(86), StepSize[uint8](0, 255, 3, nil, nil))
+	require.Equal(t, uint64(128), StepSize[uint8](0, 255, 2, nil, nil))
 }
 
-func testIterStepSizeSig(t *testing.T) {
+func testStepSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			for step := range Iter[int8](1, math.MaxInt8) {
@@ -518,7 +518,7 @@ func testIterStepSizeSig(t *testing.T) {
 				// from the larger value for int8 values
 				referenceU := uint64(reference)
 
-				actual := IterStepSize(begin, end, step, nil, nil)
+				actual := StepSize(begin, end, step, nil, nil)
 
 				// duplication of conditions is done for performance reasons
 				if actual != referenceU {
@@ -537,7 +537,7 @@ func testIterStepSizeSig(t *testing.T) {
 	}
 }
 
-func testIterStepSizeUns(t *testing.T) {
+func testStepSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
 			for step := range Iter[uint8](1, math.MaxUint8) {
@@ -547,7 +547,7 @@ func testIterStepSizeUns(t *testing.T) {
 					reference = (uint64(begin)-uint64(end))/uint64(step) + 1
 				}
 
-				actual := IterStepSize(begin, end, step, nil, nil)
+				actual := StepSize(begin, end, step, nil, nil)
 
 				// duplication of conditions is done for performance reasons
 				if actual != reference {
@@ -566,214 +566,206 @@ func testIterStepSizeUns(t *testing.T) {
 	}
 }
 
-func testIterStepSizeMax(t *testing.T) {
+func testStepSizeMax(t *testing.T) {
 	require.Equal(
 		t,
 		uint64(9223372036854775808),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 2, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 2, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(9223372036854775808),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 2, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 2, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(9223372036854775808),
-		IterStepSize[uint64](0, math.MaxUint64, 2, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 2, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(9223372036854775808),
-		IterStepSize[uint64](math.MaxUint64, 0, 2, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 2, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(2),
-		IterStepSize[uint64](0, math.MaxUint64, 9223372036854775808, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 9223372036854775808, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(2),
-		IterStepSize[uint64](math.MaxUint64, 0, 9223372036854775808, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 9223372036854775808, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(6148914691236517206),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 3, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 3, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(6148914691236517206),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 3, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 3, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(3),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 6148914691236517206, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 6148914691236517206, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(3),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 6148914691236517206, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 6148914691236517206, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(6148914691236517206),
-		IterStepSize[uint64](0, math.MaxUint64, 3, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 3, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(6148914691236517206),
-		IterStepSize[uint64](math.MaxUint64, 0, 3, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 3, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(3),
-		IterStepSize[uint64](0, math.MaxUint64, 6148914691236517206, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 6148914691236517206, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(3),
-		IterStepSize[uint64](math.MaxUint64, 0, 6148914691236517206, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 6148914691236517206, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(4611686018427387904),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 4, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 4, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4611686018427387904),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 4, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 4, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 4611686018427387904, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 4611686018427387904, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 4611686018427387904, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 4611686018427387904, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(4611686018427387904),
-		IterStepSize[uint64](0, math.MaxUint64, 4, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 4, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4611686018427387904),
-		IterStepSize[uint64](math.MaxUint64, 0, 4, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 4, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4),
-		IterStepSize[uint64](0, math.MaxUint64, 4611686018427387904, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 4611686018427387904, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(4),
-		IterStepSize[uint64](math.MaxUint64, 0, 4611686018427387904, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 4611686018427387904, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(math.MaxUint64-1),
-		IterStepSize[int64](math.MinInt64+2, math.MaxInt64, 1, nil, nil),
+		StepSize[int64](math.MinInt64+2, math.MaxInt64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64-1),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64+2, 1, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64+2, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64-1),
-		IterStepSize[uint64](2, math.MaxUint64, 1, nil, nil),
+		StepSize[uint64](2, math.MaxUint64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64-1),
-		IterStepSize[uint64](math.MaxUint64, 2, 1, nil, nil),
+		StepSize[uint64](math.MaxUint64, 2, 1, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[int64](math.MinInt64+1, math.MaxInt64, 1, nil, nil),
+		StepSize[int64](math.MinInt64+1, math.MaxInt64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64+1, 1, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64+1, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[uint64](1, math.MaxUint64, 1, nil, nil),
+		StepSize[uint64](1, math.MaxUint64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[uint64](math.MaxUint64, 1, 1, nil, nil),
+		StepSize[uint64](math.MaxUint64, 1, 1, nil, nil),
 	)
 
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[int64](math.MinInt64, math.MaxInt64, 1, nil, nil),
+		StepSize[int64](math.MinInt64, math.MaxInt64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[int64](math.MaxInt64, math.MinInt64, 1, nil, nil),
+		StepSize[int64](math.MaxInt64, math.MinInt64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[uint64](0, math.MaxUint64, 1, nil, nil),
+		StepSize[uint64](0, math.MaxUint64, 1, nil, nil),
 	)
 	require.Equal(
 		t,
 		uint64(math.MaxUint64),
-		IterStepSize[uint64](math.MaxUint64, 0, 1, nil, nil),
+		StepSize[uint64](math.MaxUint64, 0, 1, nil, nil),
 	)
 }
 
-func TestIterStrict(t *testing.T) {
+func TestInc(t *testing.T) {
 	for step := range Iter[int8](1, math.MaxInt8) {
-		testIterStrictForwardSig(t, step)
-		testIterStrictBackwardSig(t, step)
-		testIterStrictBackwardSigNotOnEntireRange(t, step)
+		testIncSig(t, step)
 	}
 
 	for step := range Iter[uint8](1, math.MaxUint8) {
-		testIterStrictForwardUns(t, step)
-		testIterStrictBackwardUns(t, step)
-		testIterStrictBackwardUnsNotOnEntireRange(t, step)
+		testIncUns(t, step)
 	}
 
-	testIterStrictForwardPartial(t)
-	testIterStrictBackwardPartial(t)
+	testIncPartial(t)
 
-	testIterStrictIterations(t, 1, 0, 1, -1, 2)
-	testIterStrictIterations(t, 1, 1, 1, -1, 1)
-	testIterStrictIterations(t, 1, 2, 1, -1, 0)
-	testIterStrictIterations(t, 1, 0, 1, 0, 0)
-	testIterStrictIterations(t, 1, 1, 1, 0, 1)
-	testIterStrictIterations(t, 1, 2, 1, 0, 2)
+	testIncIterations(t, 1, 0, 1, 0)
+	testIncIterations(t, 1, 1, 1, 1)
+	testIncIterations(t, 1, 2, 1, 2)
 
 	require.Panics(
 		t,
 		func() {
-			for number := range IterStrict(1, 2, -1, 0, nil, nil) {
+			for number := range Inc(1, 2, -1, nil, nil) {
 				_ = number
 			}
 		},
@@ -782,14 +774,14 @@ func TestIterStrict(t *testing.T) {
 	require.Panics(
 		t,
 		func() {
-			for number := range IterStrict(1, 2, 0, 0, nil, nil) {
+			for number := range Inc(1, 2, 0, nil, nil) {
 				_ = number
 			}
 		},
 	)
 }
 
-func testIterStrictForwardSig(t *testing.T, step int8) {
+func testIncSig(t *testing.T, step int8) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -799,7 +791,7 @@ func testIterStrictForwardSig(t *testing.T, step int8) {
 	iterations := (int(end)-int(begin))/int(step) + 1
 	final := int(begin) + iterations*int(step)
 
-	for id, number := range IterStrict(begin, end, step, 0, nil, nil) {
+	for id, number := range Inc(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -810,49 +802,7 @@ func testIterStrictForwardSig(t *testing.T, step int8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStrictBackwardSig(t *testing.T, step int8) {
-	begin := int8(math.MaxInt8)
-	end := int8(math.MinInt8)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
-	for id, number := range IterStrict(begin, end, step, -1, nil, nil) {
-		require.Equal(t, reference, int(number), "step: %v", step)
-		require.Equal(t, referenceID, id, "step: %v", step)
-
-		reference -= int(step)
-		referenceID++
-	}
-
-	require.Equal(t, final, reference, "step: %v", step)
-}
-
-func testIterStrictBackwardSigNotOnEntireRange(t *testing.T, step int8) {
-	begin := int8(math.MaxInt8)
-	end := int8(0)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
-	for id, number := range IterStrict(begin, end, step, -1, nil, nil) {
-		require.Equal(t, reference, int(number), "step: %v", step)
-		require.Equal(t, referenceID, id, "step: %v", step)
-
-		reference -= int(step)
-		referenceID++
-	}
-
-	require.Equal(t, final, reference, "step: %v", step)
-}
-
-func testIterStrictForwardUns(t *testing.T, step uint8) {
+func testIncUns(t *testing.T, step uint8) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
 
@@ -862,7 +812,7 @@ func testIterStrictForwardUns(t *testing.T, step uint8) {
 	iterations := (int(end)-int(begin))/int(step) + 1
 	final := int(begin) + iterations*int(step)
 
-	for id, number := range IterStrict(begin, end, step, 0, nil, nil) {
+	for id, number := range Inc(begin, end, step, nil, nil) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
 
@@ -873,49 +823,7 @@ func testIterStrictForwardUns(t *testing.T, step uint8) {
 	require.Equal(t, final, reference, "step: %v", step)
 }
 
-func testIterStrictBackwardUns(t *testing.T, step uint8) {
-	begin := uint8(math.MaxUint8)
-	end := uint8(0)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
-	for id, number := range IterStrict(begin, end, step, -1, nil, nil) {
-		require.Equal(t, reference, int(number), "step: %v", step)
-		require.Equal(t, referenceID, id, "step: %v", step)
-
-		reference -= int(step)
-		referenceID++
-	}
-
-	require.Equal(t, final, reference, "step: %v", step)
-}
-
-func testIterStrictBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
-	begin := uint8(math.MaxUint8)
-	end := uint8(math.MaxUint8 / 2)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
-	for id, number := range IterStrict(begin, end, step, -1, nil, nil) {
-		require.Equal(t, reference, int(number), "step: %v", step)
-		require.Equal(t, referenceID, id, "step: %v", step)
-
-		reference -= int(step)
-		referenceID++
-	}
-
-	require.Equal(t, final, reference, "step: %v", step)
-}
-
-func testIterStrictForwardPartial(t *testing.T) {
+func testIncPartial(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -923,7 +831,7 @@ func testIterStrictForwardPartial(t *testing.T) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	for id, number := range IterStrict(begin, end, 1, 0, nil, nil) {
+	for id, number := range Inc(begin, end, 1, nil, nil) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
@@ -938,7 +846,125 @@ func testIterStrictForwardPartial(t *testing.T) {
 	require.Equal(t, breakAt, reference)
 }
 
-func testIterStrictBackwardPartial(t *testing.T) {
+func testIncIterations(t *testing.T, begin, end, step int8, expected int) {
+	actual := 0
+
+	for range Inc(begin, end, step, nil, nil) {
+		actual++
+	}
+
+	require.Equal(t, expected, actual)
+}
+
+func TestIncSize(t *testing.T) {
+	require.Equal(t, uint64(0), IncSize(1, 0, 1, nil, nil))
+	require.Equal(t, uint64(1), IncSize(1, 1, 1, nil, nil))
+	require.Equal(t, uint64(2), IncSize(1, 2, 1, nil, nil))
+
+	require.Panics(
+		t,
+		func() {
+			_ = IncSize(1, 2, -1, nil, nil)
+		},
+	)
+	require.Panics(
+		t,
+		func() {
+			_ = IncSize(2, 1, -1, nil, nil)
+		},
+	)
+
+	require.Panics(
+		t,
+		func() {
+			_ = IncSize(1, 2, 0, nil, nil)
+		},
+	)
+	require.Panics(
+		t,
+		func() {
+			_ = IncSize(2, 1, 0, nil, nil)
+		},
+	)
+}
+
+func TestDec(t *testing.T) {
+	for step := range Iter[int8](1, math.MaxInt8) {
+		testDecSig(t, step)
+	}
+
+	for step := range Iter[uint8](1, math.MaxUint8) {
+		testDecUns(t, step)
+	}
+
+	testDecPartial(t)
+
+	testDecIterations(t, 1, 0, 1, 2)
+	testDecIterations(t, 1, 1, 1, 1)
+	testDecIterations(t, 1, 2, 1, 0)
+
+	require.Panics(
+		t,
+		func() {
+			for number := range Dec(2, 1, -1, nil, nil) {
+				_ = number
+			}
+		},
+	)
+
+	require.Panics(
+		t,
+		func() {
+			for number := range Dec(2, 1, 0, nil, nil) {
+				_ = number
+			}
+		},
+	)
+}
+
+func testDecSig(t *testing.T, step int8) {
+	begin := int8(math.MaxInt8)
+	end := int8(math.MinInt8)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for id, number := range Dec(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+		require.Equal(t, referenceID, id, "step: %v", step)
+
+		reference -= int(step)
+		referenceID++
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
+func testDecUns(t *testing.T, step uint8) {
+	begin := uint8(math.MaxUint8)
+	end := uint8(0)
+
+	reference := int(begin)
+	referenceID := uint64(0)
+
+	iterations := (int(begin)-int(end))/int(step) + 1
+	final := int(begin) - iterations*int(step)
+
+	for id, number := range Dec(begin, end, step, nil, nil) {
+		require.Equal(t, reference, int(number), "step: %v", step)
+		require.Equal(t, referenceID, id, "step: %v", step)
+
+		reference -= int(step)
+		referenceID++
+	}
+
+	require.Equal(t, final, reference, "step: %v", step)
+}
+
+func testDecPartial(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -946,7 +972,7 @@ func testIterStrictBackwardPartial(t *testing.T) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	for id, number := range IterStrict(begin, end, 1, -1, nil, nil) {
+	for id, number := range Dec(begin, end, 1, nil, nil) {
 		require.Equal(t, reference, int(number))
 		require.Equal(t, referenceID, id)
 
@@ -961,42 +987,46 @@ func testIterStrictBackwardPartial(t *testing.T) {
 	require.Equal(t, breakAt, reference)
 }
 
-func testIterStrictIterations(
-	t *testing.T,
-	begin int8,
-	end int8,
-	step int8,
-	direction int,
-	expected int,
-) {
+func testDecIterations(t *testing.T, begin, end, step int8, expected int) {
 	actual := 0
 
-	for range IterStrict(begin, end, step, direction, nil, nil) {
+	for range Dec(begin, end, step, nil, nil) {
 		actual++
 	}
 
 	require.Equal(t, expected, actual)
 }
 
-func TestIterStrictSize(t *testing.T) {
-	require.Equal(t, uint64(2), IterStrictSize(1, 0, 1, -1, nil, nil))
-	require.Equal(t, uint64(1), IterStrictSize(1, 1, 1, -1, nil, nil))
-	require.Equal(t, uint64(0), IterStrictSize(1, 2, 1, -1, nil, nil))
-	require.Equal(t, uint64(0), IterStrictSize(1, 0, 1, 0, nil, nil))
-	require.Equal(t, uint64(1), IterStrictSize(1, 1, 1, 0, nil, nil))
-	require.Equal(t, uint64(2), IterStrictSize(1, 2, 1, 0, nil, nil))
+func TestDecSize(t *testing.T) {
+	require.Equal(t, uint64(2), DecSize(1, 0, 1, nil, nil))
+	require.Equal(t, uint64(1), DecSize(1, 1, 1, nil, nil))
+	require.Equal(t, uint64(0), DecSize(1, 2, 1, nil, nil))
 
 	require.Panics(
 		t,
 		func() {
-			_ = IterStrictSize(1, 2, -1, 0, nil, nil)
+			_ = DecSize(1, 2, -1, nil, nil)
 		},
 	)
 
 	require.Panics(
 		t,
 		func() {
-			_ = IterStrictSize(1, 2, 0, 0, nil, nil)
+			_ = DecSize(2, 1, -1, nil, nil)
+		},
+	)
+
+	require.Panics(
+		t,
+		func() {
+			_ = DecSize(1, 2, 0, nil, nil)
+		},
+	)
+
+	require.Panics(
+		t,
+		func() {
+			_ = DecSize(2, 1, 0, nil, nil)
 		},
 	)
 }
@@ -1055,21 +1085,21 @@ func BenchmarkIterSize(b *testing.B) {
 	require.NotZero(b, size)
 }
 
-func BenchmarkIterStep(b *testing.B) {
+func BenchmarkStep(b *testing.B) {
 	number := 0
 
-	for _, value := range IterStep(1, b.N, 1, nil, nil) {
+	for _, value := range Step(1, b.N, 1, nil, nil) {
 		number = value
 	}
 
 	require.NotZero(b, number)
 }
 
-func BenchmarkIterStepTwoLevel(b *testing.B) {
+func BenchmarkStepTwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for _, value := range IterStep(1, 1, 1, nil, nil) {
+		for _, value := range Step(1, 1, 1, nil, nil) {
 			number = value
 		}
 	}
@@ -1077,31 +1107,31 @@ func BenchmarkIterStepTwoLevel(b *testing.B) {
 	require.NotZero(b, number)
 }
 
-func BenchmarkIterStepSize(b *testing.B) {
+func BenchmarkStepSize(b *testing.B) {
 	size := uint64(0)
 
 	for range b.N {
-		size = IterStepSize(1, b.N, 1, nil, nil)
+		size = StepSize(1, b.N, 1, nil, nil)
 	}
 
 	require.NotZero(b, size)
 }
 
-func BenchmarkIterStrict(b *testing.B) {
+func BenchmarkInc(b *testing.B) {
 	number := 0
 
-	for _, value := range IterStrict(1, b.N, 1, 0, nil, nil) {
+	for _, value := range Inc(1, b.N, 1, nil, nil) {
 		number = value
 	}
 
 	require.NotZero(b, number)
 }
 
-func BenchmarkIterStrictTwoLevel(b *testing.B) {
+func BenchmarkIncTwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for _, value := range IterStrict(1, 1, 1, 0, nil, nil) {
+		for _, value := range Inc(1, 1, 1, nil, nil) {
 			number = value
 		}
 	}
@@ -1109,11 +1139,43 @@ func BenchmarkIterStrictTwoLevel(b *testing.B) {
 	require.NotZero(b, number)
 }
 
-func BenchmarkIterStrictSize(b *testing.B) {
+func BenchmarkIncSize(b *testing.B) {
 	size := uint64(0)
 
 	for range b.N {
-		size = IterStrictSize(1, b.N, 1, 0, nil, nil)
+		size = IncSize(1, b.N, 1, nil, nil)
+	}
+
+	require.NotZero(b, size)
+}
+
+func BenchmarkDec(b *testing.B) {
+	number := 0
+
+	for _, value := range Dec(b.N, 1, 1, nil, nil) {
+		number = value
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkDecTwoLevel(b *testing.B) {
+	number := 0
+
+	for range b.N {
+		for _, value := range Dec(1, 1, 1, nil, nil) {
+			number = value
+		}
+	}
+
+	require.NotZero(b, number)
+}
+
+func BenchmarkDecSize(b *testing.B) {
+	size := uint64(0)
+
+	for range b.N {
+		size = DecSize(b.N, 1, 1, nil, nil)
 	}
 
 	require.NotZero(b, size)

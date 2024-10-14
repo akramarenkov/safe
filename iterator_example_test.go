@@ -15,8 +15,8 @@ func ExampleIter() {
 	// 127
 }
 
-func ExampleIterStep() {
-	for _, number := range safe.IterStep[int8](126, 127, 2) {
+func ExampleStep() {
+	for _, number := range safe.Step[int8](126, 127, 2) {
 		fmt.Println(number)
 	}
 	// Output:
