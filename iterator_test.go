@@ -22,24 +22,6 @@ func TestIter(t *testing.T) {
 	require.Equal(t, int(end)+1, reference)
 }
 
-func TestIter2(t *testing.T) {
-	begin := int8(math.MinInt8)
-	end := int8(math.MaxInt8)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	for id, number := range Iter2(begin, end) {
-		require.Equal(t, reference, int(number))
-		require.Equal(t, referenceID, id)
-
-		reference++
-		referenceID++
-	}
-
-	require.Equal(t, int(end)+1, reference)
-}
-
 func TestIterSize(t *testing.T) {
 	require.Equal(t, uint64(3), IterSize[int8](-1, 1))
 	require.Equal(t, uint64(3), IterSize[int8](1, -1))
@@ -65,14 +47,17 @@ func testIterStep(t *testing.T, step int8) {
 	end := int8(math.MaxInt8)
 
 	reference := int(begin)
+	referenceID := uint64(0)
 
 	iterations := (int(end)-int(begin))/int(step) + 1
 	final := int(begin) + iterations*int(step)
 
-	for number := range IterStep(begin, end, step) {
+	for id, number := range IterStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
+		require.Equal(t, referenceID, id, "step: %v", step)
 
 		reference += int(step)
+		referenceID++
 	}
 
 	require.Equal(t, final, reference, "step: %v", step)
@@ -95,55 +80,6 @@ func TestIterStepPanic(t *testing.T) {
 		}()
 
 		for number := range IterStep(1, 2, 0) {
-			_ = number
-		}
-	}()
-}
-
-func TestIterStep2(t *testing.T) {
-	for step := range Iter[int8](1, math.MaxInt8) {
-		testIterStep2(t, step)
-	}
-}
-
-func testIterStep2(t *testing.T, step int8) {
-	begin := int8(math.MinInt8)
-	end := int8(math.MaxInt8)
-
-	reference := int(begin)
-	referenceID := uint64(0)
-
-	iterations := (int(end)-int(begin))/int(step) + 1
-	final := int(begin) + iterations*int(step)
-
-	for id, number := range IterStep2(begin, end, step) {
-		require.Equal(t, reference, int(number), "step: %v", step)
-		require.Equal(t, referenceID, id, "step: %v", step)
-
-		reference += int(step)
-		referenceID++
-	}
-
-	require.Equal(t, final, reference, "step: %v", step)
-}
-
-func TestIterStep2Panic(t *testing.T) {
-	func() {
-		defer func() {
-			require.Equal(t, ErrIterStepNegative, recover())
-		}()
-
-		for number := range IterStep2(1, 2, -1) {
-			_ = number
-		}
-	}()
-
-	func() {
-		defer func() {
-			require.Equal(t, ErrIterStepZero, recover())
-		}()
-
-		for number := range IterStep2(1, 2, 0) {
 			_ = number
 		}
 	}()
@@ -239,28 +175,6 @@ func BenchmarkIterTwoLevel(b *testing.B) {
 	require.NotZero(b, number)
 }
 
-func BenchmarkIter2(b *testing.B) {
-	number := 0
-
-	for _, value := range Iter2(1, b.N) {
-		number = value
-	}
-
-	require.NotZero(b, number)
-}
-
-func BenchmarkIter2TwoLevel(b *testing.B) {
-	number := 0
-
-	for range b.N {
-		for _, value := range Iter2(1, 1) {
-			number = value
-		}
-	}
-
-	require.NotZero(b, number)
-}
-
 func BenchmarkIterSize(b *testing.B) {
 	size := uint64(0)
 
@@ -274,7 +188,7 @@ func BenchmarkIterSize(b *testing.B) {
 func BenchmarkIterStep(b *testing.B) {
 	number := 0
 
-	for value := range IterStep(1, b.N, 1) {
+	for _, value := range IterStep(1, b.N, 1) {
 		number = value
 	}
 
@@ -285,29 +199,7 @@ func BenchmarkIterStepTwoLevel(b *testing.B) {
 	number := 0
 
 	for range b.N {
-		for value := range IterStep(1, 1, 1) {
-			number = value
-		}
-	}
-
-	require.NotZero(b, number)
-}
-
-func BenchmarkIterStep2(b *testing.B) {
-	number := 0
-
-	for _, value := range IterStep2(1, b.N, 1) {
-		number = value
-	}
-
-	require.NotZero(b, number)
-}
-
-func BenchmarkIterStep2TwoLevel(b *testing.B) {
-	number := 0
-
-	for range b.N {
-		for _, value := range IterStep2(1, 1, 1) {
+		for _, value := range IterStep(1, 1, 1) {
 			number = value
 		}
 	}
