@@ -67,6 +67,78 @@ func IterSize[Type constraints.Integer](begin, end Type) uint64 {
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
+// iterating over integer values from begin to end inclusive towards increase with
+// a step one.
+//
+// If begin is greater than end, then no one iteration of the loop will occur.
+func Inc[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
+	iterator := func(yield func(Type) bool) {
+		if begin > end {
+			return
+		}
+
+		for number := begin; number < end; number++ {
+			if !yield(number) {
+				return
+			}
+		}
+
+		yield(end)
+	}
+
+	return iterator
+}
+
+// Calculates the number of iterations when using [Inc]. The return value
+// is intended to be used as the size parameter in the make call, so, and because
+// the maximum possible number of iterations is one more than the maximum value for
+// uint64, the return value is truncated to the maximum value for uint64 if the
+// calculated value exceeds it.
+func IncSize[Type constraints.Integer](begin, end Type) uint64 {
+	if begin > end {
+		return 0
+	}
+
+	return IterSize(begin, end)
+}
+
+// A range iterator for safely (without infinite loops due to counter overflow)
+// iterating over integer values from begin to end inclusive towards decrease with
+// a step one.
+//
+// If begin is lesser than end, then no one iteration of the loop will occur.
+func Dec[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
+	iterator := func(yield func(Type) bool) {
+		if begin < end {
+			return
+		}
+
+		for number := begin; number > end; number-- {
+			if !yield(number) {
+				return
+			}
+		}
+
+		yield(end)
+	}
+
+	return iterator
+}
+
+// Calculates the number of iterations when using [Dec]. The return value
+// is intended to be used as the size parameter in the make call, so, and because
+// the maximum possible number of iterations is one more than the maximum value for
+// uint64, the return value is truncated to the maximum value for uint64 if the
+// calculated value exceeds it.
+func DecSize[Type constraints.Integer](begin, end Type) uint64 {
+	if begin < end {
+		return 0
+	}
+
+	return IterSize(begin, end)
+}
+
+// A range iterator for safely (without infinite loops due to counter overflow)
 // iterating over integer values from begin to end inclusive with the ability to
 // specify the iteration step.
 //
@@ -197,7 +269,7 @@ func StepSize[Type constraints.Integer](
 // If a zero or negative step is specified, the iterator will panic.
 //
 // In addition to the main integer, its index in the begin-end sequence is returned.
-func Inc[Type constraints.Integer](
+func IncStep[Type constraints.Integer](
 	begin Type,
 	end Type,
 	step Type,
@@ -236,14 +308,14 @@ func Inc[Type constraints.Integer](
 	return iterator
 }
 
-// Calculates the number of iterations when using [Inc]. The return value
+// Calculates the number of iterations when using [IncStep]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 //
-// Like [Inc] this function panics if a zero or negative step is specified.
-func IncSize[Type constraints.Integer](
+// Like [IncStep] this function panics if a zero or negative step is specified.
+func IncStepSize[Type constraints.Integer](
 	begin Type,
 	end Type,
 	step Type,
@@ -271,7 +343,7 @@ func IncSize[Type constraints.Integer](
 // If a zero or negative step is specified, the iterator will panic.
 //
 // In addition to the main integer, its index in the begin-end sequence is returned.
-func Dec[Type constraints.Integer](
+func DecStep[Type constraints.Integer](
 	begin Type,
 	end Type,
 	step Type,
@@ -310,14 +382,14 @@ func Dec[Type constraints.Integer](
 	return iterator
 }
 
-// Calculates the number of iterations when using [Dec]. The return value
+// Calculates the number of iterations when using [DecStep]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 //
-// Like [Dec] this function panics if a zero or negative step is specified.
-func DecSize[Type constraints.Integer](
+// Like [DecStep] this function panics if a zero or negative step is specified.
+func DecStepSize[Type constraints.Integer](
 	begin Type,
 	end Type,
 	step Type,
