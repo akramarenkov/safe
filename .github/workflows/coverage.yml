@@ -18,11 +18,11 @@ jobs:
           do
             cd "${dir}" || continue
 
-            coverfile="../cov-${dir}"
+            coverfile="../coverfile-${dir}"
 
             if test "${dir}" == ".";
             then
-              coverfile="cov"
+              coverfile="coverfile-${dir}"
             fi
 
             go test -v -coverprofile="${coverfile}" -covermode=atomic -timeout=1h ./...
@@ -31,6 +31,6 @@ jobs:
           done
       - uses: coverallsapp/github-action@v2
         with:
-          files: cov cov-*
+          files: coverfile-*
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
