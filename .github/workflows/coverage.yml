@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - master
+  pull_request:
 permissions:
   contents: read
 jobs:
