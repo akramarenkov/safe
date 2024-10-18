@@ -3,7 +3,7 @@ package safe
 import (
 	"iter"
 
-	"github.com/akramarenkov/safe/internal/iterator"
+	"github.com/akramarenkov/safe/intspec"
 	"golang.org/x/exp/constraints"
 )
 
@@ -13,7 +13,29 @@ import (
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
 func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
-	return iterator.Iter(begin, end)
+	iterator := func(yield func(Type) bool) {
+		if begin > end {
+			for number := begin; number > end; number-- {
+				if !yield(number) {
+					return
+				}
+			}
+
+			yield(end)
+
+			return
+		}
+
+		for number := begin; number < end; number++ {
+			if !yield(number) {
+				return
+			}
+		}
+
+		yield(end)
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [Iter]. The return value
@@ -22,7 +44,25 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 func IterSize[Type constraints.Integer](begin, end Type) uint64 {
-	return iterator.IterSize(begin, end)
+	beginU64 := u64(begin)
+	endU64 := u64(end)
+
+	size := endU64 - beginU64
+
+	if beginU64 > endU64 {
+		size = beginU64 - endU64
+	}
+
+	// begin < 0 && end > 0 || begin > 0 && end < 0
+	if begin^end < 0 {
+		size = endU64 + beginU64
+	}
+
+	if size == intspec.MaxUint64 {
+		return size
+	}
+
+	return size + 1
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -31,7 +71,21 @@ func IterSize[Type constraints.Integer](begin, end Type) uint64 {
 //
 // If begin is greater than end, then no one iteration of the loop will occur.
 func Inc[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
-	return iterator.Inc(begin, end)
+	iterator := func(yield func(Type) bool) {
+		if begin > end {
+			return
+		}
+
+		for number := begin; number < end; number++ {
+			if !yield(number) {
+				return
+			}
+		}
+
+		yield(end)
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [Inc]. The return value
@@ -40,7 +94,11 @@ func Inc[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 func IncSize[Type constraints.Integer](begin, end Type) uint64 {
-	return iterator.IncSize(begin, end)
+	if begin > end {
+		return 0
+	}
+
+	return IterSize(begin, end)
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -49,7 +107,21 @@ func IncSize[Type constraints.Integer](begin, end Type) uint64 {
 //
 // If begin is lesser than end, then no one iteration of the loop will occur.
 func Dec[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
-	return iterator.Dec(begin, end)
+	iterator := func(yield func(Type) bool) {
+		if begin < end {
+			return
+		}
+
+		for number := begin; number > end; number-- {
+			if !yield(number) {
+				return
+			}
+		}
+
+		yield(end)
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [Dec]. The return value
@@ -58,7 +130,11 @@ func Dec[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 func DecSize[Type constraints.Integer](begin, end Type) uint64 {
-	return iterator.DecSize(begin, end)
+	if begin < end {
+		return 0
+	}
+
+	return IterSize(begin, end)
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -75,7 +151,59 @@ func DecSize[Type constraints.Integer](begin, end Type) uint64 {
 //
 // In addition to the main integer, its index in the begin-end sequence is returned.
 func Step[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Type] {
-	return iterator.Step(begin, end, step, ErrStepNegative, ErrStepZero)
+	if step < 0 {
+		panic(ErrStepNegative)
+	}
+
+	if step == 0 {
+		panic(ErrStepZero)
+	}
+
+	iterator := func(yield func(uint64, Type) bool) {
+		if begin > end {
+			id := uint64(0)
+
+			previous := begin
+
+			for number := begin; number >= end; number -= step {
+				// integer overflow
+				if number > previous {
+					return
+				}
+
+				previous = number
+
+				if !yield(id, number) {
+					return
+				}
+
+				id++
+			}
+
+			return
+		}
+
+		id := uint64(0)
+
+		previous := begin
+
+		for number := begin; number <= end; number += step {
+			// integer overflow
+			if number < previous {
+				return
+			}
+
+			previous = number
+
+			if !yield(id, number) {
+				return
+			}
+
+			id++
+		}
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [Step]. The return value
@@ -86,7 +214,34 @@ func Step[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Typ
 //
 // Like [Step] this function panics if a zero or negative step is specified.
 func StepSize[Type constraints.Integer](begin, end, step Type) uint64 {
-	return iterator.StepSize(begin, end, step, ErrStepNegative, ErrStepZero)
+	if step < 0 {
+		panic(ErrStepNegative)
+	}
+
+	if step == 0 {
+		panic(ErrStepZero)
+	}
+
+	beginU64 := u64(begin)
+	endU64 := u64(end)
+	stepU64 := uint64(step)
+
+	size := endU64 - beginU64
+
+	if beginU64 > endU64 {
+		size = beginU64 - endU64
+	}
+
+	// begin < 0 && end > 0 || begin > 0 && end < 0
+	if begin^end < 0 {
+		size = endU64 + beginU64
+	}
+
+	if size == intspec.MaxUint64 && stepU64 == 1 {
+		return size
+	}
+
+	return size/stepU64 + 1
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -102,7 +257,36 @@ func StepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 //
 // In addition to the main integer, its index in the begin-end sequence is returned.
 func IncStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Type] {
-	return iterator.IncStep(begin, end, step, ErrStepNegative, ErrStepZero)
+	if step < 0 {
+		panic(ErrStepNegative)
+	}
+
+	if step == 0 {
+		panic(ErrStepZero)
+	}
+
+	iterator := func(yield func(uint64, Type) bool) {
+		id := uint64(0)
+
+		previous := begin
+
+		for number := begin; number <= end; number += step {
+			// integer overflow
+			if number < previous {
+				return
+			}
+
+			previous = number
+
+			if !yield(id, number) {
+				return
+			}
+
+			id++
+		}
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [IncStep]. The return value
@@ -113,7 +297,13 @@ func IncStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 //
 // Like [IncStep] this function panics if a zero or negative step is specified.
 func IncStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
-	return iterator.IncStepSize(begin, end, step, ErrStepNegative, ErrStepZero)
+	size := StepSize(begin, end, step)
+
+	if begin > end {
+		return 0
+	}
+
+	return size
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -129,7 +319,36 @@ func IncStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 //
 // In addition to the main integer, its index in the begin-end sequence is returned.
 func DecStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Type] {
-	return iterator.DecStep(begin, end, step, ErrStepNegative, ErrStepZero)
+	if step < 0 {
+		panic(ErrStepNegative)
+	}
+
+	if step == 0 {
+		panic(ErrStepZero)
+	}
+
+	iterator := func(yield func(uint64, Type) bool) {
+		id := uint64(0)
+
+		previous := begin
+
+		for number := begin; number >= end; number -= step {
+			// integer overflow
+			if number > previous {
+				return
+			}
+
+			previous = number
+
+			if !yield(id, number) {
+				return
+			}
+
+			id++
+		}
+	}
+
+	return iterator
 }
 
 // Calculates the number of iterations when using [DecStep]. The return value
@@ -140,5 +359,11 @@ func DecStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 //
 // Like [DecStep] this function panics if a zero or negative step is specified.
 func DecStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
-	return iterator.DecStepSize(begin, end, step, ErrStepNegative, ErrStepZero)
+	size := StepSize(begin, end, step)
+
+	if begin < end {
+		return 0
+	}
+
+	return size
 }

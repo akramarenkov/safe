@@ -1,4 +1,4 @@
-package iterator
+package safe
 
 import (
 	"math"
