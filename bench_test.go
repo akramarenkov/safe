@@ -12,6 +12,8 @@ func BenchmarkAddReference(b *testing.B) {
 
 	level1, level2 := benchSpanAdd()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -27,6 +29,8 @@ func BenchmarkAdd(b *testing.B) {
 	result := int8(0)
 
 	level1, level2 := benchSpanAdd()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -44,6 +48,8 @@ func BenchmarkAddUReference(b *testing.B) {
 
 	level1, level2 := benchSpanAddU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -59,6 +65,8 @@ func BenchmarkAddOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2 := benchSpanAddU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -76,6 +84,8 @@ func BenchmarkAddU(b *testing.B) {
 
 	level1, level2 := benchSpanAddU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -91,6 +101,8 @@ func BenchmarkAdd3Reference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanAdd3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -110,6 +122,8 @@ func BenchmarkAdd3(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAdd3()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -127,6 +141,8 @@ func BenchmarkAdd3UReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAdd3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -146,6 +162,8 @@ func BenchmarkAdd3OnlyUnsigned(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAdd3U()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -163,6 +181,8 @@ func BenchmarkAdd3U(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAdd3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -182,6 +202,8 @@ func BenchmarkAddM2Args(b *testing.B) {
 
 	level1, level2 := benchSpanAdd()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -197,6 +219,8 @@ func BenchmarkAddM3Args(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanAdd3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -215,6 +239,8 @@ func BenchmarkAddMReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddM()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -248,6 +274,8 @@ func benchmarkAddM(b *testing.B, unmodify bool) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddM()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -280,6 +308,8 @@ func BenchmarkAddMU2Args(b *testing.B) {
 
 	level1, level2 := benchSpanAddU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -295,6 +325,8 @@ func BenchmarkAddMU3Args(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAdd3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -313,6 +345,8 @@ func BenchmarkAddMUReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -337,6 +371,8 @@ func BenchmarkAddMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -370,6 +406,8 @@ func BenchmarkAddMU(b *testing.B) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddMU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -401,6 +439,8 @@ func BenchmarkSubReference(b *testing.B) {
 
 	level1, level2 := benchSpanSub()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -416,6 +456,8 @@ func BenchmarkSub(b *testing.B) {
 	result := int8(0)
 
 	level1, level2 := benchSpanSub()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -433,6 +475,8 @@ func BenchmarkSubUReference(b *testing.B) {
 
 	level1, level2 := benchSpanSubU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -448,6 +492,8 @@ func BenchmarkSubOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2 := benchSpanSubU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -465,6 +511,8 @@ func BenchmarkSubU(b *testing.B) {
 
 	level1, level2 := benchSpanSubU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -480,6 +528,8 @@ func BenchmarkSub3Reference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanSub3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -499,6 +549,8 @@ func BenchmarkSub3(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSub3()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -516,6 +568,8 @@ func BenchmarkSub3UReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanSub3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -535,6 +589,8 @@ func BenchmarkSub3OnlyUnsigned(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSub3U()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -552,6 +608,8 @@ func BenchmarkSub3U(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanSub3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -571,6 +629,8 @@ func BenchmarkSubM2Args(b *testing.B) {
 
 	level1, level2 := benchSpanSub()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -586,6 +646,8 @@ func BenchmarkSubM3Args(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanSub3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -604,6 +666,8 @@ func BenchmarkSubMReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -637,6 +701,8 @@ func benchmarkSubM(b *testing.B, unmodify bool) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -669,6 +735,8 @@ func BenchmarkSubMU2Args(b *testing.B) {
 
 	level1, level2 := benchSpanSubU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -684,6 +752,8 @@ func BenchmarkSubMU3Args(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanSub3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -702,6 +772,8 @@ func BenchmarkSubMUReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -726,6 +798,8 @@ func BenchmarkSubMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -759,6 +833,8 @@ func BenchmarkSubMU(b *testing.B) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubMU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -790,6 +866,8 @@ func BenchmarkMulReference(b *testing.B) {
 
 	level1, level2 := benchSpanMul()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -806,6 +884,8 @@ func BenchmarkMul(b *testing.B) {
 
 	level1, level2 := benchSpanMul()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -821,6 +901,8 @@ func BenchmarkMul3Reference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanMul3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -840,6 +922,8 @@ func BenchmarkMul3(b *testing.B) {
 
 	level1, level2, level3 := benchSpanMul3()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -857,6 +941,8 @@ func BenchmarkMul3UReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanMul3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -876,6 +962,8 @@ func BenchmarkMul3OnlyUnsigned(b *testing.B) {
 
 	level1, level2, level3 := benchSpanMul3U()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -893,6 +981,8 @@ func BenchmarkMul3U(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanMul3U()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -912,6 +1002,8 @@ func BenchmarkMulM2Args(b *testing.B) {
 
 	level1, level2 := benchSpanMul()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -927,6 +1019,8 @@ func BenchmarkMulM3Args(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanMul3()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -945,6 +1039,8 @@ func BenchmarkMulMReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulM()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -978,6 +1074,8 @@ func benchmarkMulM(b *testing.B, unmodify bool) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulM()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1010,6 +1108,8 @@ func BenchmarkMulMU3Args(b *testing.B) {
 
 	level1, level2, level3 := benchSpanMul3U()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1027,6 +1127,8 @@ func BenchmarkMulMUReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1051,6 +1153,8 @@ func BenchmarkMulMOnlyUnsigned(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1084,6 +1188,8 @@ func BenchmarkMulMU(b *testing.B) {
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulMU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1115,6 +1221,8 @@ func BenchmarkDivReference(b *testing.B) {
 
 	level1, level2 := benchSpanDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1135,6 +1243,8 @@ func BenchmarkDiv(b *testing.B) {
 
 	level1, level2 := benchSpanDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1151,6 +1261,8 @@ func BenchmarkDivM2Args(b *testing.B) {
 
 	level1, level2 := benchSpanDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1166,6 +1278,8 @@ func BenchmarkDivMReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanDivM()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1189,6 +1303,8 @@ func BenchmarkDivM(b *testing.B) {
 
 	level1, level2, level3 := benchSpanDivM()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1207,6 +1323,8 @@ func BenchmarkNegateReference(b *testing.B) {
 	resultU := uint8(0)
 
 	signed, unsigned := benchSpanNegate()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, number := range signed {
@@ -1228,6 +1346,8 @@ func BenchmarkNegate(b *testing.B) {
 
 	signed, unsigned := benchSpanNegate()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, number := range signed {
 			result, _ = Negate(number)
@@ -1248,6 +1368,8 @@ func BenchmarkIToIReference(b *testing.B) {
 	resultU2 := uint8(0)
 
 	s8, u8, u16 := benchSpanIToI()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, number := range s8 {
@@ -1278,6 +1400,8 @@ func BenchmarkIToI(b *testing.B) {
 
 	s8, u8, u16 := benchSpanIToI()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, number := range s8 {
 			resultU, _ = IToI[uint8](number)
@@ -1302,6 +1426,8 @@ func BenchmarkIToFReference(b *testing.B) {
 
 	span := benchSpanIToF()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, number := range span {
 			result = float64(number)
@@ -1315,6 +1441,8 @@ func BenchmarkIToF(b *testing.B) {
 	result := float64(0)
 
 	span := benchSpanIToF()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, number := range span {
@@ -1330,6 +1458,8 @@ func BenchmarkFToIReference(b *testing.B) {
 
 	span := benchSpanFToI()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, number := range span {
 			result = int(number)
@@ -1344,6 +1474,8 @@ func BenchmarkFToI(b *testing.B) {
 
 	span := benchSpanFToI()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, number := range span {
 			result, _ = FToI[int](number)
@@ -1356,6 +1488,8 @@ func BenchmarkFToI(b *testing.B) {
 func BenchmarkPow10Reference(b *testing.B) {
 	result := float64(0)
 
+	b.ResetTimer()
+
 	for range b.N {
 		result = math.Pow10(19)
 	}
@@ -1365,6 +1499,8 @@ func BenchmarkPow10Reference(b *testing.B) {
 
 func BenchmarkPow10(b *testing.B) {
 	result := uint64(0)
+
+	b.ResetTimer()
 
 	for range b.N {
 		result, _ = Pow10[uint64](19)
@@ -1376,6 +1512,8 @@ func BenchmarkPow10(b *testing.B) {
 func BenchmarkPowReference(b *testing.B) {
 	result := float64(0)
 
+	b.ResetTimer()
+
 	for range b.N {
 		result = math.Pow(14, 14)
 	}
@@ -1385,6 +1523,8 @@ func BenchmarkPowReference(b *testing.B) {
 
 func BenchmarkPow(b *testing.B) {
 	result := uint64(0)
+
+	b.ResetTimer()
 
 	for range b.N {
 		result, _ = Pow(uint64(14), 14)
@@ -1397,6 +1537,8 @@ func BenchmarkAddSubReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAddSub()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1416,6 +1558,8 @@ func BenchmarkAddSub(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAddSub()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1433,6 +1577,8 @@ func BenchmarkAddDivReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanAddDiv()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1456,6 +1602,8 @@ func BenchmarkAddDiv(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAddDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1473,6 +1621,8 @@ func BenchmarkAddDivRemReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanAddDiv()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1496,6 +1646,8 @@ func BenchmarkAddDivRem(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAddDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1513,6 +1665,8 @@ func BenchmarkAddDivUReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanAddDivU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1536,6 +1690,8 @@ func BenchmarkAddDivOnlyUnsigned(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAddDivU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1554,6 +1710,8 @@ func BenchmarkAddDivU(b *testing.B) {
 
 	level1, level2, level3 := benchSpanAddDivU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1571,6 +1729,8 @@ func BenchmarkSubDivReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanSubDiv()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1594,6 +1754,8 @@ func BenchmarkSubDiv(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSubDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1611,6 +1773,8 @@ func BenchmarkSubDivRemReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2, level3 := benchSpanSubDiv()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1634,6 +1798,8 @@ func BenchmarkSubDivRem(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSubDiv()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1651,6 +1817,8 @@ func BenchmarkSubDivUReference(b *testing.B) {
 	result := uint8(0)
 
 	level1, level2, level3 := benchSpanSubDivU()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1674,6 +1842,8 @@ func BenchmarkSubDivOnlyUnsigned(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSubDivU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1692,6 +1862,8 @@ func BenchmarkSubDivU(b *testing.B) {
 
 	level1, level2, level3 := benchSpanSubDivU()
 
+	b.ResetTimer()
+
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
@@ -1709,6 +1881,8 @@ func BenchmarkShiftReference(b *testing.B) {
 	result := int8(0)
 
 	level1, level2 := benchSpanShift()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
@@ -1729,6 +1903,8 @@ func BenchmarkShift(b *testing.B) {
 	result := int8(0)
 
 	level1, level2 := benchSpanShift()
+
+	b.ResetTimer()
 
 	for range b.N {
 		for _, first := range level1 {
