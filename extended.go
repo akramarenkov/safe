@@ -104,15 +104,6 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 	return Add3(addends[0], addends[1], addends[2])
 }
 
-// Slightly faster than the [slices.Sort].
-func sortAddM[Type constraints.Integer](addends []Type) {
-	for first := 1; first < len(addends); first++ {
-		for second := first; second > 0 && addends[second] < addends[second-1]; second-- {
-			addends[second], addends[second-1] = addends[second-1], addends[second]
-		}
-	}
-}
-
 // Adds up several unsigned integers and determines whether an overflow has occurred or
 // not.
 //
@@ -354,25 +345,6 @@ func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error
 	}
 
 	return product, nil
-}
-
-// Slightly faster than the [slices.SortFunc] and specialized comparison function.
-func sortMulM[Type constraints.Integer](factors []Type) {
-	for first := 1; first < len(factors); first++ {
-		for second := first; second > 0; second-- {
-			if factors[second] < 0 && factors[second-1] < 0 {
-				if factors[second] < factors[second-1] {
-					break
-				}
-			} else {
-				if factors[second] > factors[second-1] {
-					break
-				}
-			}
-
-			factors[second], factors[second-1] = factors[second-1], factors[second]
-		}
-	}
 }
 
 // Multiplies several unsigned integers and determines whether an overflow has
