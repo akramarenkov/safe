@@ -15,24 +15,19 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals // To increase the perfo
 //
 // In case of overflow, an error is returned.
 func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
-	interim, err := Add(first, second)
-	if err == nil {
-		sum, err := Add(interim, third)
-		if err == nil {
+	if interim, err := Add(first, second); err == nil {
+		if sum, err := Add(interim, third); err == nil {
 			return sum, nil
 		}
 	}
 
-	interim, err = Add(first, third)
-	if err == nil {
-		sum, err := Add(interim, second)
-		if err == nil {
+	if interim, err := Add(first, third); err == nil {
+		if sum, err := Add(interim, second); err == nil {
 			return sum, nil
 		}
 	}
 
-	interim, err = Add(second, third)
-	if err == nil {
+	if interim, err := Add(second, third); err == nil {
 		return Add(first, interim)
 	}
 
@@ -136,24 +131,20 @@ func AddMU[Type constraints.Unsigned](addends ...Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type, error) {
-	interim, err := Sub(minuend, subtrahend)
-	if err == nil {
+	if interim, err := Sub(minuend, subtrahend); err == nil {
 		diff, err := Sub(interim, deductible)
 		if err == nil {
 			return diff, nil
 		}
 	}
 
-	interim, err = Sub(minuend, deductible)
-	if err == nil {
-		diff, err := Sub(interim, subtrahend)
-		if err == nil {
+	if interim, err := Sub(minuend, deductible); err == nil {
+		if diff, err := Sub(interim, subtrahend); err == nil {
 			return diff, nil
 		}
 	}
 
-	interim, err = Add(subtrahend, deductible)
-	if err == nil {
+	if interim, err := Add(subtrahend, deductible); err == nil {
 		return Sub(minuend, interim)
 	}
 
@@ -258,24 +249,19 @@ func SubMU[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 //
 // In case of overflow, an error is returned.
 func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
-	interim, err := Mul(first, second)
-	if err == nil {
-		product, err := Mul(interim, third)
-		if err == nil {
+	if interim, err := Mul(first, second); err == nil {
+		if product, err := Mul(interim, third); err == nil {
 			return product, nil
 		}
 	}
 
-	interim, err = Mul(first, third)
-	if err == nil {
-		product, err := Mul(interim, second)
-		if err == nil {
+	if interim, err := Mul(first, third); err == nil {
+		if product, err := Mul(interim, second); err == nil {
 			return product, nil
 		}
 	}
 
-	interim, err = Mul(second, third)
-	if err == nil {
+	if interim, err := Mul(second, third); err == nil {
 		return Mul(first, interim)
 	}
 
