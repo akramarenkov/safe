@@ -77,7 +77,7 @@ func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 // Subtracts two unsigned integers (subtrahend from minuend) and determines whether an
 // overflow has occurred or not.
 //
-// Slightly faster than the [Sub] function.
+// Faster than the [Sub] function about 10%.
 //
 // In case of overflow, an error is returned.
 func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
@@ -108,7 +108,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	// Therefore, this case is checked separately. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a
 	// simple check for equality of the second -1 fails, therefore second is checked
-	// for a negative value (is slightly faster than is.MinusOne)
+	// for a negative value
 	if is.Min(first) && second < 0 {
 		return 0, ErrOverflow
 	}
@@ -143,7 +143,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	// due to overflow - minimum negative value. Since the constraints in the type
 	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a simple
 	// check for equality of the divisor -1 fails, therefore divisor is checked for a
-	// negative value (is slightly faster than is.MinusOne)
+	// negative value
 	if is.Min(quotient) && divisor < 0 {
 		return 0, ErrOverflow
 	}
