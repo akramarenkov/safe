@@ -44,25 +44,13 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 func IterSize[Type constraints.Integer](begin, end Type) uint64 {
-	beginU64 := u64(begin)
-	endU64 := u64(end)
+	dist := Dist(begin, end)
 
-	size := endU64 - beginU64
-
-	if beginU64 > endU64 {
-		size = beginU64 - endU64
+	if dist == intspec.MaxUint64 {
+		return dist
 	}
 
-	// begin < 0 && end > 0 || begin > 0 && end < 0
-	if begin^end < 0 {
-		size = endU64 + beginU64
-	}
-
-	if size == intspec.MaxUint64 {
-		return size
-	}
-
-	return size + 1
+	return dist + 1
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
@@ -222,26 +210,14 @@ func StepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 		panic(ErrStepZero)
 	}
 
-	beginU64 := u64(begin)
-	endU64 := u64(end)
+	dist := Dist(begin, end)
 	stepU64 := uint64(step)
 
-	size := endU64 - beginU64
-
-	if beginU64 > endU64 {
-		size = beginU64 - endU64
+	if dist == intspec.MaxUint64 && stepU64 == 1 {
+		return dist
 	}
 
-	// begin < 0 && end > 0 || begin > 0 && end < 0
-	if begin^end < 0 {
-		size = endU64 + beginU64
-	}
-
-	if size == intspec.MaxUint64 && stepU64 == 1 {
-		return size
-	}
-
-	return size/stepU64 + 1
+	return dist/stepU64 + 1
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)

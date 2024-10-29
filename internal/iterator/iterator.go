@@ -1,5 +1,7 @@
 // Internal package with a copy of the iterator from the main code used in internal
-// packages. The copy is created to resolve import cycling of packages.
+// packages and tests. The copy is created to resolve import cycling of packages and
+// to prevent false test coverage (without checking the results) of iterator from main
+// code.
 package iterator
 
 import (

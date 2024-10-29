@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/clone"
+	"github.com/akramarenkov/safe/internal/iterator"
 	"github.com/stretchr/testify/require"
 )
 
@@ -302,11 +303,11 @@ func prepareAddM(quantity int) ([]int, []int) {
 	unsorted := make([]int, 0, quantity)
 	expected := make([]int, 0, quantity)
 
-	for number := range Iter(quantity, 1) {
+	for number := range iterator.Iter(quantity, 1) {
 		unsorted = append(unsorted, number)
 	}
 
-	for number := range Iter(1, quantity) {
+	for number := range iterator.Iter(1, quantity) {
 		expected = append(expected, number)
 	}
 
@@ -320,19 +321,19 @@ func prepareMulM(quantity int) ([]int, []int) {
 	unsorted := make([]int, 0, quantity)
 	expected := make([]int, 0, quantity)
 
-	for number := range Iter(positive, 1) {
+	for number := range iterator.Iter(positive, 1) {
 		unsorted = append(unsorted, number)
 	}
 
-	for number := range Iter(negative, -1) {
+	for number := range iterator.Iter(negative, -1) {
 		unsorted = append(unsorted, number)
 	}
 
-	for number := range Iter(-1, negative) {
+	for number := range iterator.Iter(-1, negative) {
 		expected = append(expected, number)
 	}
 
-	for number := range Iter(1, positive) {
+	for number := range iterator.Iter(1, positive) {
 		expected = append(expected, number)
 	}
 
