@@ -71,3 +71,23 @@ func testDistUns(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkDistReference(b *testing.B) {
+	dist := 0
+
+	for range b.N {
+		dist = b.N - 1
+	}
+
+	require.NotNil(b, dist)
+}
+
+func BenchmarkDist(b *testing.B) {
+	dist := uint64(0)
+
+	for range b.N {
+		dist = Dist(b.N, 1)
+	}
+
+	require.NotNil(b, dist)
+}
