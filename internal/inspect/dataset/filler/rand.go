@@ -5,8 +5,8 @@ import (
 	"math/big"
 
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/intspan"
 	"github.com/akramarenkov/safe/internal/is"
+	"github.com/akramarenkov/safe/intspec"
 )
 
 // Fills arguments with random values.
@@ -21,11 +21,11 @@ type Rand[Type types.UpToUSI32] struct {
 //
 // Data in this filler never ends, so it must be specified last.
 func NewRand[Type types.UpToUSI32]() *Rand[Type] {
-	_, maximum := intspan.Get[Type]()
+	_, maximum := intspec.Range[Type]()
 
 	rnd := &Rand[Type]{
 		maximum:     int64(maximum),
-		maximumRand: big.NewInt(1 << intspan.BitSize[Type]()),
+		maximumRand: big.NewInt(1 << intspec.BitSize[Type]()),
 	}
 
 	return rnd

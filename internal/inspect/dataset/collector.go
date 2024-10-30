@@ -10,7 +10,7 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/intspan"
+	"github.com/akramarenkov/safe/intspec"
 )
 
 // Options of collecting. A reference function and writer must be specified.
@@ -302,7 +302,7 @@ func calcMaxItemLength[Type types.UpToUSI32](argsQuantity int) int {
 		maxNewLineLen      = len("\n")
 	)
 
-	minimum, maximum := intspan.Get[Type]()
+	minimum, maximum := intspec.Range[Type]()
 
 	maxArgLen := max(
 		len(strconv.FormatInt(int64(minimum), consts.DecimalBase)),

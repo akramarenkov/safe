@@ -11,8 +11,8 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/intspan"
 	"github.com/akramarenkov/safe/internal/is"
+	"github.com/akramarenkov/safe/intspec"
 )
 
 // Options of inspecting. A inspected function and reader must be specified.
@@ -138,7 +138,7 @@ func (insp *Inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 }
 
 func parseArg[Type types.UpToUSI32](field string) (Type, error) {
-	size := intspan.BitSize[Type]()
+	size := intspec.BitSize[Type]()
 
 	if is.Signed[Type]() {
 		arg, err := strconv.ParseInt(field, consts.DecimalBase, size)

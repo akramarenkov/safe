@@ -1,8 +1,8 @@
 package safe
 
 import (
-	"github.com/akramarenkov/safe/internal/intspan"
 	"github.com/akramarenkov/safe/internal/is"
+	"github.com/akramarenkov/safe/intspec"
 	"golang.org/x/exp/constraints"
 )
 
@@ -50,7 +50,7 @@ func AddDiv[Type constraints.Integer](first, second, divisor Type) (Type, error)
 
 	// If overflow occurs during addition, the addition arguments have the same signs
 
-	minimum, maximum := intspan.Get[Type]()
+	minimum, maximum := intspec.Range[Type]()
 
 	overflowed := first + second
 
@@ -128,7 +128,7 @@ func AddDivRem[Type constraints.Integer](first, second, divisor Type) (Type, err
 		return sum % divisor, nil
 	}
 
-	minimum, maximum := intspan.Get[Type]()
+	minimum, maximum := intspec.Range[Type]()
 
 	overflowed := first + second
 
@@ -227,7 +227,7 @@ func SubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, 
 		return 0, ErrOverflow
 	}
 
-	minimum, maximum := intspan.Get[Type]()
+	minimum, maximum := intspec.Range[Type]()
 
 	overflowed := minuend - subtrahend
 
@@ -315,7 +315,7 @@ func SubDivRem[Type constraints.Integer](minuend, subtrahend, divisor Type) (Typ
 		return 0, ErrOverflow
 	}
 
-	minimum, maximum := intspan.Get[Type]()
+	minimum, maximum := intspec.Range[Type]()
 
 	overflowed := minuend - subtrahend
 
