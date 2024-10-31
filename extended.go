@@ -36,7 +36,7 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 
 // Adds three unsigned integers and determines whether an overflow has occurred or not.
 //
-// Faster than the [Add3] function about 70%.
+// Faster than the [safe.Add3] function about 70%.
 //
 // In case of overflow, an error is returned.
 func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
@@ -56,8 +56,8 @@ func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 // then the unmodify argument must be set to true. In other cases, unmodify can be left
 // as false.
 //
-// Slower than the [Add] function about 220%, than the [Add3] function about 65%. And
-// overall very slow, be careful.
+// Slower than the [safe.Add] function about 220%, than the [safe.Add3] function about
+// 65%. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error) {
@@ -103,8 +103,8 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 // Adds up several unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Slower than the [AddU] function about 170%, than the [Add3U] function about 80%,
-// faster than the [AddM] function about 85%.
+// Slower than the [safe.AddU] function about 170%, than the [safe.Add3U] function
+// about 80%, faster than the [safe.AddM] function about 85%.
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddMU[Type constraints.Unsigned](addends ...Type) (Type, error) {
@@ -154,7 +154,7 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 // Subtracts three unsigned integers (subtrahend, deductible from minuend) and
 // determines whether an overflow has occurred or not.
 //
-// Faster than the [Sub3] function about 75%.
+// Faster than the [safe.Sub3] function about 75%.
 //
 // In case of overflow, an error is returned.
 func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Type, error) {
@@ -175,8 +175,8 @@ func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Typ
 // then the unmodify argument must be set to true. In other cases, unmodify can be left
 // as false.
 //
-// Slower than the [Sub] function about 160%, than the [Sub3] function about 40%. And
-// overall very slow, be careful.
+// Slower than the [safe.Sub] function about 160%, than the [safe.Sub3] function about
+// 40%. And overall very slow, be careful.
 //
 // In case of overflow, an error is returned.
 func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...Type) (Type, error) {
@@ -226,8 +226,8 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 // Subtracts several unsigned integers (subtrahends from minuend) and determines
 // whether an overflow has occurred or not.
 //
-// Slower than the [SubU] function about 90%, than the [Sub3U] function about 100%,
-// faster than the [SubM] function about 85%.
+// Slower than the [safe.SubU] function about 90%, than the [safe.Sub3U] function
+// about 100%, faster than the [safe.SubM] function about 85%.
 //
 // In case of overflow, an error is returned.
 func SubMU[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, error) {
@@ -271,7 +271,7 @@ func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
 // Multiplies three unsigned integers and determines whether an overflow has occurred or
 // not.
 //
-// Faster than the [Mul3] function about 65%.
+// Faster than the [safe.Mul3] function about 65%.
 //
 // In case of overflow, an error is returned.
 func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
@@ -295,7 +295,7 @@ func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 // then the unmodify argument must be set to true. In other cases, unmodify can be left
 // as false.
 //
-// Slower than the [Mul] function about 10%. And overall very slow, be careful.
+// Slower than the [safe.Mul] function about 10%. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error) {
@@ -340,7 +340,8 @@ func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error
 // Multiplies several unsigned integers and determines whether an overflow has
 // occurred or not.
 //
-// Slower than the [Mul3U] function about 40%, faster than the [MulM] function about 70%.
+// Slower than the [safe.Mul3U] function about 40%, faster than the [safe.MulM] function
+// about 70%.
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
@@ -374,7 +375,7 @@ func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
 //
 // The divisors is also checked for equality to zero.
 //
-// Slower than the [Div] function about 15%.
+// Slower than the [safe.Div] function about 15%.
 //
 // In case of overflow or divisors equal to zero, an error is returned.
 func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, error) {

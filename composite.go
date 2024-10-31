@@ -160,7 +160,7 @@ func AddDivRem[Type constraints.Integer](first, second, divisor Type) (Type, err
 // Calculates the quotient of dividing the sum of two unsigned integers by divisor and
 // determines whether an overflow has occurred or not.
 //
-// Not faster than the [AddDiv] function.
+// Not faster than the [safe.AddDiv] function.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func AddDivU[Type constraints.Unsigned](first, second, divisor Type) (Type, error) {
@@ -351,7 +351,7 @@ func SubDivRem[Type constraints.Integer](minuend, subtrahend, divisor Type) (Typ
 // Calculates the quotient of dividing the difference of two unsigned integers by
 // divisor and determines whether an overflow has occurred or not.
 //
-// Faster than the [SubDiv] function about 30%.
+// Faster than the [safe.SubDiv] function about 30%.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func SubDivU[Type constraints.Unsigned](minuend, subtrahend, divisor Type) (Type, error) {

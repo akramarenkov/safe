@@ -38,7 +38,7 @@ func Iter[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator
 }
 
-// Calculates the number of iterations when using [Iter]. The return value
+// Calculates the number of iterations when using [safe.Iter]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
@@ -76,7 +76,7 @@ func Inc[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator
 }
 
-// Calculates the number of iterations when using [Inc]. The return value
+// Calculates the number of iterations when using [safe.Inc]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
@@ -112,7 +112,7 @@ func Dec[Type constraints.Integer](begin, end Type) iter.Seq[Type] {
 	return iterator
 }
 
-// Calculates the number of iterations when using [Dec]. The return value
+// Calculates the number of iterations when using [safe.Dec]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
@@ -194,13 +194,13 @@ func Step[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Typ
 	return iterator
 }
 
-// Calculates the number of iterations when using [Step]. The return value
+// Calculates the number of iterations when using [safe.Step]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 //
-// Like [Step] this function panics if a zero or negative step is specified.
+// Like [safe.Step] this function panics if a zero or negative step is specified.
 func StepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 	if step < 0 {
 		panic(ErrStepNegative)
@@ -265,13 +265,13 @@ func IncStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 	return iterator
 }
 
-// Calculates the number of iterations when using [IncStep]. The return value
+// Calculates the number of iterations when using [safe.IncStep]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 //
-// Like [IncStep] this function panics if a zero or negative step is specified.
+// Like [safe.IncStep] this function panics if a zero or negative step is specified.
 func IncStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 	size := StepSize(begin, end, step)
 
@@ -327,13 +327,13 @@ func DecStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 	return iterator
 }
 
-// Calculates the number of iterations when using [DecStep]. The return value
+// Calculates the number of iterations when using [safe.DecStep]. The return value
 // is intended to be used as the size parameter in the make call, so, and because
 // the maximum possible number of iterations is one more than the maximum value for
 // uint64, the return value is truncated to the maximum value for uint64 if the
 // calculated value exceeds it.
 //
-// Like [DecStep] this function panics if a zero or negative step is specified.
+// Like [safe.DecStep] this function panics if a zero or negative step is specified.
 func DecStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 	size := StepSize(begin, end, step)
 

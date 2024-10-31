@@ -13,7 +13,7 @@ type Set[Type types.UpToUSI32] struct {
 
 // Creates filler that fill arguments with values ​from set.
 //
-// If setter functions was not specified then [Boundaries] function will be used.
+// If setter functions was not specified then [filler.Boundaries] function will be used.
 func NewSet[Type types.UpToUSI32](setters ...func() []Type) *Set[Type] {
 	bnd := &Set[Type]{}
 
