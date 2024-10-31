@@ -35,7 +35,7 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 
 // Adds two unsigned integers and determines whether an overflow has occurred or not.
 //
-// Faster than the [safe.Add] function about 30%.
+// Faster than the [Add] function about 30%.
 //
 // In case of overflow, an error is returned.
 func AddU[Type constraints.Unsigned](first, second Type) (Type, error) {
@@ -77,7 +77,7 @@ func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 // Subtracts two unsigned integers (subtrahend from minuend) and determines whether an
 // overflow has occurred or not.
 //
-// Faster than the [safe.Sub] function about 10%.
+// Faster than the [Sub] function about 10%.
 //
 // In case of overflow, an error is returned.
 func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
