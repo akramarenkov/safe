@@ -1,4 +1,4 @@
-// Library that allows you to detect overflows in operations with integer numbers.
+// Library that allows you to detect and avoid overflows in operations with integer numbers.
 package safe
 
 // https://go.dev/ref/spec#Numeric_types
