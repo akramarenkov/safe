@@ -127,13 +127,13 @@ func DecSize[Type constraints.Integer](begin, end Type) uint64 {
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values from begin to end inclusive with the ability to
-// specify the iteration step.
+// iterating over integer values from begin to end inclusive (if the begin-end
+// range is a multiple of the step) with the ability to specify the iteration step.
 //
 // If begin is greater than end, the return value will be decremented, otherwise it
 // will be incremented.
 //
-// As in a regular loop, if the step is not a multiple of the begin-end range, the end
+// As in a regular loop, if the begin-end range is not a multiple of the step, the end
 // value will not be returned.
 //
 // If a zero or negative step is specified, the iterator will panic.
@@ -222,12 +222,13 @@ func StepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values from begin to end inclusive towards increase with
-// the ability to specify the iteration step.
+// iterating over integer values from begin to end inclusive (if the begin-end
+// range is a multiple of the step) towards increase with the ability to specify
+// the iteration step.
 //
 // If begin is greater than end, then no one iteration of the loop will occur.
 //
-// As in a regular loop, if the step is not a multiple of the begin-end range, the end
+// As in a regular loop, if the begin-end range is not a multiple of the step, the end
 // value will not be returned.
 //
 // If a zero or negative step is specified, the iterator will panic.
@@ -284,12 +285,13 @@ func IncStepSize[Type constraints.Integer](begin, end, step Type) uint64 {
 }
 
 // A range iterator for safely (without infinite loops due to counter overflow)
-// iterating over integer values from begin to end inclusive towards decrease with
-// the ability to specify the iteration step.
+// iterating over integer values from begin to end inclusive (if the begin-end
+// range is a multiple of the step) towards decrease with the ability to specify
+// the iteration step.
 //
 // If begin is lesser than end, then no one iteration of the loop will occur.
 //
-// As in a regular loop, if the step is not a multiple of the begin-end range, the end
+// As in a regular loop, if the begin-end range is not a multiple of the step, the end
 // value will not be returned.
 //
 // If a zero or negative step is specified, the iterator will panic.
