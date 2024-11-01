@@ -11,8 +11,8 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/is"
 	"github.com/akramarenkov/safe/intspec"
+	"github.com/akramarenkov/safe/is"
 )
 
 // Options of inspecting. A inspected function and reader must be specified.

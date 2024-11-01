@@ -5,8 +5,8 @@ import (
 	"math/big"
 
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/is"
 	"github.com/akramarenkov/safe/intspec"
+	"github.com/akramarenkov/safe/is"
 )
 
 // Fills arguments with random values.

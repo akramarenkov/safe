@@ -2,8 +2,8 @@ package filler
 
 import (
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/internal/is"
 	"github.com/akramarenkov/safe/intspec"
+	"github.com/akramarenkov/safe/is"
 )
 
 // Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
