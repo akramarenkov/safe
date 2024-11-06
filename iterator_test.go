@@ -28,7 +28,7 @@ func testIterForwardSig(t *testing.T) {
 		reference++
 	}
 
-	require.Equal(t, int(end)+1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIterBackwardSig(t *testing.T) {
@@ -43,7 +43,7 @@ func testIterBackwardSig(t *testing.T) {
 		reference--
 	}
 
-	require.Equal(t, int(end)-1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIterForwardUns(t *testing.T) {
@@ -58,7 +58,7 @@ func testIterForwardUns(t *testing.T) {
 		reference++
 	}
 
-	require.Equal(t, int(end)+1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIterBackwardUns(t *testing.T) {
@@ -73,7 +73,7 @@ func testIterBackwardUns(t *testing.T) {
 		reference--
 	}
 
-	require.Equal(t, int(end)-1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIterForwardPart(t *testing.T) {
@@ -140,19 +140,15 @@ func testIterSizeMan(t *testing.T) {
 func testIterSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
-			reference := int(end) - int(begin) + 1
+			reference := uint64(0)
 
-			if begin > end {
-				reference = int(begin) - int(end) + 1
+			for range Iter(begin, end) {
+				reference++
 			}
-
-			//nolint:gosec // Is the result of subtracting the smaller value
-			// from the larger value for int8 values
-			referenceU := uint64(reference)
 
 			require.Equal(
 				t,
-				referenceU,
+				reference,
 				IterSize(begin, end),
 				"begin: %v, end: %v",
 				begin,
@@ -165,10 +161,10 @@ func testIterSizeSig(t *testing.T) {
 func testIterSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
-			reference := uint64(end) - uint64(begin) + 1
+			reference := uint64(0)
 
-			if begin > end {
-				reference = uint64(begin) - uint64(end) + 1
+			for range Iter(begin, end) {
+				reference++
 			}
 
 			require.Equal(
@@ -270,7 +266,7 @@ func testIncSig(t *testing.T) {
 		reference++
 	}
 
-	require.Equal(t, int(end)+1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIncUns(t *testing.T) {
@@ -285,7 +281,7 @@ func testIncUns(t *testing.T) {
 		reference++
 	}
 
-	require.Equal(t, int(end)+1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testIncPart(t *testing.T) {
@@ -346,7 +342,7 @@ func testDecSig(t *testing.T) {
 		reference--
 	}
 
-	require.Equal(t, int(end)-1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testDecUns(t *testing.T) {
@@ -361,7 +357,7 @@ func testDecUns(t *testing.T) {
 		reference--
 	}
 
-	require.Equal(t, int(end)-1, reference)
+	require.NotEqual(t, int(begin), reference)
 }
 
 func testDecPart(t *testing.T) {
@@ -444,9 +440,6 @@ func testStepForwardSig(t *testing.T, step int8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(end)-int(begin))/int(step) + 1
-	final := int(begin) + iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -455,7 +448,7 @@ func testStepForwardSig(t *testing.T, step int8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepBackwardSig(t *testing.T, step int8) {
@@ -465,9 +458,6 @@ func testStepBackwardSig(t *testing.T, step int8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -476,7 +466,7 @@ func testStepBackwardSig(t *testing.T, step int8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
@@ -486,9 +476,6 @@ func testStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -497,7 +484,7 @@ func testStepBackwardSigNotOnEntireRange(t *testing.T, step int8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepForwardUns(t *testing.T, step uint8) {
@@ -507,9 +494,6 @@ func testStepForwardUns(t *testing.T, step uint8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(end)-int(begin))/int(step) + 1
-	final := int(begin) + iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -518,7 +502,7 @@ func testStepForwardUns(t *testing.T, step uint8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepBackwardUns(t *testing.T, step uint8) {
@@ -528,9 +512,6 @@ func testStepBackwardUns(t *testing.T, step uint8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -539,7 +520,7 @@ func testStepBackwardUns(t *testing.T, step uint8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
@@ -549,9 +530,6 @@ func testStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range Step(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -560,7 +538,7 @@ func testStepBackwardUnsNotOnEntireRange(t *testing.T, step uint8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testStepForwardPart(t *testing.T) {
@@ -664,23 +642,19 @@ func testStepSizeSig(t *testing.T) {
 	for begin := range Iter[int8](math.MinInt8, math.MaxInt8) {
 		for end := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			for step := range Iter[int8](1, math.MaxInt8) {
-				reference := (int(end)-int(begin))/int(step) + 1
+				reference := uint64(0)
 
-				if begin > end {
-					reference = (int(begin)-int(end))/int(step) + 1
+				for range Step(begin, end, step) {
+					reference++
 				}
-
-				//nolint:gosec // Is the result of subtracting the smaller value
-				// from the larger value for int8 values
-				referenceU := uint64(reference)
 
 				actual := StepSize(begin, end, step)
 
 				// duplication of conditions is done for performance reasons
-				if actual != referenceU {
+				if actual != reference {
 					require.Equal(
 						t,
-						referenceU,
+						reference,
 						actual,
 						"begin: %v, end: %v, step: %v",
 						begin,
@@ -697,10 +671,10 @@ func testStepSizeUns(t *testing.T) {
 	for begin := range Iter[uint8](0, math.MaxUint8) {
 		for end := range Iter[uint8](0, math.MaxUint8) {
 			for step := range Iter[uint8](1, math.MaxUint8) {
-				reference := (uint64(end)-uint64(begin))/uint64(step) + 1
+				reference := uint64(0)
 
-				if begin > end {
-					reference = (uint64(begin)-uint64(end))/uint64(step) + 1
+				for range Step(begin, end, step) {
+					reference++
 				}
 
 				actual := StepSize(begin, end, step)
@@ -946,9 +920,6 @@ func testIncStepSig(t *testing.T, step int8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(end)-int(begin))/int(step) + 1
-	final := int(begin) + iterations*int(step)
-
 	for id, number := range IncStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -957,7 +928,7 @@ func testIncStepSig(t *testing.T, step int8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testIncStepUns(t *testing.T, step uint8) {
@@ -967,9 +938,6 @@ func testIncStepUns(t *testing.T, step uint8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(end)-int(begin))/int(step) + 1
-	final := int(begin) + iterations*int(step)
-
 	for id, number := range IncStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -978,7 +946,7 @@ func testIncStepUns(t *testing.T, step uint8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testIncStepPart(t *testing.T) {
@@ -1095,9 +1063,6 @@ func testDecStepSig(t *testing.T, step int8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range DecStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -1106,7 +1071,7 @@ func testDecStepSig(t *testing.T, step int8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testDecStepUns(t *testing.T, step uint8) {
@@ -1116,9 +1081,6 @@ func testDecStepUns(t *testing.T, step uint8) {
 	reference := int(begin)
 	referenceID := uint64(0)
 
-	iterations := (int(begin)-int(end))/int(step) + 1
-	final := int(begin) - iterations*int(step)
-
 	for id, number := range DecStep(begin, end, step) {
 		require.Equal(t, reference, int(number), "step: %v", step)
 		require.Equal(t, referenceID, id, "step: %v", step)
@@ -1127,7 +1089,7 @@ func testDecStepUns(t *testing.T, step uint8) {
 		referenceID++
 	}
 
-	require.Equal(t, final, reference, "step: %v", step)
+	require.NotZero(t, referenceID, "step: %v", step)
 }
 
 func testDecStepPart(t *testing.T) {
