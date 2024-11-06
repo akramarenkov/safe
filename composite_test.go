@@ -407,3 +407,72 @@ func TestSubDivU(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 	require.NotZero(t, result.ReferenceFaults)
 }
+
+func TestAddOneSubDiv(t *testing.T) {
+	testAddOneSubDivSig(t)
+	testAddOneSubDivUns(t)
+}
+
+func testAddOneSubDivSig(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return AddOneSubDiv(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[2] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return (args[0] - args[1] + 1) / args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testAddOneSubDivUns(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...uint8) (uint8, error) {
+			return AddOneSubDiv(args[0], args[1], args[2])
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[2] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return (args[0] - args[1] + 1) / args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}

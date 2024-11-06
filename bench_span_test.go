@@ -167,6 +167,11 @@ func benchSpanShift() ([]int8, []int8) {
 	return span, span
 }
 
+func benchSpanAddOneSubDiv() ([]int8, []int8, []int8) {
+	span := int8Full()
+	return span, span, span
+}
+
 func int8Full() []int8 {
 	span := []int8{
 		-128, -127, -126, -125, -124, -123, -122, -121, -120,

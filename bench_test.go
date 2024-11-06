@@ -1916,3 +1916,47 @@ func BenchmarkShift(b *testing.B) {
 
 	require.NotNil(b, result)
 }
+
+func BenchmarkAddOneSubDivReference(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddOneSubDiv()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					if third == 0 {
+						continue
+					}
+
+					result = (first + 1 - second) / third
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkAddOneSubDiv(b *testing.B) {
+	result := int8(0)
+
+	level1, level2, level3 := benchSpanAddOneSubDiv()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				for _, third := range level3 {
+					result, _ = AddOneSubDiv(first, second, third)
+				}
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}

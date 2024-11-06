@@ -371,3 +371,38 @@ func SubDivU[Type constraints.Unsigned](minuend, subtrahend, divisor Type) (Type
 
 	return 0, ErrOverflow
 }
+
+// Calculates the quotient of dividing by divisor the difference between the minuend
+// increased by one and the subtrahend and determines whether an overflow has occurred
+// or not.
+//
+// In case of overflow or divisor equal to zero, an error is returned.
+func AddOneSubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {
+	if diff, err := AddSub(minuend, 1, subtrahend); err == nil {
+		return Div(diff, divisor)
+	}
+
+	minimum, maximum := intspec.Range[Type]()
+
+	if minuend == maximum && subtrahend == minimum {
+		qm, err := SubDiv(minuend, subtrahend, divisor)
+		if err != nil {
+			return 0, err
+		}
+
+		rm, _ := SubDivRem(minuend, subtrahend, divisor)
+
+		qe := 1 / divisor
+		re := 1 % divisor
+
+		remainder, _ := AddDiv(rm, re, divisor)
+
+		return Add3(qm, qe, remainder)
+	}
+
+	if minuend == maximum {
+		return SubDiv(minuend, subtrahend-1, divisor)
+	}
+
+	return SubDiv(minuend+1, subtrahend, divisor)
+}
