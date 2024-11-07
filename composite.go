@@ -372,8 +372,46 @@ func SubDivU[Type constraints.Unsigned](minuend, subtrahend, divisor Type) (Type
 	return 0, ErrOverflow
 }
 
+// Calculates the quotient of dividing of the expression first + second - subtrahend by
+// divisor and determines whether an overflow has occurred or not.
+//
+// In case of overflow or divisor equal to zero, an error is returned.
+func AddSubDiv[Type constraints.Integer](first, second, subtrahend, divisor Type) (Type, error) {
+	if interim, err := AddSub(first, second, subtrahend); err == nil {
+		return Div(interim, divisor)
+	}
+
+	if interim, err := Add(first, second); err == nil {
+		return SubDiv(interim, subtrahend, divisor)
+	}
+
+	if interim, err := Sub(subtrahend, second); err == nil {
+		return SubDiv(first, interim, divisor)
+	}
+
+	qm, err := SubDiv(first, subtrahend, divisor)
+	if err != nil {
+		return 0, err
+	}
+
+	rm, _ := SubDivRem(first, subtrahend, divisor)
+
+	qe, err := Div(second, divisor)
+	if err != nil {
+		return 0, err
+	}
+
+	re := second % divisor
+
+	remainder, _ := AddDiv(rm, re, divisor)
+
+	return Add3(qm, qe, remainder)
+}
+
 // Calculates the quotient of dividing of the expression minuend + 1 - subtrahend by
 // divisor and determines whether an overflow has occurred or not.
+//
+// Faster than the [AddSubDiv] function about 15%.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func AddOneSubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {

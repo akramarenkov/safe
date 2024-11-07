@@ -1,9 +1,12 @@
 package safe
 
 import (
+	"os"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/env"
 	"github.com/akramarenkov/safe/internal/inspect"
+	"github.com/akramarenkov/safe/internal/inspect/dataset"
 	"github.com/stretchr/testify/require"
 )
 
@@ -408,6 +411,168 @@ func TestSubDivU(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
+func TestAddSubDivDataset(t *testing.T) {
+	testAddSubDivDatasetSig(t)
+	testAddSubDivDatasetUns(t)
+}
+
+func testAddSubDivDatasetSig(t *testing.T) {
+	inspected := func(args ...int8) (int8, error) {
+		return AddSubDiv(args[0], args[1], args[2], args[3])
+	}
+
+	result, err := dataset.InspectFromFile("testdata/addsubdiv/signed", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testAddSubDivDatasetUns(t *testing.T) {
+	inspected := func(args ...uint8) (uint8, error) {
+		return AddSubDiv(args[0], args[1], args[2], args[3])
+	}
+
+	result, err := dataset.InspectFromFile("testdata/addsubdiv/unsigned", inspected)
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func TestAddSubDivCollectDataset(t *testing.T) {
+	if os.Getenv(env.CollectDataset) == "" {
+		t.SkipNow()
+	}
+
+	testAddSubDivCollectDatasetSig(t)
+	testAddSubDivCollectDatasetUns(t)
+}
+
+func testAddSubDivCollectDatasetSig(t *testing.T) {
+	reference := func(args ...int64) (int64, error) {
+		if args[3] == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return (args[0] + args[1] - args[2]) / args[3], nil
+	}
+
+	collector := dataset.Collector[int8]{
+		ArgsQuantity:               4,
+		NotOverflowedItemsQuantity: 1 << 14,
+		OverflowedItemsQuantity:    1 << 14,
+		Reference:                  reference,
+	}
+
+	err := collector.CollectToFile("testdata/addsubdiv/signed")
+	require.NoError(t, err)
+}
+
+func testAddSubDivCollectDatasetUns(t *testing.T) {
+	reference := func(args ...int64) (int64, error) {
+		if args[3] == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return (args[0] + args[1] - args[2]) / args[3], nil
+	}
+
+	collector := dataset.Collector[uint8]{
+		ArgsQuantity:               4,
+		NotOverflowedItemsQuantity: 1 << 14,
+		OverflowedItemsQuantity:    1 << 14,
+		Reference:                  reference,
+	}
+
+	err := collector.CollectToFile("testdata/addsubdiv/unsigned")
+	require.NoError(t, err)
+}
+
+func TestAddSubDivFull(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
+	testAddSubDivFullSig(t)
+	testAddSubDivFullUns(t)
+}
+
+func testAddSubDivFullSig(t *testing.T) {
+	opts := inspect.Opts4[int8]{
+		Inspected: AddSubDiv[int8],
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			if fourth == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return (first + second - third) / fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testAddSubDivFullUns(t *testing.T) {
+	opts := inspect.Opts4[uint8]{
+		Inspected: AddSubDiv[uint8],
+		Reference: func(first, second, third, fourth int64) (int64, error) {
+			if fourth == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return (first + second - third) / fourth, nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
 func TestAddOneSubDiv(t *testing.T) {
 	testAddOneSubDivSig(t)
 	testAddOneSubDivUns(t)
@@ -425,7 +590,7 @@ func testAddOneSubDivSig(t *testing.T) {
 				return 0, ErrDivisionByZero
 			}
 
-			return (args[0] - args[1] + 1) / args[2], nil
+			return (args[0] + 1 - args[1]) / args[2], nil
 		},
 	}
 
@@ -457,7 +622,7 @@ func testAddOneSubDivUns(t *testing.T) {
 				return 0, ErrDivisionByZero
 			}
 
-			return (args[0] - args[1] + 1) / args[2], nil
+			return (args[0] + 1 - args[1]) / args[2], nil
 		},
 	}
 
