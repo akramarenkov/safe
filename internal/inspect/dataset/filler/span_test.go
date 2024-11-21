@@ -35,6 +35,8 @@ func TestSpan(t *testing.T) {
 	require.Len(t, Span[int8](math.MinInt8, math.MaxInt8), 1<<8)
 	require.Len(t, Span[uint8](0, math.MaxUint8), 1<<8)
 
+	require.Panics(t, func() { Span[int8](math.MaxInt8, math.MaxInt8-1) })
+	require.Panics(t, func() { Span[uint8](math.MaxUint8, math.MaxUint8-1) })
 	require.Panics(t, func() { Span[int8](math.MaxInt8, 2) })
 	require.Panics(t, func() { Span[uint8](math.MaxUint8, 2) })
 }
