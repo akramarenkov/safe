@@ -5,7 +5,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// Adds two integers and determines whether an overflow has occurred or not.
+// Adds two integers and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Add[Type constraints.Integer](first, second Type) (Type, error) {
@@ -33,7 +33,7 @@ func Add[Type constraints.Integer](first, second Type) (Type, error) {
 	return sum, nil
 }
 
-// Adds two unsigned integers and determines whether an overflow has occurred or not.
+// Adds two unsigned integers and detects whether an overflow has occurred or not.
 //
 // Faster than the [Add] function about 30%.
 //
@@ -50,7 +50,7 @@ func AddU[Type constraints.Unsigned](first, second Type) (Type, error) {
 	return sum, nil
 }
 
-// Subtracts two integers (subtrahend from minuend) and determines whether an overflow
+// Subtracts two integers (subtrahend from minuend) and detects whether an overflow
 // has occurred or not.
 //
 // In case of overflow, an error is returned.
@@ -74,7 +74,7 @@ func Sub[Type constraints.Integer](minuend, subtrahend Type) (Type, error) {
 	return diff, nil
 }
 
-// Subtracts two unsigned integers (subtrahend from minuend) and determines whether an
+// Subtracts two unsigned integers (subtrahend from minuend) and detects whether an
 // overflow has occurred or not.
 //
 // Faster than the [Sub] function about 10%.
@@ -92,7 +92,7 @@ func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
 	return diff, nil
 }
 
-// Multiplies two integers and determines whether an overflow has occurred or not.
+// Multiplies two integers and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Mul[Type constraints.Integer](first, second Type) (Type, error) {
@@ -124,7 +124,7 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 	return product, nil
 }
 
-// Divides two integers (dividend to divisor) and determines whether an overflow has
+// Divides two integers (dividend to divisor) and detects whether an overflow has
 // occurred or not.
 //
 // The divisor is also checked for equality to zero.
@@ -151,7 +151,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	return quotient, nil
 }
 
-// Changes the sign of a integer and determines whether an overflow has occurred or not.
+// Changes the sign of a integer and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Negate[Type constraints.Integer](number Type) (Type, error) {
@@ -168,7 +168,7 @@ func Negate[Type constraints.Integer](number Type) (Type, error) {
 	return negated, nil
 }
 
-// Converts an integer of one type to an integer of another type and determines whether
+// Converts an integer of one type to an integer of another type and detects whether
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
@@ -197,7 +197,7 @@ func IToI[TypeTo, TypeFrom constraints.Integer](number TypeFrom) (TypeTo, error)
 	return converted, nil
 }
 
-// Converts an integer to a floating point number and determines whether loss of
+// Converts an integer to a floating point number and detects whether loss of
 // precision has occurred or not.
 //
 // Loss of precision can lead to overflow when converting back to an integer number.
@@ -214,7 +214,7 @@ func IToF[Flt constraints.Float, Int constraints.Integer](number Int) (Flt, erro
 	return converted, nil
 }
 
-// Converts a floating point number to an integer and determines whether an overflow
+// Converts a floating point number to an integer and detects whether an overflow
 // has occurred or not.
 //
 // Number is also checked for equality to NaN.
@@ -224,7 +224,7 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 	// It was not possible to find cases where, in the absence of overflow, the
 	// difference between a number with a fractional part and its integer part would
 	// exceed or equal 1. However, to guarantee the absence of false overflow
-	// determinations, a difference of 2 was chosen. In the case of real overflow,
+	// detection, a difference of 2 was chosen. In the case of real overflow,
 	// the difference is always greater.
 	const absenceOverflowDiff = 2
 
@@ -245,7 +245,7 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 	return converted, nil
 }
 
-// Shifts an integer left to specified shift count and determines whether an overflow
+// Shifts an integer left to specified shift count and detects whether an overflow
 // has occurred or not.
 //
 // Shift count is also checked for negativity.

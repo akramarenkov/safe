@@ -11,7 +11,7 @@ var pow10table = [...]uint64{ //nolint:gochecknoglobals // To increase the perfo
 	1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
 }
 
-// Adds three integers and determines whether an overflow has occurred or not.
+// Adds three integers and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
@@ -34,7 +34,7 @@ func Add3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
-// Adds three unsigned integers and determines whether an overflow has occurred or not.
+// Adds three unsigned integers and detects whether an overflow has occurred or not.
 //
 // Faster than the [Add3] function about 70%.
 //
@@ -48,7 +48,7 @@ func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 	return AddU(interim, third)
 }
 
-// Adds up several integers and determines whether an overflow has occurred or not.
+// Adds up several integers and detects whether an overflow has occurred or not.
 //
 // The function modifies the variadic input arguments. By default, a copy of
 // the variadic input arguments is not created and, if a slice is passed, it will be
@@ -100,7 +100,7 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 	return Add3(addends[0], addends[1], addends[2])
 }
 
-// Adds up several unsigned integers and determines whether an overflow has occurred or
+// Adds up several unsigned integers and detects whether an overflow has occurred or
 // not.
 //
 // Slower than the [AddU] function about 170%, than the [Add3U] function about 80%,
@@ -126,7 +126,7 @@ func AddMU[Type constraints.Unsigned](addends ...Type) (Type, error) {
 	return sum, nil
 }
 
-// Subtracts three integers (subtrahend, deductible from minuend) and determines whether
+// Subtracts three integers (subtrahend, deductible from minuend) and detects whether
 // an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
@@ -152,7 +152,7 @@ func Sub3[Type constraints.Integer](minuend, subtrahend, deductible Type) (Type,
 }
 
 // Subtracts three unsigned integers (subtrahend, deductible from minuend) and
-// determines whether an overflow has occurred or not.
+// detects whether an overflow has occurred or not.
 //
 // Faster than the [Sub3] function about 75%.
 //
@@ -166,7 +166,7 @@ func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Typ
 	return SubU(interim, deductible)
 }
 
-// Subtracts several integers (subtrahends from minuend) and determines whether an
+// Subtracts several integers (subtrahends from minuend) and detects whether an
 // overflow has occurred or not.
 //
 // The function modifies the variadic input arguments. By default, a copy of
@@ -223,7 +223,7 @@ func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...
 	return Sub3(minuend, subtrahends[0], subtrahends[1])
 }
 
-// Subtracts several unsigned integers (subtrahends from minuend) and determines
+// Subtracts several unsigned integers (subtrahends from minuend) and detects
 // whether an overflow has occurred or not.
 //
 // Slower than the [SubU] function about 90%, than the [Sub3U] function about 100%,
@@ -245,7 +245,7 @@ func SubMU[Type constraints.Unsigned](minuend Type, subtrahends ...Type) (Type, 
 	return diff, nil
 }
 
-// Multiplies three integers and determines whether an overflow has occurred or not.
+// Multiplies three integers and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
@@ -268,7 +268,7 @@ func Mul3[Type constraints.Integer](first, second, third Type) (Type, error) {
 	return 0, ErrOverflow
 }
 
-// Multiplies three unsigned integers and determines whether an overflow has occurred or
+// Multiplies three unsigned integers and detects whether an overflow has occurred or
 // not.
 //
 // Faster than the [Mul3] function about 65%.
@@ -287,7 +287,7 @@ func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 	return Mul(interim, third)
 }
 
-// Multiplies several integers and determines whether an overflow has occurred or not.
+// Multiplies several integers and detects whether an overflow has occurred or not.
 //
 // The function modifies the variadic input arguments. By default, a copy of
 // the variadic input arguments is not created and, if a slice is passed, it will be
@@ -337,7 +337,7 @@ func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error
 	return product, nil
 }
 
-// Multiplies several unsigned integers and determines whether an overflow has
+// Multiplies several unsigned integers and detects whether an overflow has
 // occurred or not.
 //
 // Slower than the [Mul3U] function about 40%, faster than the [MulM] function about 70%.
@@ -369,7 +369,7 @@ func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	return product, nil
 }
 
-// Divides several integers (dividend to divisors) and determines whether an overflow
+// Divides several integers (dividend to divisors) and detects whether an overflow
 // has occurred or not.
 //
 // The divisors is also checked for equality to zero.
@@ -407,7 +407,7 @@ func DivM[Type constraints.Integer](dividend Type, divisors ...Type) (Type, erro
 	return -quotient, nil
 }
 
-// Raises 10 to a power and determines whether an overflow has occurred or not.
+// Raises 10 to a power and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Pow10[Type, TypePower constraints.Integer](power TypePower) (Type, error) {
@@ -423,7 +423,7 @@ func Pow10[Type, TypePower constraints.Integer](power TypePower) (Type, error) {
 	return IToI[Type](pow10table[power])
 }
 
-// Raises base to a power and determines whether an overflow has occurred or not.
+// Raises base to a power and detects whether an overflow has occurred or not.
 //
 // Straightforward and slow implementation. Be careful.
 //

@@ -6,7 +6,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// Calculates the value of the expression first + second - subtrahend and determines
+// Calculates the value of the expression first + second - subtrahend and detects
 // whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
@@ -36,7 +36,7 @@ func AddSub[Type constraints.Integer](first, second, subtrahend Type) (Type, err
 }
 
 // Calculates the quotient of dividing the sum of two integers by divisor and
-// determines whether an overflow has occurred or not.
+// detects whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func AddDiv[Type constraints.Integer](first, second, divisor Type) (Type, error) {
@@ -158,7 +158,7 @@ func AddDivRem[Type constraints.Integer](first, second, divisor Type) (Type, err
 }
 
 // Calculates the quotient of dividing the sum of two unsigned integers by divisor and
-// determines whether an overflow has occurred or not.
+// detects whether an overflow has occurred or not.
 //
 // Not faster than the [AddDiv] function.
 //
@@ -198,7 +198,7 @@ func AddDivU[Type constraints.Unsigned](first, second, divisor Type) (Type, erro
 }
 
 // Calculates the quotient of dividing the difference of two integers by divisor and
-// determines whether an overflow has occurred or not.
+// detects whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func SubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {
@@ -293,7 +293,7 @@ func SubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, 
 }
 
 // Calculates the remainder of dividing the difference of two integers by divisor and
-// determines whether an overflow has occurred or not.
+// detects whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func SubDivRem[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, error) {
@@ -349,7 +349,7 @@ func SubDivRem[Type constraints.Integer](minuend, subtrahend, divisor Type) (Typ
 }
 
 // Calculates the quotient of dividing the difference of two unsigned integers by
-// divisor and determines whether an overflow has occurred or not.
+// divisor and detects whether an overflow has occurred or not.
 //
 // Faster than the [SubDiv] function about 30%.
 //
@@ -373,7 +373,7 @@ func SubDivU[Type constraints.Unsigned](minuend, subtrahend, divisor Type) (Type
 }
 
 // Calculates the quotient of dividing of the expression first + second - subtrahend by
-// divisor and determines whether an overflow has occurred or not.
+// divisor and detects whether an overflow has occurred or not.
 //
 // In case of overflow or divisor equal to zero, an error is returned.
 func AddSubDiv[Type constraints.Integer](first, second, subtrahend, divisor Type) (Type, error) {
@@ -409,7 +409,7 @@ func AddSubDiv[Type constraints.Integer](first, second, subtrahend, divisor Type
 }
 
 // Calculates the quotient of dividing of the expression minuend + 1 - subtrahend by
-// divisor and determines whether an overflow has occurred or not.
+// divisor and detects whether an overflow has occurred or not.
 //
 // Faster than the [AddSubDiv] function about 15%.
 //

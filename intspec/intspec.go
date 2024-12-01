@@ -1,4 +1,4 @@
-// Used to determine the parameters of integer types (minimum, maximum values ​​and bit
+// Used to detect the parameters of integer types (minimum, maximum values ​​and bit
 // size).
 package intspec
 
@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// Returns minimum and maximum values for specified type.
+// Returns minimum and maximum values for specified integer type.
 func Range[Type constraints.Integer]() (Type, Type) {
 	if !is.Signed[Type]() {
 		return 0, ^Type(0) // return 0, Type(0)-1
@@ -43,7 +43,7 @@ func Range[Type constraints.Integer]() (Type, Type) {
 	return convMinInt8, convMaxInt8
 }
 
-// Returns bit size for specified type.
+// Returns bit size for specified integer type.
 func BitSize[Type constraints.Integer]() int {
 	refMaxInt64 := int64(MaxInt64)
 	refMaxInt32 := int32(MaxInt32)
