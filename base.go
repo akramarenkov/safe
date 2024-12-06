@@ -154,11 +154,15 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func Negate[Type constraints.Integer](number Type) (Type, error) {
-	if is.Min(number) {
+	negated := -number
+
+	if negated == number {
+		if number == 0 {
+			return negated, nil
+		}
+
 		return 0, ErrOverflow
 	}
-
-	negated := -number
 
 	if number|negated > 0 { // number > 0 && negated > 0
 		return 0, ErrOverflow
