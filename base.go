@@ -106,6 +106,10 @@ func Mul[Type constraints.Integer](first, second Type) (Type, error) {
 
 	product := first * second
 
+	// first < 0 && second < 0 && product < 0 ||
+	// first < 0 && second > 0 && product >= 0 ||
+	// first > 0 && second < 0 && product >= 0 ||
+	// first > 0 && second > 0 && product < 0
 	if first^second^product < 0 {
 		return 0, ErrOverflow
 	}
