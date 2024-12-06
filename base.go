@@ -1,7 +1,6 @@
 package safe
 
 import (
-	"github.com/akramarenkov/safe/is"
 	"golang.org/x/exp/constraints"
 )
 
@@ -139,11 +138,8 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	// The only time division overflow occurs is when the dividend is equal to the
 	// minimum negative value and the divisor is -1. In this case, the dividend simply
 	// changes sign and the quotient becomes equal to the maximum positive value +1 i.e.
-	// due to overflow - minimum negative value. Since the constraints in the type
-	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a simple
-	// check for equality of the divisor -1 fails, therefore divisor is checked for a
-	// negative value
-	if is.Min(quotient) && divisor < 0 {
+	// due to overflow - minimum negative value
+	if quotient == dividend && dividend&divisor < 0 {
 		return 0, ErrOverflow
 	}
 
