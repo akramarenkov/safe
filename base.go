@@ -158,7 +158,7 @@ func Negate[Type constraints.Integer](number Type) (Type, error) {
 
 	if negated == number {
 		if number == 0 {
-			return negated, nil
+			return 0, nil
 		}
 
 		return 0, ErrOverflow
