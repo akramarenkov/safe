@@ -360,11 +360,7 @@ func testNegateUns(t *testing.T) {
 			return Negate(args[0])
 		},
 		Reference: func(args ...int64) (int64, error) {
-			if args[0] == 0 {
-				return 0, nil
-			}
-
-			return 0, ErrOverflow
+			return -args[0], nil
 		},
 	}
 
