@@ -98,24 +98,17 @@ func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func Mul[Type constraints.Integer](first, second Type) (Type, error) {
-	if second == 0 {
+	if first == 0 || second == 0 {
 		return 0, nil
 	}
 
 	// When multiplying, many times overflows are possible
 
-	// When multiplying the minimum negative value by -1, an overflow occurs resulting
-	// in the same minimum negative value. The division operation with which overflow
-	// is checked in this case is also performed with exactly the same overflow.
-	// Therefore, this case is checked separately. Since the constraints in the type
-	// definition are equal to constraints.Integer i.e. Signed | Unsigned, then a
-	// simple check for equality of the second -1 fails, therefore second is checked
-	// for a negative value
-	if is.Min(first) && second < 0 {
+	product := first * second
+
+	if first^second^product < 0 {
 		return 0, ErrOverflow
 	}
-
-	product := first * second
 
 	// It would be possible to represent the multiplication as an addition in a loop
 	// and check the sum at each iteration, but this is much slower
