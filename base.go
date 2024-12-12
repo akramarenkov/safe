@@ -253,10 +253,12 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 	converted := Int(number)
 	reverted := Flt(converted)
 
+	diff := number - reverted
+
 	switch {
-	case number-reverted > absenceOverflowDiff:
+	case diff > absenceOverflowDiff:
 		return 0, ErrOverflow
-	case number-reverted < -absenceOverflowDiff:
+	case diff < -absenceOverflowDiff:
 		return 0, ErrOverflow
 	}
 
