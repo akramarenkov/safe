@@ -194,12 +194,11 @@ func Negate[Type constraints.Integer](number Type) (Type, error) {
 func IToI[TypeTo, TypeFrom constraints.Integer](number TypeFrom) (TypeTo, error) {
 	converted := TypeTo(number)
 
-	switch {
-	case converted < 0:
+	if converted < 0 {
 		if number > 0 {
 			return 0, ErrOverflow
 		}
-	case converted > 0:
+	} else {
 		if number < 0 {
 			return 0, ErrOverflow
 		}
