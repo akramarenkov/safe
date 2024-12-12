@@ -859,16 +859,20 @@ func testShiftUns(t *testing.T) {
 			return Shift(args[0], args[1])
 		},
 		Reference: func(args ...int64) (int64, error) {
+			if args[1] < 0 {
+				return 0, ErrNegativeShift
+			}
+
 			shift, err := IToI[uint](args[1])
 			require.NoError(t, err)
 
-			number := new(big.Int).Lsh(big.NewInt(args[0]), shift)
+			shifted := new(big.Int).Lsh(big.NewInt(args[0]), shift)
 
-			if !number.IsInt64() {
+			if !shifted.IsInt64() {
 				return 0, ErrOverflow
 			}
 
-			return number.Int64(), nil
+			return shifted.Int64(), nil
 		},
 	}
 
@@ -931,6 +935,10 @@ func testShiftUintViaFloat(t *testing.T) {
 			return Shift(args[0], args[1])
 		},
 		Reference: func(args ...float64) (float64, error) {
+			if args[1] < 0 {
+				return 0, ErrNegativeShift
+			}
+
 			reference := args[0] * math.Pow(2, args[1])
 			require.False(t, math.IsNaN(reference))
 
