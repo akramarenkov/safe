@@ -6,7 +6,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-var pow10table = [...]uint64{ //nolint:gochecknoglobals // To increase the performance
+var pow10Table = [...]uint64{ //nolint:gochecknoglobals // To increase the performance
 	1e00, 1e01, 1e02, 1e03, 1e04, 1e05, 1e06, 1e07, 1e08, 1e09,
 	1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
 }
@@ -416,11 +416,11 @@ func Pow10[Type, TypePower constraints.Integer](power TypePower) (Type, error) {
 	}
 
 	// Value of pow10table length fits into any integer type
-	if power >= TypePower(len(pow10table)) {
+	if power >= TypePower(len(pow10Table)) {
 		return 0, ErrOverflow
 	}
 
-	return IToI[Type](pow10table[power])
+	return IToI[Type](pow10Table[power])
 }
 
 // Raises base to a power and detects whether an overflow has occurred or not.

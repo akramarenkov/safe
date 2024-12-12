@@ -1548,7 +1548,7 @@ func BenchmarkPow10Reference(b *testing.B) {
 		result = math.Pow10(19)
 	}
 
-	require.NotNil(b, result)
+	require.InEpsilon(b, float64(1e19), result, 0)
 }
 
 func BenchmarkPow10(b *testing.B) {
@@ -1560,7 +1560,7 @@ func BenchmarkPow10(b *testing.B) {
 		result, _ = Pow10[uint64](19)
 	}
 
-	require.NotNil(b, result)
+	require.Equal(b, uint64(1e19), result)
 }
 
 func BenchmarkPowReference(b *testing.B) {
@@ -1572,7 +1572,7 @@ func BenchmarkPowReference(b *testing.B) {
 		result = math.Pow(14, 14)
 	}
 
-	require.NotNil(b, result)
+	require.InEpsilon(b, float64(11112006825558016), result, 0)
 }
 
 func BenchmarkPow(b *testing.B) {
@@ -1584,7 +1584,7 @@ func BenchmarkPow(b *testing.B) {
 		result, _ = Pow(uint64(14), 14)
 	}
 
-	require.NotNil(b, result)
+	require.Equal(b, uint64(11112006825558016), result)
 }
 
 func BenchmarkAddSubReference(b *testing.B) {
