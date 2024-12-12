@@ -97,25 +97,44 @@ func SubU[Type constraints.Unsigned](minuend, subtrahend Type) (Type, error) {
 //
 // In case of overflow, an error is returned.
 func Mul[Type constraints.Integer](first, second Type) (Type, error) {
-	if first == 0 || second == 0 {
-		return 0, nil
-	}
+	product := first * second
 
 	// When multiplying, many times overflows are possible
 
-	product := first * second
-
+	switch {
+	case first == 0:
+		return 0, nil
+	case second == 0:
+		return 0, nil
 	// first < 0 && second < 0 && product < 0 ||
 	// first < 0 && second > 0 && product >= 0 ||
 	// first > 0 && second < 0 && product >= 0 ||
 	// first > 0 && second > 0 && product < 0
-	if first^second^product < 0 {
+	case first^second^product < 0:
+		return 0, ErrOverflow
+	case product/second != first:
 		return 0, ErrOverflow
 	}
 
-	// It would be possible to represent the multiplication as an addition in a loop
-	// and check the sum at each iteration, but this is much slower
-	if product/second != first {
+	return product, nil
+}
+
+// Multiplies two unsigned integers and detects whether an overflow has occurred or not.
+//
+// Faster than the [Mul] function about 50% on unsigned integers.
+//
+// In case of overflow, an error is returned.
+func MulU[Type constraints.Unsigned](first, second Type) (Type, error) {
+	product := first * second
+
+	// When multiplying, many times overflows are possible
+
+	switch {
+	case second == 0:
+		return 0, nil
+	case product < first || product < second && first != 0:
+		return 0, ErrOverflow
+	case product/second != first:
 		return 0, ErrOverflow
 	}
 

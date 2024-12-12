@@ -279,12 +279,12 @@ func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 		return 0, nil
 	}
 
-	interim, err := Mul(first, second)
+	interim, err := MulU(first, second)
 	if err != nil {
 		return 0, err
 	}
 
-	return Mul(interim, third)
+	return MulU(interim, third)
 }
 
 // Multiplies several integers and detects whether an overflow has occurred or not.
@@ -358,7 +358,7 @@ func MulMU[Type constraints.Unsigned](factors ...Type) (Type, error) {
 	factors = factors[1:]
 
 	for _, factor := range factors {
-		interim, err := Mul(product, factor)
+		interim, err := MulU(product, factor)
 		if err != nil {
 			return 0, err
 		}

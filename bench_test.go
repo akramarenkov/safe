@@ -897,6 +897,60 @@ func BenchmarkMul(b *testing.B) {
 	require.NotNil(b, result)
 }
 
+func BenchmarkMulUReference(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2 := benchSpanMulU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				result = first * second
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkMulOnlyUnsigned(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2 := benchSpanMulU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				result, _ = Mul(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
+func BenchmarkMulU(b *testing.B) {
+	result := uint8(0)
+
+	level1, level2 := benchSpanMulU()
+
+	b.ResetTimer()
+
+	for range b.N {
+		for _, first := range level1 {
+			for _, second := range level2 {
+				result, _ = MulU(first, second)
+			}
+		}
+	}
+
+	require.NotNil(b, result)
+}
+
 func BenchmarkMul3Reference(b *testing.B) {
 	result := int8(0)
 

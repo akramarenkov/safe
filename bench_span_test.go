@@ -69,6 +69,11 @@ func benchSpanMul() ([]int8, []int8) {
 	return span, span
 }
 
+func benchSpanMulU() ([]uint8, []uint8) {
+	span := uint8Full()
+	return span, span
+}
+
 func benchSpanMul3() ([]int8, []int8, []int8) {
 	span := int8Full()
 	return span, span, span
