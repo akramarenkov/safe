@@ -165,7 +165,7 @@ func Div[Type constraints.Integer](dividend, divisor Type) (Type, error) {
 	return quotient, nil
 }
 
-// Changes the sign of a integer and detects whether an overflow has occurred or not.
+// Changes a sign of an integer and detects whether an overflow has occurred or not.
 //
 // In case of overflow, an error is returned.
 func Negate[Type constraints.Integer](number Type) (Type, error) {
@@ -284,4 +284,13 @@ func Shift[Type, CountType constraints.Integer](number Type, count CountType) (T
 	}
 
 	return shifted, nil
+}
+
+// Converts absolute value of an integer of specified type to an integer of uint64 type.
+func Abs[Type constraints.Integer](number Type) uint64 {
+	if number < 0 {
+		return uint64(-(number + 1)) + 1
+	}
+
+	return uint64(number)
 }
