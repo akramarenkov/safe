@@ -119,7 +119,7 @@ func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 		return true
 	}
 
-	// A universal, in this case, condition for comparing for inequality
+	// An universal, in this case, condition for comparing for inequality
 	// (actual != reference), both for integers and for floating point numbers
 	if TypeRef(actual)-reference >= 1 || TypeRef(actual)-reference <= -1 {
 		opts.result.Actual = actual

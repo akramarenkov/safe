@@ -61,10 +61,10 @@ func sortMulMSmall[Type constraints.Integer](items []Type) {
 	}
 }
 
-func compareMulM[Type constraints.Integer](a, b Type) int {
-	// a < 0 && b < 0
-	if a&b < 0 {
-		if a < b {
+func compareMulM[Type constraints.Integer](first, second Type) int {
+	// first < 0 && second < 0
+	if first&second < 0 {
+		if first < second {
 			return 1
 		}
 
@@ -72,9 +72,9 @@ func compareMulM[Type constraints.Integer](a, b Type) int {
 	}
 
 	switch {
-	case a < b:
+	case first < second:
 		return -1
-	case a > b:
+	case first > second:
 		return 1
 	}
 
