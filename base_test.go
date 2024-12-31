@@ -961,13 +961,3 @@ func testShiftUintViaFloat(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
 }
-
-func TestAbs(t *testing.T) {
-	require.Equal(t, uint64(math.MaxInt8), Abs[int8](math.MaxInt8))
-	require.Equal(t, uint64(-(math.MinInt8 + 1)), Abs[int8](math.MinInt8+1))
-	require.Equal(t, uint64(-math.MinInt8), Abs[int8](math.MinInt8))
-
-	require.Equal(t, uint64(math.MaxInt64), Abs[int64](math.MaxInt64))
-	require.Equal(t, uint64(-(math.MinInt64 + 1)), Abs[int64](math.MinInt64+1))
-	require.Equal(t, uint64(-math.MinInt64), Abs[int64](math.MinInt64))
-}

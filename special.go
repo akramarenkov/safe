@@ -2,6 +2,15 @@ package safe
 
 import "golang.org/x/exp/constraints"
 
+// Converts absolute value of an integer of specified type to an integer of uint64 type.
+func Abs[Type constraints.Integer](number Type) uint64 {
+	if number < 0 {
+		return uint64(-(number + 1)) + 1
+	}
+
+	return uint64(number)
+}
+
 // Used to safely (using a method that avoids integer overflow) calculate the distance
 // (difference in absolute value) between two numbers.
 func Dist[Type constraints.Integer](first, second Type) uint64 {

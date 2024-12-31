@@ -285,12 +285,3 @@ func Shift[Type, CountType constraints.Integer](number Type, count CountType) (T
 
 	return shifted, nil
 }
-
-// Converts absolute value of an integer of specified type to an integer of uint64 type.
-func Abs[Type constraints.Integer](number Type) uint64 {
-	if number < 0 {
-		return uint64(-(number + 1)) + 1
-	}
-
-	return uint64(number)
-}
