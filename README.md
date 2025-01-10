@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Library that allows you to detect and avoid overflows in operations with integer numbers
+Library that provides to detect and avoid overflows in operations with integer numbers
 
 ## Usage
 
