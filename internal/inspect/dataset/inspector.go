@@ -6,13 +6,14 @@ import (
 	"os"
 	"strconv"
 
-	abytes "github.com/akramarenkov/alter/bytes"
-	"github.com/akramarenkov/reusable"
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/types"
 	"github.com/akramarenkov/safe/intspec"
 	"github.com/akramarenkov/safe/is"
+
+	abytes "github.com/akramarenkov/alter/bytes"
+	"github.com/akramarenkov/reusable"
 )
 
 // Options of inspecting. A inspected function and reader must be specified.

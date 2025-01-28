@@ -3,6 +3,7 @@ package safe
 import (
 	"github.com/akramarenkov/safe/intspec"
 	"github.com/akramarenkov/safe/is"
+
 	"golang.org/x/exp/constraints"
 )
 

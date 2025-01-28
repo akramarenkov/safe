@@ -7,6 +7,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/env"
 	"github.com/akramarenkov/safe/internal/inspect/types"
+
 	"github.com/stretchr/testify/require"
 )
 

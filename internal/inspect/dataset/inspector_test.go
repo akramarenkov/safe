@@ -116,25 +116,25 @@ func testInspectorConvertErrorSig(t *testing.T) {
 	}
 
 	buffer.Reset()
-	buffer.Write([]byte("false 2"))
+	buffer.WriteString("false 2")
 
 	_, err := inspector.Inspect()
 	require.Error(t, err)
 
 	buffer.Reset()
-	buffer.Write([]byte("flase 2 1 1"))
+	buffer.WriteString("flase 2 1 1")
 
 	_, err = inspector.Inspect()
 	require.Error(t, err)
 
 	buffer.Reset()
-	buffer.Write([]byte("false true 1 1"))
+	buffer.WriteString("false true 1 1")
 
 	_, err = inspector.Inspect()
 	require.Error(t, err)
 
 	buffer.Reset()
-	buffer.Write([]byte("false 2 true 1"))
+	buffer.WriteString("false 2 true 1")
 
 	_, err = inspector.Inspect()
 	require.Error(t, err)
@@ -149,7 +149,7 @@ func testInspectorConvertErrorUns(t *testing.T) {
 	}
 
 	buffer.Reset()
-	buffer.Write([]byte("false 2 true 1"))
+	buffer.WriteString("false 2 true 1")
 
 	_, err := inspector.Inspect()
 	require.Error(t, err)

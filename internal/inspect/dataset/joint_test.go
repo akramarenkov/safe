@@ -9,6 +9,7 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/akramarenkov/safe/internal/inspect/types"
+
 	"github.com/stretchr/testify/require"
 )
 

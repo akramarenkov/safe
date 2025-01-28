@@ -12,6 +12,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
+
 	"github.com/akramarenkov/wrecker"
 	"github.com/stretchr/testify/require"
 )

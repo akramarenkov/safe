@@ -5,10 +5,10 @@ package research
 import (
 	"errors"
 
-	"golang.org/x/exp/constraints"
-
 	"github.com/akramarenkov/safe"
 	"github.com/akramarenkov/safe/internal/consts"
+
+	"golang.org/x/exp/constraints"
 )
 
 var (

@@ -6,6 +6,7 @@ import (
 
 	"github.com/akramarenkov/safe"
 	"github.com/akramarenkov/safe/internal/iterator"
+
 	"github.com/stretchr/testify/require"
 )
 

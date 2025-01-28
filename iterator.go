@@ -4,6 +4,7 @@ import (
 	"iter"
 
 	"github.com/akramarenkov/safe/intspec"
+
 	"golang.org/x/exp/constraints"
 )
 

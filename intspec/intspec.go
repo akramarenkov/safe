@@ -4,6 +4,7 @@ package intspec
 
 import (
 	"github.com/akramarenkov/safe/is"
+
 	"golang.org/x/exp/constraints"
 )
 

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/inspect/types"
+
 	"github.com/stretchr/testify/require"
 )
 
