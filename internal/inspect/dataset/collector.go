@@ -63,8 +63,7 @@ func (clctr Collector[Type]) IsValid() error {
 
 func (clctr Collector[Type]) normalize() Collector[Type] {
 	if len(clctr.Fillers) == 0 {
-		clctr.Fillers = append(clctr.Fillers, filler.NewSet[Type]())
-		clctr.Fillers = append(clctr.Fillers, filler.NewRand[Type]())
+		clctr.Fillers = append(clctr.Fillers, filler.NewSet[Type](), filler.NewRand[Type]())
 	}
 
 	return clctr

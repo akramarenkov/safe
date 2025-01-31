@@ -11,7 +11,7 @@ import (
 // Returns minimum and maximum values for specified integer type.
 func Range[Type constraints.Integer]() (Type, Type) {
 	if !is.Signed[Type]() {
-		return 0, ^Type(0) // return 0, Type(0)-1
+		return 0, ^Type(0) // Type(0)-1
 	}
 
 	refMaxInt64 := int64(MaxInt64)

@@ -1,7 +1,7 @@
 package dataset
 
 const (
-	defaultFileMode = 0644
+	defaultFileMode = 0o644
 )
 
 const (

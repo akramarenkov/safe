@@ -62,7 +62,8 @@ func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 //
 // In case of overflow or missing arguments, an error is returned.
 func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error) {
-	//nolint:mnd
+	//nolint:mnd // Adding constants will not improve readability for checking the
+	// number of arguments
 	switch len(addends) {
 	case 0:
 		return 0, ErrMissingArguments
@@ -300,7 +301,8 @@ func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 //
 // In case of overflow or missing arguments, an error is returned.
 func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error) {
-	//nolint:mnd
+	//nolint:mnd // Adding constants will not improve readability for checking the
+	// number of arguments
 	switch len(factors) {
 	case 0:
 		return 0, ErrMissingArguments

@@ -24,7 +24,7 @@ func TestSortAddM(t *testing.T) {
 	)
 }
 
-func testSortAddM(t *testing.T, unsorted []int, expected []int) {
+func testSortAddM(t *testing.T, unsorted, expected []int) {
 	sorted := clone.Slice(unsorted)
 
 	sortAddM(sorted)
@@ -47,7 +47,7 @@ func TestSortMulM(t *testing.T) {
 	)
 }
 
-func testSortMulM(t *testing.T, unsorted []int, expected []int) {
+func testSortMulM(t *testing.T, unsorted, expected []int) {
 	sorted := clone.Slice(unsorted)
 	sortedStd := clone.Slice(unsorted)
 
