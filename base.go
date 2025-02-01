@@ -246,7 +246,7 @@ func FToI[Int constraints.Integer, Flt constraints.Float](number Flt) (Int, erro
 	// the difference is always greater.
 	const absenceOverflowDiff = 2
 
-	if number != number { //nolint:gocritic
+	if number != number { //nolint:gocritic,revive // By definition NaN of float
 		return 0, ErrNaN
 	}
 
