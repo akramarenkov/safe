@@ -104,11 +104,16 @@ func TestAdd3U(t *testing.T) {
 }
 
 func TestAddM(t *testing.T) {
-	testAddMSig(t)
-	testAddMUns(t)
+	testAddMSigArgs1(t)
+	testAddMSigArgs2(t)
+	testAddMSigArgs3(t)
+
+	testAddMUnsArgs1(t)
+	testAddMUnsArgs2(t)
+	testAddMUnsArgs3(t)
 }
 
-func testAddMSig(t *testing.T) {
+func testAddMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -134,8 +139,10 @@ func testAddMSig(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[int8, int8, int64]{
+func testAddMSigArgs2(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -146,33 +153,7 @@ func testAddMSig(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-
-	opts = inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...int8) (int8, error) {
-			return AddM(args...)
-		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] + args[1] + args[2], nil
-		},
-	}
-
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -188,7 +169,35 @@ func testAddMSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUns(t *testing.T) {
+func testAddMSigArgs3(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return AddM(args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] + args[1] + args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testAddMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -214,8 +223,10 @@ func testAddMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testAddMUnsArgs2(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -226,7 +237,7 @@ func testAddMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -240,8 +251,10 @@ func testAddMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testAddMUnsArgs3(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -252,7 +265,7 @@ func testAddMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -574,11 +587,16 @@ func TestSub3U(t *testing.T) {
 }
 
 func TestSubM(t *testing.T) {
-	testSubMSig(t)
-	testSubMUns(t)
+	testSubMSigArgs1(t)
+	testSubMSigArgs2(t)
+	testSubMSigArgs3(t)
+
+	testSubMUnsArgs1(t)
+	testSubMUnsArgs2(t)
+	testSubMUnsArgs3(t)
 }
 
-func testSubMSig(t *testing.T) {
+func testSubMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -604,8 +622,10 @@ func testSubMSig(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[int8, int8, int64]{
+func testSubMSigArgs2(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -616,33 +636,7 @@ func testSubMSig(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-
-	opts = inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...int8) (int8, error) {
-			return SubM(args[0], args[1:]...)
-		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] - args[1] - args[2], nil
-		},
-	}
-
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -658,7 +652,35 @@ func testSubMSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMUns(t *testing.T) {
+func testSubMSigArgs3(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return SubM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] - args[1] - args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testSubMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -684,8 +706,10 @@ func testSubMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testSubMUnsArgs2(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -696,7 +720,7 @@ func testSubMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -710,8 +734,10 @@ func testSubMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testSubMUnsArgs3(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -722,7 +748,7 @@ func testSubMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1040,11 +1066,16 @@ func TestMul3U(t *testing.T) {
 }
 
 func TestMulM(t *testing.T) {
-	testMulMSig(t)
-	testMulMUns(t)
+	testMulMSigArgs1(t)
+	testMulMSigArgs2(t)
+	testMulMSigArgs3(t)
+
+	testMulMUnsArgs1(t)
+	testMulMUnsArgs2(t)
+	testMulMUnsArgs3(t)
 }
 
-func testMulMSig(t *testing.T) {
+func testMulMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1070,8 +1101,10 @@ func testMulMSig(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[int8, int8, int64]{
+func testMulMSigArgs2(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -1082,33 +1115,7 @@ func testMulMSig(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.Zero(t, result.ReferenceFaults)
-
-	opts = inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...int8) (int8, error) {
-			return MulM(args...)
-		},
-		Reference: func(args ...int64) (int64, error) {
-			return args[0] * args[1] * args[2], nil
-		},
-	}
-
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1124,7 +1131,35 @@ func testMulMSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMUns(t *testing.T) {
+func testMulMSigArgs3(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return MulM(args...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			return args[0] * args[1] * args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.Zero(t, result.ReferenceFaults)
+}
+
+func testMulMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1150,8 +1185,10 @@ func testMulMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testMulMUnsArgs2(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -1162,7 +1199,7 @@ func testMulMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1176,8 +1213,10 @@ func testMulMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.NotZero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testMulMUnsArgs3(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -1188,7 +1227,7 @@ func testMulMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1433,11 +1472,16 @@ func TestMulMUError(t *testing.T) {
 }
 
 func TestDivM(t *testing.T) {
-	testDivMSig(t)
-	testDivMUns(t)
+	testDivMSigArgs1(t)
+	testDivMSigArgs2(t)
+	testDivMSigArgs3(t)
+
+	testDivMUnsArgs1(t)
+	testDivMUnsArgs2(t)
+	testDivMUnsArgs3(t)
 }
 
-func testDivMSig(t *testing.T) {
+func testDivMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1463,8 +1507,10 @@ func testDivMSig(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[int8, int8, int64]{
+func testDivMSigArgs2(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...int8) (int8, error) {
@@ -1479,37 +1525,7 @@ func testDivMSig(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
-	require.NoError(t, err)
-	require.NoError(
-		t,
-		result.Conclusion,
-		"reference: %v, actual: %v, args: %v, err: %v",
-		result.Reference,
-		result.Actual,
-		result.Args,
-		result.Err,
-	)
-	require.NotZero(t, result.NoOverflows)
-	require.NotZero(t, result.Overflows)
-	require.NotZero(t, result.ReferenceFaults)
-
-	opts = inspect.Opts[int8, int8, int64]{
-		LoopsQuantity: 3,
-
-		Inspected: func(args ...int8) (int8, error) {
-			return DivM(args[0], args[1:]...)
-		},
-		Reference: func(args ...int64) (int64, error) {
-			if args[1] == 0 || args[2] == 0 {
-				return 0, ErrDivisionByZero
-			}
-
-			return args[0] / args[1] / args[2], nil
-		},
-	}
-
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1525,7 +1541,39 @@ func testDivMSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMUns(t *testing.T) {
+func testDivMSigArgs3(t *testing.T) {
+	opts := inspect.Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+
+		Inspected: func(args ...int8) (int8, error) {
+			return DivM(args[0], args[1:]...)
+		},
+		Reference: func(args ...int64) (int64, error) {
+			if args[1] == 0 || args[2] == 0 {
+				return 0, ErrDivisionByZero
+			}
+
+			return args[0] / args[1] / args[2], nil
+		},
+	}
+
+	result, err := opts.Do()
+	require.NoError(t, err)
+	require.NoError(
+		t,
+		result.Conclusion,
+		"reference: %v, actual: %v, args: %v, err: %v",
+		result.Reference,
+		result.Actual,
+		result.Args,
+		result.Err,
+	)
+	require.NotZero(t, result.NoOverflows)
+	require.NotZero(t, result.Overflows)
+	require.NotZero(t, result.ReferenceFaults)
+}
+
+func testDivMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1551,8 +1599,10 @@ func testDivMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.Zero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testDivMUnsArgs2(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -1567,7 +1617,7 @@ func testDivMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1581,8 +1631,10 @@ func testDivMUns(t *testing.T) {
 	require.NotZero(t, result.NoOverflows)
 	require.Zero(t, result.Overflows)
 	require.NotZero(t, result.ReferenceFaults)
+}
 
-	opts = inspect.Opts[uint8, uint8, int64]{
+func testDivMUnsArgs3(t *testing.T) {
+	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
 		Inspected: func(args ...uint8) (uint8, error) {
@@ -1597,7 +1649,7 @@ func testDivMUns(t *testing.T) {
 		},
 	}
 
-	result, err = opts.Do()
+	result, err := opts.Do()
 	require.NoError(t, err)
 	require.NoError(
 		t,
