@@ -98,7 +98,7 @@ func TestAdd3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMSigArgs1(t *testing.T) {
+func TestAddM1ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -124,7 +124,7 @@ func TestAddMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMSigArgs2(t *testing.T) {
+func TestAddM2ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -150,7 +150,7 @@ func TestAddMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMSigArgs3(t *testing.T) {
+func TestAddM3ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -176,7 +176,7 @@ func TestAddMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMUnsArgs1(t *testing.T) {
+func TestAddM1ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -202,7 +202,7 @@ func TestAddMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMUnsArgs2(t *testing.T) {
+func TestAddM2ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -228,7 +228,7 @@ func TestAddMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddMUnsArgs3(t *testing.T) {
+func TestAddM3ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -550,7 +550,7 @@ func TestSub3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMSigArgs1(t *testing.T) {
+func TestSubM1ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -578,7 +578,7 @@ func TestSubMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMSigArgs2(t *testing.T) {
+func TestSubM2ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -606,7 +606,7 @@ func TestSubMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMSigArgs3(t *testing.T) {
+func TestSubM3ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -634,7 +634,7 @@ func TestSubMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMUnsArgs1(t *testing.T) {
+func TestSubM1ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -662,7 +662,7 @@ func TestSubMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMUnsArgs2(t *testing.T) {
+func TestSubM2ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -690,7 +690,7 @@ func TestSubMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubMUnsArgs3(t *testing.T) {
+func TestSubM3ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1014,7 +1014,7 @@ func TestMul3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMSigArgs1(t *testing.T) {
+func TestMulM1ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1040,7 +1040,7 @@ func TestMulMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMSigArgs2(t *testing.T) {
+func TestMulM2ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -1066,7 +1066,7 @@ func TestMulMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMSigArgs3(t *testing.T) {
+func TestMulM3ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -1092,7 +1092,7 @@ func TestMulMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMUnsArgs1(t *testing.T) {
+func TestMulM1ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1118,7 +1118,7 @@ func TestMulMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMUnsArgs2(t *testing.T) {
+func TestMulM2ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -1144,7 +1144,7 @@ func TestMulMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulMUnsArgs3(t *testing.T) {
+func TestMulM3ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1394,7 +1394,7 @@ func TestMulMUError(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDivMSigArgs1(t *testing.T) {
+func TestDivM1ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1422,7 +1422,7 @@ func TestDivMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestDivMSigArgs2(t *testing.T) {
+func TestDivM2ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -1454,7 +1454,7 @@ func TestDivMSigArgs2(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestDivMSigArgs3(t *testing.T) {
+func TestDivM3ArgsSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -1486,7 +1486,7 @@ func TestDivMSigArgs3(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestDivMUnsArgs1(t *testing.T) {
+func TestDivM1ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1514,7 +1514,7 @@ func TestDivMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestDivMUnsArgs2(t *testing.T) {
+func TestDivM2ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -1546,7 +1546,7 @@ func TestDivMUnsArgs2(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestDivMUnsArgs3(t *testing.T) {
+func TestDivM3ArgsUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
