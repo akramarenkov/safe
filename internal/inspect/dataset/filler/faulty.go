@@ -19,6 +19,6 @@ func NewFaulty[Type types.UpToUSI32]() *Faulty[Type] {
 }
 
 // Returns an error always.
-func (flt *Faulty[Type]) Fill([]Type, []int64) (bool, error) {
+func (*Faulty[Type]) Fill([]Type, []int64) (bool, error) {
 	return false, ErrFaulty
 }
