@@ -38,12 +38,7 @@ func TestIsValid4(t *testing.T) {
 	require.Error(t, opts.IsValid())
 }
 
-func TestDo4(t *testing.T) {
-	testDo4Sig(t)
-	testDo4Uns(t)
-}
-
-func testDo4Sig(t *testing.T) {
+func TestDo4Sig(t *testing.T) {
 	opts := Opts4[int8]{
 		Inspected: testInspected4Sig,
 		Reference: testReference4,
@@ -64,7 +59,7 @@ func testDo4Sig(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDo4Uns(t *testing.T) {
+func TestDo4Uns(t *testing.T) {
 	opts := Opts4[uint8]{
 		Inspected: testInspected4Uns,
 		Reference: testReference4,
@@ -92,12 +87,7 @@ func TestDo4Error(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDo4NegativeConclusion(t *testing.T) {
-	testDo4NegativeConclusionSig(t)
-	testDo4NegativeConclusionUns(t)
-}
-
-func testDo4NegativeConclusionSig(t *testing.T) {
+func TestDo4NegativeConclusionSig(t *testing.T) {
 	errorExpected := func(first, second, third, fourth int8) (int8, error) {
 		return first + second + third + fourth, nil
 	}
@@ -153,7 +143,7 @@ func testDo4NegativeConclusionSig(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDo4NegativeConclusionUns(t *testing.T) {
+func TestDo4NegativeConclusionUns(t *testing.T) {
 	errorExpected := func(first, second, third, fourth uint8) (uint8, error) {
 		return first + second + third + fourth, nil
 	}

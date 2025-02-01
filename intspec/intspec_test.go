@@ -7,12 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRange(t *testing.T) {
-	testRangeSig(t)
-	testRangeUns(t)
-}
-
-func testRangeSig(t *testing.T) {
+func TestRangeSig(t *testing.T) {
 	minimum64, maximum64 := Range[int64]()
 	require.Equal(t, int64(math.MinInt64), minimum64)
 	require.Equal(t, int64(math.MaxInt64), maximum64)
@@ -34,7 +29,7 @@ func testRangeSig(t *testing.T) {
 	require.Equal(t, math.MaxInt, maximum)
 }
 
-func testRangeUns(t *testing.T) {
+func TestRangeUns(t *testing.T) {
 	minimum64, maximum64 := Range[uint64]()
 	require.Equal(t, uint64(0), minimum64)
 	require.Equal(t, uint64(math.MaxUint64), maximum64)

@@ -7,12 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRand(t *testing.T) {
-	testRandSig(t)
-	testRandUns(t)
-}
-
-func testRandSig(t *testing.T) {
+func TestRandSig(t *testing.T) {
 	const argsQuantity = 3
 
 	args := make([]int8, argsQuantity)
@@ -44,7 +39,7 @@ func testRandSig(t *testing.T) {
 	require.NotZero(t, negative)
 }
 
-func testRandUns(t *testing.T) {
+func TestRandUns(t *testing.T) {
 	const argsQuantity = 3
 
 	args := make([]uint8, argsQuantity)

@@ -19,13 +19,7 @@ func TestAbs(t *testing.T) {
 	require.Equal(t, uint64(-math.MinInt64), Abs[int64](math.MinInt64))
 }
 
-func TestDist(t *testing.T) {
-	testDistMan(t)
-	testDistSig(t)
-	testDistUns(t)
-}
-
-func testDistMan(t *testing.T) {
+func TestDistManually(t *testing.T) {
 	require.Equal(t, uint64(3), Dist[int8](2, 5))
 	require.Equal(t, uint64(3), Dist[int8](5, 2))
 	require.Equal(t, uint64(7), Dist[int8](-2, 5))
@@ -47,7 +41,7 @@ func testDistMan(t *testing.T) {
 	require.Equal(t, uint64(math.MaxUint64), Dist[uint64](math.MaxUint64, 0))
 }
 
-func testDistSig(t *testing.T) {
+func TestDistSig(t *testing.T) {
 	for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		for second := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 			reference := int(second) - int(first)
@@ -68,7 +62,7 @@ func testDistSig(t *testing.T) {
 	}
 }
 
-func testDistUns(t *testing.T) {
+func TestDistUns(t *testing.T) {
 	for first := range iterator.Iter[uint8](0, math.MaxUint8) {
 		for second := range iterator.Iter[uint8](0, math.MaxUint8) {
 			reference := uint64(second) - uint64(first)

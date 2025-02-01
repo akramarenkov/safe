@@ -33,12 +33,7 @@ func TestIsValid(t *testing.T) {
 	require.Error(t, opts.IsValid())
 }
 
-func TestDo(t *testing.T) {
-	testDoSig(t)
-	testDoUns(t)
-}
-
-func testDoSig(t *testing.T) {
+func TestDoSig(t *testing.T) {
 	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -61,7 +56,7 @@ func testDoSig(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDoUns(t *testing.T) {
+func TestDoUns(t *testing.T) {
 	opts := Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -93,12 +88,7 @@ func TestDoError(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDoNegativeConclusion(t *testing.T) {
-	testDoNegativeConclusionSig(t)
-	testDoNegativeConclusionUns(t)
-}
-
-func testDoNegativeConclusionSig(t *testing.T) {
+func TestDoNegativeConclusionSig(t *testing.T) {
 	errorExpected := func(args ...int8) (int8, error) {
 		return args[0] + args[1], nil
 	}
@@ -156,7 +146,7 @@ func testDoNegativeConclusionSig(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDoNegativeConclusionUns(t *testing.T) {
+func TestDoNegativeConclusionUns(t *testing.T) {
 	errorExpected := func(args ...uint8) (uint8, error) {
 		return args[0] + args[1], nil
 	}
@@ -214,15 +204,7 @@ func testDoNegativeConclusionUns(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func TestLoop(t *testing.T) {
-	testLoopSig(t)
-	testLoopUns(t)
-	testLoopSpanSig(t)
-	testLoopSpanUns(t)
-	testLoopFloatU16(t)
-}
-
-func testLoopSig(t *testing.T) {
+func TestLoopSig(t *testing.T) {
 	const levels = 3
 
 	incr, err := incrementor.New[int8](levels, math.MinInt8, math.MaxInt8)
@@ -241,7 +223,7 @@ func testLoopSig(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopUns(t *testing.T) {
+func TestLoopUns(t *testing.T) {
 	const levels = 3
 
 	incr, err := incrementor.New[uint8](levels, 0, math.MaxUint8)
@@ -260,7 +242,7 @@ func testLoopUns(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopSpanSig(t *testing.T) {
+func TestLoopSpanSig(t *testing.T) {
 	const (
 		levels = 3
 		begin  = -1
@@ -287,7 +269,7 @@ func testLoopSpanSig(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopSpanUns(t *testing.T) {
+func TestLoopSpanUns(t *testing.T) {
 	const (
 		levels = 3
 		begin  = 1
@@ -314,7 +296,7 @@ func testLoopSpanUns(t *testing.T) {
 	require.False(t, stop)
 }
 
-func testLoopFloatU16(t *testing.T) {
+func TestLoopFloatU16(t *testing.T) {
 	const levels = 1
 
 	incr, err := incrementor.New[uint16](levels, 0, math.MaxUint16)

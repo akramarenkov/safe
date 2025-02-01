@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test(t *testing.T) {
+func TestClone(t *testing.T) {
 	expected := []int{0, 1, 2, 3, 4, 5}
 	original := []int{0, 1, 2, 3, 4, 5}
 
@@ -26,8 +26,8 @@ func Test(t *testing.T) {
 	require.NotEqual(t, expected, copied)
 }
 
-func Benchmark1(b *testing.B) {
-	benchmark(b, 1)
+func BenchmarkClone1(b *testing.B) {
+	benchmarkClone(b, 1)
 }
 
 func BenchmarkAppend1(b *testing.B) {
@@ -38,8 +38,8 @@ func BenchmarkSlicesClone1(b *testing.B) {
 	benchmarkSlicesClone(b, 1)
 }
 
-func Benchmark4(b *testing.B) {
-	benchmark(b, 4)
+func BenchmarkClone4(b *testing.B) {
+	benchmarkClone(b, 4)
 }
 
 func BenchmarkAppend4(b *testing.B) {
@@ -50,8 +50,8 @@ func BenchmarkSlicesClone4(b *testing.B) {
 	benchmarkSlicesClone(b, 4)
 }
 
-func Benchmark8(b *testing.B) {
-	benchmark(b, 8)
+func BenchmarkClone8(b *testing.B) {
+	benchmarkClone(b, 8)
 }
 
 func BenchmarkAppend8(b *testing.B) {
@@ -62,8 +62,8 @@ func BenchmarkSlicesClone8(b *testing.B) {
 	benchmarkSlicesClone(b, 8)
 }
 
-func Benchmark32(b *testing.B) {
-	benchmark(b, 32)
+func BenchmarkClone32(b *testing.B) {
+	benchmarkClone(b, 32)
 }
 
 func BenchmarkAppend32(b *testing.B) {
@@ -74,8 +74,8 @@ func BenchmarkSlicesClone32(b *testing.B) {
 	benchmarkSlicesClone(b, 32)
 }
 
-func Benchmark64(b *testing.B) {
-	benchmark(b, 64)
+func BenchmarkClone64(b *testing.B) {
+	benchmarkClone(b, 64)
 }
 
 func BenchmarkAppend64(b *testing.B) {
@@ -86,8 +86,8 @@ func BenchmarkSlicesClone64(b *testing.B) {
 	benchmarkSlicesClone(b, 64)
 }
 
-func Benchmark128(b *testing.B) {
-	benchmark(b, 128)
+func BenchmarkClone128(b *testing.B) {
+	benchmarkClone(b, 128)
 }
 
 func BenchmarkAppend128(b *testing.B) {
@@ -98,7 +98,7 @@ func BenchmarkSlicesClone128(b *testing.B) {
 	benchmarkSlicesClone(b, 128)
 }
 
-func benchmark(b *testing.B, quantity int) {
+func benchmarkClone(b *testing.B, quantity int) {
 	slice := make([]int, quantity)
 
 	for range b.N {

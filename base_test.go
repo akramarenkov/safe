@@ -11,12 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdd(t *testing.T) {
-	testAddSig(t)
-	testAddUns(t)
-}
-
-func testAddSig(t *testing.T) {
+func TestAddSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -44,7 +39,7 @@ func testAddSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddUns(t *testing.T) {
+func TestAddUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -100,12 +95,7 @@ func TestAddU(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSub(t *testing.T) {
-	testSubSig(t)
-	testSubUns(t)
-}
-
-func testSubSig(t *testing.T) {
+func TestSubSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -133,7 +123,7 @@ func testSubSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubUns(t *testing.T) {
+func TestSubUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -189,12 +179,7 @@ func TestSubU(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMul(t *testing.T) {
-	testMulSig(t)
-	testMulUns(t)
-}
-
-func testMulSig(t *testing.T) {
+func TestMulSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -222,7 +207,7 @@ func testMulSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulUns(t *testing.T) {
+func TestMulUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -278,12 +263,7 @@ func TestMulU(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestDiv(t *testing.T) {
-	testDivSig(t)
-	testDivUns(t)
-}
-
-func testDivSig(t *testing.T) {
+func TestDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -315,7 +295,7 @@ func testDivSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivUns(t *testing.T) {
+func TestDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -347,12 +327,7 @@ func testDivUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestNegate(t *testing.T) {
-	testNegateSig(t)
-	testNegateUns(t)
-}
-
-func testNegateSig(t *testing.T) {
+func TestNegateSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -380,7 +355,7 @@ func testNegateSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testNegateUns(t *testing.T) {
+func TestNegateUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -405,17 +380,7 @@ func testNegateUns(t *testing.T) {
 	)
 }
 
-func TestIToI(t *testing.T) {
-	testIToIU8ToS8(t)
-	testIToIS8ToU8(t)
-	testIToIS8ToU16(t)
-	testIToIU16ToS8(t)
-	testIToIU16ToU8(t)
-	testIToIS16ToS8(t)
-	testIToIS16ToU8(t)
-}
-
-func testIToIU8ToS8(t *testing.T) {
+func TestIToIU8ToS8(t *testing.T) {
 	opts := inspect.Opts[uint8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -443,7 +408,7 @@ func testIToIU8ToS8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIS8ToU8(t *testing.T) {
+func TestIToIS8ToU8(t *testing.T) {
 	opts := inspect.Opts[int8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -471,7 +436,7 @@ func testIToIS8ToU8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIS8ToU16(t *testing.T) {
+func TestIToIS8ToU16(t *testing.T) {
 	opts := inspect.Opts[int8, uint16, int64]{
 		LoopsQuantity: 1,
 
@@ -499,7 +464,7 @@ func testIToIS8ToU16(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIU16ToS8(t *testing.T) {
+func TestIToIU16ToS8(t *testing.T) {
 	opts := inspect.Opts[uint16, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -527,7 +492,7 @@ func testIToIU16ToS8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIU16ToU8(t *testing.T) {
+func TestIToIU16ToU8(t *testing.T) {
 	opts := inspect.Opts[uint16, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -555,7 +520,7 @@ func testIToIU16ToU8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIS16ToS8(t *testing.T) {
+func TestIToIS16ToS8(t *testing.T) {
 	opts := inspect.Opts[int16, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -583,7 +548,7 @@ func testIToIS16ToS8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testIToIS16ToU8(t *testing.T) {
+func TestIToIS16ToU8(t *testing.T) {
 	opts := inspect.Opts[int16, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -611,12 +576,7 @@ func testIToIS16ToU8(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestIToF(t *testing.T) {
-	testIToF32(t)
-	testIToF64(t)
-}
-
-func testIToF32(t *testing.T) {
+func TestIToF32(t *testing.T) {
 	_, err := IToF[float32](-1 << 24)
 	require.NoError(t, err)
 
@@ -639,7 +599,7 @@ func testIToF32(t *testing.T) {
 	require.Error(t, err)
 }
 
-func testIToF64(t *testing.T) {
+func TestIToF64(t *testing.T) {
 	_, err := IToF[float64](math.MinInt32)
 	require.NoError(t, err)
 
@@ -803,14 +763,7 @@ func TestFToISpecial(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestShift(t *testing.T) {
-	testShiftSig(t)
-	testShiftUns(t)
-	testShiftIntViaFloat(t)
-	testShiftUintViaFloat(t)
-}
-
-func testShiftSig(t *testing.T) {
+func TestShiftSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -851,7 +804,7 @@ func testShiftSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testShiftUns(t *testing.T) {
+func TestShiftUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -892,7 +845,7 @@ func testShiftUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testShiftIntViaFloat(t *testing.T) {
+func TestShiftIntViaFloat(t *testing.T) {
 	opts := inspect.Opts[int8, int8, float64]{
 		LoopsQuantity: 2,
 
@@ -927,7 +880,7 @@ func testShiftIntViaFloat(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testShiftUintViaFloat(t *testing.T) {
+func TestShiftUintViaFloat(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, float64]{
 		LoopsQuantity: 2,
 

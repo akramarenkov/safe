@@ -170,6 +170,8 @@ func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Typ
 //
 // In case of overflow, an error is returned.
 func SubM[Type constraints.Integer](minuend Type, subtrahends ...Type) (Type, error) {
+	//nolint:mnd // Adding constants will not improve readability for checking the
+	// number of arguments
 	switch len(subtrahends) {
 	case 0:
 		return minuend, nil

@@ -7,16 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIter(t *testing.T) {
-	testIterForwardSig(t)
-	testIterBackwardSig(t)
-	testIterForwardUns(t)
-	testIterBackwardUns(t)
-	testIterForwardPart(t)
-	testIterBackwardPart(t)
-}
-
-func testIterForwardSig(t *testing.T) {
+func TestIterForwardSig(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -31,7 +22,7 @@ func testIterForwardSig(t *testing.T) {
 	require.NotEqual(t, int(begin), reference)
 }
 
-func testIterBackwardSig(t *testing.T) {
+func TestIterBackwardSig(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 
@@ -46,7 +37,7 @@ func testIterBackwardSig(t *testing.T) {
 	require.NotEqual(t, int(begin), reference)
 }
 
-func testIterForwardUns(t *testing.T) {
+func TestIterForwardUns(t *testing.T) {
 	begin := uint8(0)
 	end := uint8(math.MaxUint8)
 
@@ -61,7 +52,7 @@ func testIterForwardUns(t *testing.T) {
 	require.NotEqual(t, int(begin), reference)
 }
 
-func testIterBackwardUns(t *testing.T) {
+func TestIterBackwardUns(t *testing.T) {
 	begin := uint8(math.MaxUint8)
 	end := uint8(0)
 
@@ -76,7 +67,7 @@ func testIterBackwardUns(t *testing.T) {
 	require.NotEqual(t, int(begin), reference)
 }
 
-func testIterForwardPart(t *testing.T) {
+func TestIterForwardPart(t *testing.T) {
 	begin := int8(math.MinInt8)
 	end := int8(math.MaxInt8)
 
@@ -96,7 +87,7 @@ func testIterForwardPart(t *testing.T) {
 	require.Equal(t, breakAt, reference)
 }
 
-func testIterBackwardPart(t *testing.T) {
+func TestIterBackwardPart(t *testing.T) {
 	begin := int8(math.MaxInt8)
 	end := int8(math.MinInt8)
 

@@ -14,12 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdd3(t *testing.T) {
-	testAdd3Sig(t)
-	testAdd3Uns(t)
-}
-
-func testAdd3Sig(t *testing.T) {
+func TestAdd3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -47,7 +42,7 @@ func testAdd3Sig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAdd3Uns(t *testing.T) {
+func TestAdd3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -103,23 +98,11 @@ func TestAdd3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddM(t *testing.T) {
-	testAddMSigArgs1(t)
-	testAddMSigArgs2(t)
-	testAddMSigArgs3(t)
-
-	testAddMUnsArgs1(t)
-	testAddMUnsArgs2(t)
-	testAddMUnsArgs3(t)
-}
-
-func testAddMSigArgs1(t *testing.T) {
+func TestAddMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -141,13 +124,11 @@ func testAddMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMSigArgs2(t *testing.T) {
+func TestAddMSigArgs2(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
 		},
@@ -169,13 +150,11 @@ func testAddMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMSigArgs3(t *testing.T) {
+func TestAddMSigArgs3(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -197,13 +176,11 @@ func testAddMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUnsArgs1(t *testing.T) {
+func TestAddMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -225,13 +202,11 @@ func testAddMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUnsArgs2(t *testing.T) {
+func TestAddMUnsArgs2(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1], nil
 		},
@@ -253,13 +228,11 @@ func testAddMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddMUnsArgs3(t *testing.T) {
+func TestAddMUnsArgs3(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return AddM(args...)
-		},
+		Inspected: AddM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] + args[1] + args[2], nil
 		},
@@ -296,11 +269,7 @@ func TestAddMUnmodify(t *testing.T) {
 }
 
 func TestAddMDataset(t *testing.T) {
-	inspected := func(args ...int8) (int8, error) {
-		return AddM(args...)
-	}
-
-	result, err := dataset.InspectFromFile("testdata/addm", inspected)
+	result, err := dataset.InspectFromFile("testdata/addm", AddM[int8])
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -342,17 +311,12 @@ func TestAddMCollectDataset(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestAddM4Args(t *testing.T) {
+func TestAddM4ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testAddM4ArgsSig(t)
-	testAddM4ArgsUns(t)
-}
-
-func testAddM4ArgsSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return AddM(first, second, third, fourth)
@@ -378,7 +342,12 @@ func testAddM4ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddM4ArgsUns(t *testing.T) {
+func TestAddM4ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return AddM(first, second, third, fourth)
@@ -404,17 +373,12 @@ func testAddM4ArgsUns(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddM5Args(t *testing.T) {
+func TestAddM5ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testAddM5ArgsSig(t)
-	testAddM5ArgsUns(t)
-}
-
-func testAddM5ArgsSig(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return AddM(first, second, third, fourth, fifth)
@@ -440,7 +404,12 @@ func testAddM5ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddM5ArgsUns(t *testing.T) {
+func TestAddM5ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return AddM(first, second, third, fourth, fifth)
@@ -497,12 +466,7 @@ func TestAddMUErrorMissingArguments(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestSub3(t *testing.T) {
-	testSub3Sig(t)
-	testSub3Uns(t)
-}
-
-func testSub3Sig(t *testing.T) {
+func TestSub3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -530,7 +494,7 @@ func testSub3Sig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSub3Uns(t *testing.T) {
+func TestSub3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -586,17 +550,7 @@ func TestSub3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubM(t *testing.T) {
-	testSubMSigArgs1(t)
-	testSubMSigArgs2(t)
-	testSubMSigArgs3(t)
-
-	testSubMUnsArgs1(t)
-	testSubMUnsArgs2(t)
-	testSubMUnsArgs3(t)
-}
-
-func testSubMSigArgs1(t *testing.T) {
+func TestSubMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -624,7 +578,7 @@ func testSubMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMSigArgs2(t *testing.T) {
+func TestSubMSigArgs2(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -652,7 +606,7 @@ func testSubMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMSigArgs3(t *testing.T) {
+func TestSubMSigArgs3(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -680,7 +634,7 @@ func testSubMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMUnsArgs1(t *testing.T) {
+func TestSubMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -708,7 +662,7 @@ func testSubMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMUnsArgs2(t *testing.T) {
+func TestSubMUnsArgs2(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -736,7 +690,7 @@ func testSubMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubMUnsArgs3(t *testing.T) {
+func TestSubMUnsArgs3(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -820,17 +774,12 @@ func TestSubMCollectDataset(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestSubM4Args(t *testing.T) {
+func TestSubM4ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testSubM4ArgsSig(t)
-	testSubM4ArgsUns(t)
-}
-
-func testSubM4ArgsSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return SubM(first, second, third, fourth)
@@ -856,7 +805,12 @@ func testSubM4ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubM4ArgsUns(t *testing.T) {
+func TestSubM4ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return SubM(first, second, third, fourth)
@@ -882,17 +836,12 @@ func testSubM4ArgsUns(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestSubM5Args(t *testing.T) {
+func TestSubM5ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testSubM5ArgsSig(t)
-	testSubM5ArgsUns(t)
-}
-
-func testSubM5ArgsSig(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return SubM(first, second, third, fourth, fifth)
@@ -918,7 +867,12 @@ func testSubM5ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testSubM5ArgsUns(t *testing.T) {
+func TestSubM5ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return SubM(first, second, third, fourth, fifth)
@@ -976,12 +930,7 @@ func TestSubMU(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMul3(t *testing.T) {
-	testMul3Sig(t)
-	testMul3Uns(t)
-}
-
-func testMul3Sig(t *testing.T) {
+func TestMul3Sig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -1009,7 +958,7 @@ func testMul3Sig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMul3Uns(t *testing.T) {
+func TestMul3Uns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1065,23 +1014,11 @@ func TestMul3U(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulM(t *testing.T) {
-	testMulMSigArgs1(t)
-	testMulMSigArgs2(t)
-	testMulMSigArgs3(t)
-
-	testMulMUnsArgs1(t)
-	testMulMUnsArgs2(t)
-	testMulMUnsArgs3(t)
-}
-
-func testMulMSigArgs1(t *testing.T) {
+func TestMulMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -1103,13 +1040,11 @@ func testMulMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMSigArgs2(t *testing.T) {
+func TestMulMSigArgs2(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1], nil
 		},
@@ -1131,13 +1066,11 @@ func testMulMSigArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMSigArgs3(t *testing.T) {
+func TestMulMSigArgs3(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...int8) (int8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[int8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},
@@ -1159,13 +1092,11 @@ func testMulMSigArgs3(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMUnsArgs1(t *testing.T) {
+func TestMulMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0], nil
 		},
@@ -1187,13 +1118,11 @@ func testMulMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMUnsArgs2(t *testing.T) {
+func TestMulMUnsArgs2(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1], nil
 		},
@@ -1215,13 +1144,11 @@ func testMulMUnsArgs2(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulMUnsArgs3(t *testing.T) {
+func TestMulMUnsArgs3(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
-		Inspected: func(args ...uint8) (uint8, error) {
-			return MulM(args...)
-		},
+		Inspected: MulM[uint8],
 		Reference: func(args ...int64) (int64, error) {
 			return args[0] * args[1] * args[2], nil
 		},
@@ -1258,11 +1185,7 @@ func TestMulMUnmodify(t *testing.T) {
 }
 
 func TestMulMDataset(t *testing.T) {
-	inspected := func(args ...int8) (int8, error) {
-		return MulM(args...)
-	}
-
-	result, err := dataset.InspectFromFile("testdata/mulm", inspected)
+	result, err := dataset.InspectFromFile("testdata/mulm", MulM[int8])
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1316,17 +1239,12 @@ func TestMulMCollectDataset(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestMulM4Args(t *testing.T) {
+func TestMulM4ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testMulM4ArgsSig(t)
-	testMulM4ArgsUns(t)
-}
-
-func testMulM4ArgsSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return MulM(first, second, third, fourth)
@@ -1352,7 +1270,12 @@ func testMulM4ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulM4ArgsUns(t *testing.T) {
+func TestMulM4ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return MulM(first, second, third, fourth)
@@ -1378,17 +1301,12 @@ func testMulM4ArgsUns(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestMulM5Args(t *testing.T) {
+func TestMulM5ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testMulM5ArgsSig(t)
-	testMulM5ArgsUns(t)
-}
-
-func testMulM5ArgsSig(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return MulM(first, second, third, fourth, fifth)
@@ -1414,7 +1332,12 @@ func testMulM5ArgsSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testMulM5ArgsUns(t *testing.T) {
+func TestMulM5ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return MulM(first, second, third, fourth, fifth)
@@ -1471,17 +1394,7 @@ func TestMulMUError(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDivM(t *testing.T) {
-	testDivMSigArgs1(t)
-	testDivMSigArgs2(t)
-	testDivMSigArgs3(t)
-
-	testDivMUnsArgs1(t)
-	testDivMUnsArgs2(t)
-	testDivMUnsArgs3(t)
-}
-
-func testDivMSigArgs1(t *testing.T) {
+func TestDivMSigArgs1(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 1,
 
@@ -1509,7 +1422,7 @@ func testDivMSigArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testDivMSigArgs2(t *testing.T) {
+func TestDivMSigArgs2(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 2,
 
@@ -1541,7 +1454,7 @@ func testDivMSigArgs2(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMSigArgs3(t *testing.T) {
+func TestDivMSigArgs3(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -1573,7 +1486,7 @@ func testDivMSigArgs3(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMUnsArgs1(t *testing.T) {
+func TestDivMUnsArgs1(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 1,
 
@@ -1601,7 +1514,7 @@ func testDivMUnsArgs1(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testDivMUnsArgs2(t *testing.T) {
+func TestDivMUnsArgs2(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 2,
 
@@ -1633,7 +1546,7 @@ func testDivMUnsArgs2(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivMUnsArgs3(t *testing.T) {
+func TestDivMUnsArgs3(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -1728,17 +1641,12 @@ func TestDivMCollectDataset(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestDivM4Args(t *testing.T) {
+func TestDivM4ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testDivM4ArgsSig(t)
-	testDivM4ArgsUns(t)
-}
-
-func testDivM4ArgsSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: func(first, second, third, fourth int8) (int8, error) {
 			return DivM(first, second, third, fourth)
@@ -1768,7 +1676,12 @@ func testDivM4ArgsSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivM4ArgsUns(t *testing.T) {
+func TestDivM4ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts4[uint8]{
 		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
 			return DivM(first, second, third, fourth)
@@ -1798,17 +1711,12 @@ func testDivM4ArgsUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestDivM5Args(t *testing.T) {
+func TestDivM5ArgsSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testDivM5ArgsSig(t)
-	testDivM5ArgsUns(t)
-}
-
-func testDivM5ArgsSig(t *testing.T) {
 	opts := inspect.Opts5[int8]{
 		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
 			return DivM(first, second, third, fourth, fifth)
@@ -1838,7 +1746,12 @@ func testDivM5ArgsSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testDivM5ArgsUns(t *testing.T) {
+func TestDivM5ArgsUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts5[uint8]{
 		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
 			return DivM(first, second, third, fourth, fifth)
@@ -1868,12 +1781,7 @@ func testDivM5ArgsUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestPow10(t *testing.T) {
-	testPow10Manually(t)
-	testPow10Diff(t)
-}
-
-func testPow10Manually(t *testing.T) {
+func TestPow10Manually(t *testing.T) {
 	product, err := Pow10[uint64](-3)
 	require.NoError(t, err)
 	require.Equal(t, uint64(0), product)
@@ -1915,7 +1823,7 @@ func testPow10Manually(t *testing.T) {
 	require.Equal(t, uint64(0), product)
 }
 
-func testPow10Diff(t *testing.T) {
+func TestPow10Diff(t *testing.T) {
 	for power := 1; power <= 19; power++ {
 		previous, err := Pow10[uint64](power - 1)
 		require.NoError(t, err, "power: %v", power)

@@ -40,17 +40,12 @@ func TestIsValid5(t *testing.T) {
 	require.Error(t, opts.IsValid())
 }
 
-func TestDo5(t *testing.T) {
+func TestDo5Sig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testDo5Sig(t)
-	testDo5Uns(t)
-}
-
-func testDo5Sig(t *testing.T) {
 	opts := Opts5[int8]{
 		Inspected: testInspected5Sig,
 		Reference: testReference5,
@@ -71,7 +66,12 @@ func testDo5Sig(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func testDo5Uns(t *testing.T) {
+func TestDo5Uns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := Opts5[uint8]{
 		Inspected: testInspected5Uns,
 		Reference: testReference5,
@@ -99,12 +99,7 @@ func TestDo5Error(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDo5NegativeConclusion(t *testing.T) {
-	testDo5NegativeConclusionSig(t)
-	testDo5NegativeConclusionUns(t)
-}
-
-func testDo5NegativeConclusionSig(t *testing.T) {
+func TestDo5NegativeConclusionSig(t *testing.T) {
 	errorExpected := func(first, second, third, fourth, fifth int8) (int8, error) {
 		return first + second + third + fourth + fifth, nil
 	}
@@ -161,7 +156,7 @@ func testDo5NegativeConclusionSig(t *testing.T) {
 	require.NotEmpty(t, result.Args)
 }
 
-func testDo5NegativeConclusionUns(t *testing.T) {
+func TestDo5NegativeConclusionUns(t *testing.T) {
 	errorExpected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
 		return first + second + third + fourth + fifth, nil
 	}

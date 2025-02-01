@@ -9,12 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMin(t *testing.T) {
-	testMinSig(t)
-	testMinUns(t)
-}
-
-func testMinSig(t *testing.T) {
+func TestMinSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MinInt8 {
 			require.True(t, Min(number))
@@ -25,7 +20,7 @@ func testMinSig(t *testing.T) {
 	}
 }
 
-func testMinUns(t *testing.T) {
+func TestMinUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == 0 {
 			require.True(t, Min(number))
@@ -36,12 +31,7 @@ func testMinUns(t *testing.T) {
 	}
 }
 
-func TestMax(t *testing.T) {
-	testMaxSig(t)
-	testMaxUns(t)
-}
-
-func testMaxSig(t *testing.T) {
+func TestMaxSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == math.MaxInt8 {
 			require.True(t, Max(number))
@@ -52,7 +42,7 @@ func testMaxSig(t *testing.T) {
 	}
 }
 
-func testMaxUns(t *testing.T) {
+func TestMaxUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		if number == math.MaxUint8 {
 			require.True(t, Max(number))
@@ -63,12 +53,7 @@ func testMaxUns(t *testing.T) {
 	}
 }
 
-func TestMinusOne(t *testing.T) {
-	testMinusOneSig(t)
-	testMinusOneUns(t)
-}
-
-func testMinusOneSig(t *testing.T) {
+func TestMinusOneSig(t *testing.T) {
 	for number := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
 		if number == -1 {
 			require.True(t, MinusOne(number))
@@ -79,7 +64,7 @@ func testMinusOneSig(t *testing.T) {
 	}
 }
 
-func testMinusOneUns(t *testing.T) {
+func TestMinusOneUns(t *testing.T) {
 	for number := range iterator.Iter[uint8](0, math.MaxUint8) {
 		require.False(t, MinusOne(number))
 	}

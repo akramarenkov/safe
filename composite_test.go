@@ -11,12 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAddSub(t *testing.T) {
-	testAddSubSig(t)
-	testAddSubUns(t)
-}
-
-func testAddSubSig(t *testing.T) {
+func TestAddSubSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -44,7 +39,7 @@ func testAddSubSig(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func testAddSubUns(t *testing.T) {
+func TestAddSubUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -72,12 +67,7 @@ func testAddSubUns(t *testing.T) {
 	require.Zero(t, result.ReferenceFaults)
 }
 
-func TestAddDiv(t *testing.T) {
-	testAddDivSig(t)
-	testAddDivUns(t)
-}
-
-func testAddDivSig(t *testing.T) {
+func TestAddDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -109,7 +99,7 @@ func testAddDivSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddDivUns(t *testing.T) {
+func TestAddDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -141,12 +131,7 @@ func testAddDivUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestAddDivRem(t *testing.T) {
-	testAddDivRemSig(t)
-	testAddDivRemUns(t)
-}
-
-func testAddDivRemSig(t *testing.T) {
+func TestAddDivRemSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -178,7 +163,7 @@ func testAddDivRemSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddDivRemUns(t *testing.T) {
+func TestAddDivRemUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -242,12 +227,7 @@ func TestAddDivU(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestSubDiv(t *testing.T) {
-	testSubDivSig(t)
-	testSubDivUns(t)
-}
-
-func testSubDivSig(t *testing.T) {
+func TestSubDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -279,7 +259,7 @@ func testSubDivSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testSubDivUns(t *testing.T) {
+func TestSubDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -311,12 +291,7 @@ func testSubDivUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestSubDivRem(t *testing.T) {
-	testSubDivRemSig(t)
-	testSubDivRemUns(t)
-}
-
-func testSubDivRemSig(t *testing.T) {
+func TestSubDivRemSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -348,7 +323,7 @@ func testSubDivRemSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testSubDivRemUns(t *testing.T) {
+func TestSubDivRemUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
@@ -412,12 +387,7 @@ func TestSubDivU(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestAddSubDivDataset(t *testing.T) {
-	testAddSubDivDatasetSig(t)
-	testAddSubDivDatasetUns(t)
-}
-
-func testAddSubDivDatasetSig(t *testing.T) {
+func TestAddSubDivDatasetSig(t *testing.T) {
 	inspected := func(args ...int8) (int8, error) {
 		return AddSubDiv(args[0], args[1], args[2], args[3])
 	}
@@ -438,7 +408,7 @@ func testAddSubDivDatasetSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddSubDivDatasetUns(t *testing.T) {
+func TestAddSubDivDatasetUns(t *testing.T) {
 	inspected := func(args ...uint8) (uint8, error) {
 		return AddSubDiv(args[0], args[1], args[2], args[3])
 	}
@@ -459,16 +429,11 @@ func testAddSubDivDatasetUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestAddSubDivCollectDataset(t *testing.T) {
+func TestAddSubDivCollectDatasetSig(t *testing.T) {
 	if os.Getenv(env.CollectDataset) == "" {
 		t.SkipNow()
 	}
 
-	testAddSubDivCollectDatasetSig(t)
-	testAddSubDivCollectDatasetUns(t)
-}
-
-func testAddSubDivCollectDatasetSig(t *testing.T) {
 	reference := func(args ...int64) (int64, error) {
 		if args[3] == 0 {
 			return 0, ErrDivisionByZero
@@ -488,7 +453,11 @@ func testAddSubDivCollectDatasetSig(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func testAddSubDivCollectDatasetUns(t *testing.T) {
+func TestAddSubDivCollectDatasetUns(t *testing.T) {
+	if os.Getenv(env.CollectDataset) == "" {
+		t.SkipNow()
+	}
+
 	reference := func(args ...int64) (int64, error) {
 		if args[3] == 0 {
 			return 0, ErrDivisionByZero
@@ -508,17 +477,12 @@ func testAddSubDivCollectDatasetUns(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestAddSubDivFull(t *testing.T) {
+func TestAddSubDivFullSig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	testAddSubDivFullSig(t)
-	testAddSubDivFullUns(t)
-}
-
-func testAddSubDivFullSig(t *testing.T) {
 	opts := inspect.Opts4[int8]{
 		Inspected: AddSubDiv[int8],
 		Reference: func(first, second, third, fourth int64) (int64, error) {
@@ -546,7 +510,12 @@ func testAddSubDivFullSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddSubDivFullUns(t *testing.T) {
+func TestAddSubDivFullUns(t *testing.T) {
+	// It is impossible to test in automatic mode in an acceptable time
+	if os.Getenv(env.EnableLongTest) == "" {
+		t.SkipNow()
+	}
+
 	opts := inspect.Opts4[uint8]{
 		Inspected: AddSubDiv[uint8],
 		Reference: func(first, second, third, fourth int64) (int64, error) {
@@ -574,12 +543,7 @@ func testAddSubDivFullUns(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func TestAddOneSubDiv(t *testing.T) {
-	testAddOneSubDivSig(t)
-	testAddOneSubDivUns(t)
-}
-
-func testAddOneSubDivSig(t *testing.T) {
+func TestAddOneSubDivSig(t *testing.T) {
 	opts := inspect.Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
 
@@ -611,7 +575,7 @@ func testAddOneSubDivSig(t *testing.T) {
 	require.NotZero(t, result.ReferenceFaults)
 }
 
-func testAddOneSubDivUns(t *testing.T) {
+func TestAddOneSubDivUns(t *testing.T) {
 	opts := inspect.Opts[uint8, uint8, int64]{
 		LoopsQuantity: 3,
 
