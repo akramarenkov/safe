@@ -51,17 +51,11 @@ func Add3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 
 // Adds up several integers and detects whether an overflow has occurred or not.
 //
-// The function modifies the variadic input arguments. By default, a copy of
-// the variadic input arguments is not created and, if a slice is passed, it will be
-// modified. If a slice is passed as an input argument and it should not be modified,
-// then the unmodify argument must be set to true. In other cases, unmodify can be left
-// as false.
-//
 // Slower than the [Add] function about 220%, than the [Add3] function about 65%. And
 // overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
-func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error) {
+func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 	//nolint:mnd // Adding constants will not improve readability for checking the
 	// number of arguments
 	switch len(addends) {
@@ -71,11 +65,11 @@ func AddM[Type constraints.Integer](unmodify bool, addends ...Type) (Type, error
 		return addends[0], nil
 	case 2:
 		return Add(addends[0], addends[1])
+	case 3:
+		return Add3(addends[0], addends[1], addends[2])
 	}
 
-	if unmodify && len(addends) != 3 {
-		addends = clone.Slice(addends)
-	}
+	addends = clone.Slice(addends)
 
 	sorted := false
 
@@ -171,27 +165,21 @@ func Sub3U[Type constraints.Unsigned](minuend, subtrahend, deductible Type) (Typ
 // Subtracts several integers (subtrahends from minuend) and detects whether an
 // overflow has occurred or not.
 //
-// The function modifies the variadic input arguments. By default, a copy of
-// the variadic input arguments is not created and, if a slice is passed, it will be
-// modified. If a slice is passed as an input argument and it should not be modified,
-// then the unmodify argument must be set to true. In other cases, unmodify can be left
-// as false.
-//
 // Slower than the [Sub] function about 160%, than the [Sub3] function about 40%. And
 // overall very slow, be careful.
 //
 // In case of overflow, an error is returned.
-func SubM[Type constraints.Integer](unmodify bool, minuend Type, subtrahends ...Type) (Type, error) {
+func SubM[Type constraints.Integer](minuend Type, subtrahends ...Type) (Type, error) {
 	switch len(subtrahends) {
 	case 0:
 		return minuend, nil
 	case 1:
 		return Sub(minuend, subtrahends[0])
+	case 2:
+		return Sub3(minuend, subtrahends[0], subtrahends[1])
 	}
 
-	if unmodify && len(subtrahends) != 2 {
-		subtrahends = clone.Slice(subtrahends)
-	}
+	subtrahends = clone.Slice(subtrahends)
 
 	for len(subtrahends) != 2 {
 		found := false
@@ -291,16 +279,10 @@ func Mul3U[Type constraints.Unsigned](first, second, third Type) (Type, error) {
 
 // Multiplies several integers and detects whether an overflow has occurred or not.
 //
-// The function modifies the variadic input arguments. By default, a copy of
-// the variadic input arguments is not created and, if a slice is passed, it will be
-// modified. If a slice is passed as an input argument and it should not be modified,
-// then the unmodify argument must be set to true. In other cases, unmodify can be left
-// as false.
-//
 // Slower than the [Mul] function about 10%. And overall very slow, be careful.
 //
 // In case of overflow or missing arguments, an error is returned.
-func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error) {
+func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
 	//nolint:mnd // Adding constants will not improve readability for checking the
 	// number of arguments
 	switch len(factors) {
@@ -314,9 +296,7 @@ func MulM[Type constraints.Integer](unmodify bool, factors ...Type) (Type, error
 		return Mul3(factors[0], factors[1], factors[2])
 	}
 
-	if unmodify {
-		factors = clone.Slice(factors)
-	}
+	factors = clone.Slice(factors)
 
 	sortMulM(factors)
 

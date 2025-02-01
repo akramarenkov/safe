@@ -207,7 +207,7 @@ func BenchmarkAddM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = AddM(false, first, second)
+				result, _ = AddM(first, second)
 			}
 		}
 	}
@@ -226,7 +226,7 @@ func BenchmarkAddM3Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				for _, third := range level3 {
-					result, _ = AddM(false, first, second, third)
+					result, _ = AddM(first, second, third)
 				}
 			}
 		}
@@ -262,14 +262,6 @@ func BenchmarkAddMReference(b *testing.B) {
 }
 
 func BenchmarkAddM(b *testing.B) {
-	benchmarkAddM(b, false)
-}
-
-func BenchmarkAddMUnmodify(b *testing.B) {
-	benchmarkAddM(b, true)
-}
-
-func benchmarkAddM(b *testing.B, unmodify bool) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanAddM()
@@ -284,7 +276,6 @@ func benchmarkAddM(b *testing.B, unmodify bool) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = AddM(
-									unmodify,
 									first,
 									second,
 									third,
@@ -382,7 +373,6 @@ func BenchmarkAddMOnlyUnsigned(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = AddM(
-									false,
 									first,
 									second,
 									third,
@@ -634,7 +624,7 @@ func BenchmarkSubM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = SubM(false, first, second)
+				result, _ = SubM(first, second)
 			}
 		}
 	}
@@ -653,7 +643,7 @@ func BenchmarkSubM3Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				for _, third := range level3 {
-					result, _ = SubM(false, first, second, third)
+					result, _ = SubM(first, second, third)
 				}
 			}
 		}
@@ -689,14 +679,6 @@ func BenchmarkSubMReference(b *testing.B) {
 }
 
 func BenchmarkSubM(b *testing.B) {
-	benchmarkSubM(b, false)
-}
-
-func BenchmarkSubMUnmodify(b *testing.B) {
-	benchmarkSubM(b, true)
-}
-
-func benchmarkSubM(b *testing.B, unmodify bool) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanSubM()
@@ -711,7 +693,6 @@ func benchmarkSubM(b *testing.B, unmodify bool) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = SubM(
-									unmodify,
 									first,
 									second,
 									third,
@@ -809,7 +790,6 @@ func BenchmarkSubMOnlyUnsigned(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = SubM(
-									false,
 									first,
 									second,
 									third,
@@ -1061,7 +1041,7 @@ func BenchmarkMulM2Args(b *testing.B) {
 	for range b.N {
 		for _, first := range level1 {
 			for _, second := range level2 {
-				result, _ = MulM(false, first, second)
+				result, _ = MulM(first, second)
 			}
 		}
 	}
@@ -1080,7 +1060,7 @@ func BenchmarkMulM3Args(b *testing.B) {
 		for _, first := range level1 {
 			for _, second := range level2 {
 				for _, third := range level3 {
-					result, _ = MulM(false, first, second, third)
+					result, _ = MulM(first, second, third)
 				}
 			}
 		}
@@ -1116,14 +1096,6 @@ func BenchmarkMulMReference(b *testing.B) {
 }
 
 func BenchmarkMulM(b *testing.B) {
-	benchmarkMulM(b, false)
-}
-
-func BenchmarkMulMUnmodify(b *testing.B) {
-	benchmarkMulM(b, true)
-}
-
-func benchmarkMulM(b *testing.B, unmodify bool) {
 	result := int8(0)
 
 	level1, level2, level3, level4, level5, level6 := benchSpanMulM()
@@ -1138,7 +1110,6 @@ func benchmarkMulM(b *testing.B, unmodify bool) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = MulM(
-									unmodify,
 									first,
 									second,
 									third,
@@ -1218,7 +1189,6 @@ func BenchmarkMulMOnlyUnsigned(b *testing.B) {
 						for _, fifth := range level5 {
 							for _, sixth := range level6 {
 								result, _ = MulM(
-									false,
 									first,
 									second,
 									third,
