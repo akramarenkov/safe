@@ -142,8 +142,8 @@ func (clctr *Collector[Type]) isCollected() bool {
 }
 
 func (clctr *Collector[Type]) fillArgs() error {
-	for _, filler := range clctr.Fillers {
-		completed, err := filler.Fill(clctr.args, clctr.args64)
+	for _, flr := range clctr.Fillers {
+		completed, err := flr.Fill(clctr.args, clctr.args64)
 		if err != nil {
 			return err
 		}

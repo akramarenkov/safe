@@ -225,12 +225,12 @@ func TestLoop(t *testing.T) {
 func testLoopSig(t *testing.T) {
 	const levels = 3
 
-	incrementor, err := incrementor.New[int8](levels, math.MinInt8, math.MaxInt8)
+	incr, err := incrementor.New[int8](levels, math.MinInt8, math.MaxInt8)
 	require.NoError(t, err)
 
 	do := func(args ...int8) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
@@ -244,12 +244,12 @@ func testLoopSig(t *testing.T) {
 func testLoopUns(t *testing.T) {
 	const levels = 3
 
-	incrementor, err := incrementor.New[uint8](levels, 0, math.MaxUint8)
+	incr, err := incrementor.New[uint8](levels, 0, math.MaxUint8)
 	require.NoError(t, err)
 
 	do := func(args ...uint8) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
@@ -267,12 +267,12 @@ func testLoopSpanSig(t *testing.T) {
 		end    = 1
 	)
 
-	incrementor, err := incrementor.New[int8](levels, begin, end)
+	incr, err := incrementor.New[int8](levels, begin, end)
 	require.NoError(t, err)
 
 	do := func(args ...int8) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
@@ -294,12 +294,12 @@ func testLoopSpanUns(t *testing.T) {
 		end    = 3
 	)
 
-	incrementor, err := incrementor.New[uint8](levels, begin, end)
+	incr, err := incrementor.New[uint8](levels, begin, end)
 	require.NoError(t, err)
 
 	do := func(args ...uint8) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
@@ -317,12 +317,12 @@ func testLoopSpanUns(t *testing.T) {
 func testLoopFloatU16(t *testing.T) {
 	const levels = 1
 
-	incrementor, err := incrementor.New[uint16](levels, 0, math.MaxUint16)
+	incr, err := incrementor.New[uint16](levels, 0, math.MaxUint16)
 	require.NoError(t, err)
 
 	do := func(args ...uint16) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
@@ -341,12 +341,12 @@ func TestLoopFloatU32(t *testing.T) {
 
 	const levels = 1
 
-	incrementor, err := incrementor.New[uint32](levels, 0, math.MaxUint32)
+	incr, err := incrementor.New[uint32](levels, 0, math.MaxUint32)
 	require.NoError(t, err)
 
 	do := func(args ...uint32) bool {
 		// duplication of conditions is done for performance reasons
-		if err := incrementor.Test(args...); err != nil {
+		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
 
