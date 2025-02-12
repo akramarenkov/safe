@@ -1,6 +1,6 @@
 module github.com/akramarenkov/safe
 
-go 1.23
+go 1.24
 
 require (
 	github.com/akramarenkov/alter v0.0.4
