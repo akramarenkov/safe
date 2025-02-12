@@ -6,19 +6,9 @@ type USI8 interface {
 	~int8 | ~uint8
 }
 
-// Constraints by 16-bit integer types.
-type USI16 interface {
-	~int16 | ~uint16
-}
-
-// Constraints by 32-bit integer types.
-type USI32 interface {
-	~int32 | ~uint32
-}
-
 // Constraints by up to 32-bit integer types.
 type UpToUSI32 interface {
-	USI8 | USI16 | USI32
+	USI8 | ~int16 | ~uint16 | ~int32 | ~uint32
 }
 
 // Constraints by 64-bit signed integer and floating point types.
