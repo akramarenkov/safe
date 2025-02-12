@@ -69,7 +69,7 @@ func InspectFromFile[Type types.UpToUSI32](
 	return insp.Inspect()
 }
 
-// Performs inspecting.
+// Performs inspecting with dataset.
 func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 	if err := insp.IsValid(); err != nil {
 		return types.Result[Type, Type, int64]{}, err
