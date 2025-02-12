@@ -62,17 +62,12 @@ func BenchmarkDataset(b *testing.B) {
 		},
 	}
 
-	inspector := Inspector[int8]{
-		Inspected: testInspectedSig,
-		Reader:    buffer,
-	}
-
 	for range b.N {
 		if err := collector.Collect(); err != nil {
 			require.NoError(b, err)
 		}
 
-		result, err := inspector.Inspect()
+		result, err := Inspect(buffer, testInspectedSig)
 		if err != nil {
 			require.NoError(b, err)
 		}

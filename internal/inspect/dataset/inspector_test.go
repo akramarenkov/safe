@@ -13,28 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestInspectorIsValid(t *testing.T) {
-	inspector := Inspector[int8]{
-		Inspected: func(...int8) (int8, error) { return 0, nil },
-		Reader:    bytes.NewBuffer(nil),
-	}
-
-	require.NoError(t, inspector.IsValid())
-
-	inspector = Inspector[int8]{
-		Inspected: func(...int8) (int8, error) { return 0, nil },
-	}
-
-	require.Error(t, inspector.IsValid())
-
-	inspector = Inspector[int8]{
-		Reader: bytes.NewBuffer(nil),
-	}
-
-	require.Error(t, inspector.IsValid())
-}
-
-func TestInspectorSig(t *testing.T) {
+func TestInspectSig(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
@@ -43,12 +22,7 @@ func TestInspectorSig(t *testing.T) {
 		}
 	}
 
-	inspector := Inspector[int8]{
-		Inspected: testInspectedSig,
-		Reader:    buffer,
-	}
-
-	result, err := inspector.Inspect()
+	result, err := Inspect(buffer, testInspectedSig)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -63,7 +37,7 @@ func TestInspectorSig(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestInspectorUns(t *testing.T) {
+func TestInspectUns(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	for first := range iterator.Iter[uint8](0, math.MaxUint8) {
@@ -72,12 +46,7 @@ func TestInspectorUns(t *testing.T) {
 		}
 	}
 
-	inspector := Inspector[uint8]{
-		Inspected: testInspectedUns,
-		Reader:    buffer,
-	}
-
-	result, err := inspector.Inspect()
+	result, err := Inspect(buffer, testInspectedUns)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -92,62 +61,65 @@ func TestInspectorUns(t *testing.T) {
 	require.NotZero(t, result.Overflows)
 }
 
-func TestInspectorError(t *testing.T) {
-	inspector := Inspector[int8]{}
+func TestInspectError(t *testing.T) {
+	inspected := func(...int8) (int8, error) { return 0, nil }
 
-	_, err := inspector.Inspect()
+	result, err := Inspect(bytes.NewBuffer(nil), inspected)
+	require.NoError(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Inspect(nil, inspected)
 	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Inspect[int8](bytes.NewBuffer(nil), nil)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Inspect[int8](nil, nil)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 }
 
-func TestInspectorConvertErrorSig(t *testing.T) {
+func TestInspectConvertErrorSig(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
-
-	inspector := Inspector[int8]{
-		Inspected: testInspectedSig,
-		Reader:    buffer,
-	}
 
 	buffer.Reset()
 	buffer.WriteString("false 2")
 
-	_, err := inspector.Inspect()
+	_, err := Inspect(buffer, testInspectedSig)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("flase 2 1 1")
 
-	_, err = inspector.Inspect()
+	_, err = Inspect(buffer, testInspectedSig)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("false true 1 1")
 
-	_, err = inspector.Inspect()
+	_, err = Inspect(buffer, testInspectedSig)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("false 2 true 1")
 
-	_, err = inspector.Inspect()
+	_, err = Inspect(buffer, testInspectedSig)
 	require.Error(t, err)
 }
 
-func TestInspectorConvertErrorUns(t *testing.T) {
+func TestInspectConvertErrorUns(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	inspector := Inspector[uint8]{
-		Inspected: testInspectedUns,
-		Reader:    buffer,
-	}
-
 	buffer.Reset()
 	buffer.WriteString("false 2 true 1")
 
-	_, err := inspector.Inspect()
+	_, err := Inspect(buffer, testInspectedUns)
 	require.Error(t, err)
 }
 
-func TestInspectorNegativeConclusion(t *testing.T) {
+func TestInspectNegativeConclusion(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	errorExpected := func(args ...int8) (int8, error) {
@@ -184,45 +156,34 @@ func TestInspectorNegativeConclusion(t *testing.T) {
 
 	collect(testReference)
 
-	inspector := Inspector[int8]{
-		Inspected: errorExpected,
-		Reader:    buffer,
-	}
-
-	result, err := inspector.Inspect()
+	result, err := Inspect(buffer, errorExpected)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(testReference)
 
-	inspector.Inspected = unexpectedError
-
-	result, err = inspector.Inspect()
+	result, err = Inspect(buffer, unexpectedError)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(testReference)
 
-	inspector.Inspected = notEqual
-
-	result, err = inspector.Inspect()
+	result, err = Inspect(buffer, notEqual)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(referenceFault)
 
-	inspector.Inspected = testInspectedSig
-
-	result, err = inspector.Inspect()
+	result, err = Inspect(buffer, testInspectedSig)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 }
 
-func TestInspectorFileError(t *testing.T) {
+func TestInspectFromFileError(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "dataset")
 
 	_, err := InspectFromFile(filePath, testInspectedSig)

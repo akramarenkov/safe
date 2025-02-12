@@ -16,12 +16,11 @@ import (
 	"github.com/akramarenkov/reusable"
 )
 
-// Options of inspecting. A inspected function and reader must be specified.
-type Inspector[Type types.UpToUSI32] struct {
+type inspector[Type types.UpToUSI32] struct {
 	// Inspected function
-	Inspected func(args ...Type) (Type, error)
+	inspected func(args ...Type) (Type, error)
 	// Reader associated with dataset source
-	Reader io.Reader
+	reader io.Reader
 
 	// Minimum and maximum value for specified type
 	minimum int64
@@ -36,19 +35,6 @@ type Inspector[Type types.UpToUSI32] struct {
 	result types.Result[Type, Type, int64]
 }
 
-// Validates options. A inspected function and reader must be specified.
-func (insp Inspector[Type]) IsValid() error {
-	if insp.Inspected == nil {
-		return inspect.ErrInspectedNotSpecified
-	}
-
-	if insp.Reader == nil {
-		return ErrReaderNotSpecified
-	}
-
-	return nil
-}
-
 // Performs inspecting with dataset from file.
 func InspectFromFile[Type types.UpToUSI32](
 	path string,
@@ -61,25 +47,35 @@ func InspectFromFile[Type types.UpToUSI32](
 
 	defer file.Close()
 
-	insp := Inspector[Type]{
-		Inspected: inspected,
-		Reader:    file,
-	}
-
-	return insp.Inspect()
+	return Inspect(file, inspected)
 }
 
-// Performs inspecting with dataset.
-func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
-	if err := insp.IsValid(); err != nil {
-		return types.Result[Type, Type, int64]{}, err
+// Performs inspecting with dataset from reader.
+func Inspect[Type types.UpToUSI32](
+	reader io.Reader,
+	inspected func(args ...Type) (Type, error),
+) (types.Result[Type, Type, int64], error) {
+	if reader == nil {
+		return types.Result[Type, Type, int64]{}, ErrReaderNotSpecified
 	}
 
-	insp.minimum, insp.maximum = inspect.ConvSpan[Type, int64]()
+	if inspected == nil {
+		return types.Result[Type, Type, int64]{}, inspect.ErrInspectedNotSpecified
+	}
 
-	insp.args = reusable.New[Type](0)
-	insp.argsDup = reusable.New[Type](0)
-	insp.fields = reusable.New[[]byte](0)
+	minimum, maximum := inspect.ConvSpan[Type, int64]()
+
+	insp := &inspector[Type]{
+		inspected: inspected,
+		reader:    reader,
+
+		minimum: minimum,
+		maximum: maximum,
+
+		args:    reusable.New[Type](0),
+		argsDup: reusable.New[Type](0),
+		fields:  reusable.New[[]byte](0),
+	}
 
 	if err := insp.main(); err != nil {
 		return types.Result[Type, Type, int64]{}, err
@@ -88,8 +84,8 @@ func (insp Inspector[Type]) Inspect() (types.Result[Type, Type, int64], error) {
 	return insp.result, nil
 }
 
-func (insp *Inspector[Type]) main() error {
-	scanner := bufio.NewScanner(insp.Reader)
+func (insp *inspector[Type]) main() error {
+	scanner := bufio.NewScanner(insp.reader)
 
 	for scanner.Scan() {
 		fields := abytes.Split(scanner.Bytes(), []byte(" "), insp.fields.Get)
@@ -107,7 +103,7 @@ func (insp *Inspector[Type]) main() error {
 	return scanner.Err()
 }
 
-func (insp *Inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, error) {
+func (insp *inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, error) {
 	if len(fields) <= referenceFieldsQuantity {
 		return false, 0, nil, ErrNotEnoughDataInItem
 	}
@@ -158,11 +154,11 @@ func parseArg[Type types.UpToUSI32](field string) (Type, error) {
 	return Type(arg), nil
 }
 
-func (insp *Inspector[Type]) process(fault bool, reference int64, args ...Type) bool {
+func (insp *inspector[Type]) process(fault bool, reference int64, args ...Type) bool {
 	// Protection against changes args from the inspected function
 	copy(insp.argsDup.Get(len(args)), args)
 
-	actual, err := insp.Inspected(insp.argsDup.Get(0)...)
+	actual, err := insp.inspected(insp.argsDup.Get(0)...)
 
 	if fault {
 		if err == nil {
