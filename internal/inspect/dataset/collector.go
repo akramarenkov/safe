@@ -10,7 +10,8 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/intspec"
+
+	"github.com/akramarenkov/intspec"
 )
 
 // Options of collecting. A reference function and writer must be specified.

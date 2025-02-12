@@ -1,13 +1,14 @@
 module github.com/akramarenkov/safe
 
-go 1.24
+go 1.24.0
 
 require (
 	github.com/akramarenkov/alter v0.0.4
+	github.com/akramarenkov/intspec v0.0.2
 	github.com/akramarenkov/reusable v0.1.4
 	github.com/akramarenkov/wrecker v0.1.3
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
+	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac
 )
 
 require (

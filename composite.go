@@ -1,9 +1,9 @@
 package safe
 
 import (
-	"github.com/akramarenkov/safe/intspec"
-	"github.com/akramarenkov/safe/is"
+	"github.com/akramarenkov/safe/internal/is"
 
+	"github.com/akramarenkov/intspec"
 	"golang.org/x/exp/constraints"
 )
 

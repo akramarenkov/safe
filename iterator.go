@@ -3,8 +3,7 @@ package safe
 import (
 	"iter"
 
-	"github.com/akramarenkov/safe/intspec"
-
+	"github.com/akramarenkov/intspec"
 	"golang.org/x/exp/constraints"
 )
 

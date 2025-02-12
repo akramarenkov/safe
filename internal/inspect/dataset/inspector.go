@@ -9,10 +9,10 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/types"
-	"github.com/akramarenkov/safe/intspec"
-	"github.com/akramarenkov/safe/is"
+	"github.com/akramarenkov/safe/internal/is"
 
 	abytes "github.com/akramarenkov/alter/bytes"
+	"github.com/akramarenkov/intspec"
 	"github.com/akramarenkov/reusable"
 )
 
