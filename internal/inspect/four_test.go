@@ -9,42 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsValid4(t *testing.T) {
-	opts := Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return first + second + third + fourth, nil
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first + second + third + fourth, nil
-		},
-	}
-
-	require.NoError(t, opts.IsValid())
-
-	opts = Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return first + second + third + fourth, nil
-		},
-	}
-
-	require.Error(t, opts.IsValid())
-
-	opts = Opts4[int8]{
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first + second + third + fourth, nil
-		},
-	}
-
-	require.Error(t, opts.IsValid())
-}
-
 func TestDo4Sig(t *testing.T) {
-	opts := Opts4[int8]{
-		Inspected: testInspected4Sig,
-		Reference: testReference4,
-	}
-
-	result, err := opts.Do()
+	result, err := Do4(testInspected4Sig, testReference4)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -60,12 +26,7 @@ func TestDo4Sig(t *testing.T) {
 }
 
 func TestDo4Uns(t *testing.T) {
-	opts := Opts4[uint8]{
-		Inspected: testInspected4Uns,
-		Reference: testReference4,
-	}
-
-	result, err := opts.Do()
+	result, err := Do4(testInspected4Uns, testReference4)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -81,10 +42,25 @@ func TestDo4Uns(t *testing.T) {
 }
 
 func TestDo4Error(t *testing.T) {
-	opts := Opts4[int8]{}
+	inspected := func(_, _, _, _ int8) (int8, error) {
+		return 0, nil
+	}
 
-	_, err := opts.Do()
+	reference := func(_, _, _, _ int64) (int64, error) {
+		return 0, nil
+	}
+
+	result, err := Do4(inspected, nil)
 	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Do4[int8](nil, reference)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Do4[int8](nil, nil)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 }
 
 func TestDo4NegativeConclusionSig(t *testing.T) {
@@ -110,34 +86,22 @@ func TestDo4NegativeConclusionSig(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts4[int8]{
-		Inspected: errorExpected,
-		Reference: testReference4,
-	}
-
-	result, err := opts.Do()
+	result, err := Do4(errorExpected, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = unexpectedError
-
-	result, err = opts.Do()
+	result, err = Do4(unexpectedError, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = notEqual
-
-	result, err = opts.Do()
+	result, err = Do4(notEqual, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected4Sig
-	opts.Reference = referenceFault
-
-	result, err = opts.Do()
+	result, err = Do4(testInspected4Sig, referenceFault)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -166,52 +130,35 @@ func TestDo4NegativeConclusionUns(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts4[uint8]{
-		Inspected: errorExpected,
-		Reference: testReference4,
-	}
-
-	result, err := opts.Do()
+	result, err := Do4(errorExpected, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = unexpectedError
-
-	result, err = opts.Do()
+	result, err = Do4(unexpectedError, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = notEqual
-
-	result, err = opts.Do()
+	result, err = Do4(notEqual, testReference4)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected4Uns
-	opts.Reference = referenceFault
-
-	result, err = opts.Do()
+	result, err = Do4(testInspected4Uns, referenceFault)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 }
 
 func BenchmarkDo4(b *testing.B) {
-	opts := Opts4[int8]{
-		Inspected: testInspected4Sig,
-		Reference: testReference4,
-	}
-
 	var (
 		result types.Result[int8, int8, int64]
 		err    error
 	)
 
 	for range b.N {
-		result, err = opts.Do()
+		result, err = Do4(testInspected4Sig, testReference4)
 	}
 
 	require.NoError(b, err)

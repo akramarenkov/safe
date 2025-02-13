@@ -13,44 +13,44 @@ type Inspected4[Type types.USI8] func(first, second, third, fourth Type) (Type, 
 // Function with four arguments that returns a reference value.
 type Reference4 func(first, second, third, fourth int64) (int64, error)
 
-// Options of inspecting function with four arguments. A reference and inspected
-// functions must be specified.
-type Opts4[Type types.USI8] struct {
+type inspector4[Type types.USI8] struct {
 	// Inspected function with four arguments
-	Inspected Inspected4[Type]
+	inspected Inspected4[Type]
 	// Function with four arguments that returns a reference value
-	Reference Reference4
+	reference Reference4
 
 	// Minimum and maximum value for specified type
 	minimum int64
 	maximum int64
 }
 
-// Validates options. A reference and inspected functions must be specified.
-func (opts Opts4[Type]) IsValid() error {
-	if opts.Reference == nil {
-		return ErrReferenceNotSpecified
+// Performs inspection with four arguments.
+func Do4[Type types.USI8](
+	inspected Inspected4[Type],
+	reference Reference4,
+) (types.Result[Type, Type, int64], error) {
+	if inspected == nil {
+		return types.Result[Type, Type, int64]{}, ErrInspectedNotSpecified
 	}
 
-	if opts.Inspected == nil {
-		return ErrInspectedNotSpecified
+	if reference == nil {
+		return types.Result[Type, Type, int64]{}, ErrReferenceNotSpecified
 	}
 
-	return nil
+	minimum, maximum := ConvSpan[Type, int64]()
+
+	insp := &inspector4[Type]{
+		inspected: inspected,
+		reference: reference,
+
+		minimum: minimum,
+		maximum: maximum,
+	}
+
+	return insp.do(), nil
 }
 
-// Performs inspection.
-func (opts Opts4[Type]) Do() (types.Result[Type, Type, int64], error) {
-	if err := opts.IsValid(); err != nil {
-		return types.Result[Type, Type, int64]{}, err
-	}
-
-	opts.minimum, opts.maximum = ConvSpan[Type, int64]()
-
-	return opts.main(), nil
-}
-
-func (opts *Opts4[Type]) main() types.Result[Type, Type, int64] {
+func (insp *inspector4[Type]) do() types.Result[Type, Type, int64] {
 	parallelization := runtime.NumCPU()
 
 	// buffer size is chosen for simplicity: so that all goroutines can
@@ -68,7 +68,7 @@ func (opts *Opts4[Type]) main() types.Result[Type, Type, int64] {
 	//
 	// opts.maximum and opts.minimum accept values ​​in the range int8|uint8, and
 	// themselves have type int64, so overflow is impossible
-	firsts := make(chan int64, opts.maximum-opts.minimum)
+	firsts := make(chan int64, insp.maximum-insp.minimum)
 
 	for range parallelization {
 		wg.Add(1)
@@ -76,11 +76,11 @@ func (opts *Opts4[Type]) main() types.Result[Type, Type, int64] {
 		go func() {
 			defer wg.Done()
 
-			results <- opts.loop(firsts)
+			results <- insp.loop(firsts)
 		}()
 	}
 
-	for first := opts.minimum; first <= opts.maximum; first++ {
+	for first := insp.minimum; first <= insp.maximum; first++ {
 		firsts <- first
 	}
 
@@ -113,16 +113,16 @@ func (opts *Opts4[Type]) main() types.Result[Type, Type, int64] {
 }
 
 //nolint:gocognit // When the complexity decreases, the performance drops by half.
-func (opts *Opts4[Type]) loop(firsts chan int64) types.Result[Type, Type, int64] {
+func (insp *inspector4[Type]) loop(firsts chan int64) types.Result[Type, Type, int64] {
 	result := types.Result[Type, Type, int64]{}
 
 	for first := range firsts {
-		for second := opts.minimum; second <= opts.maximum; second++ {
-			for third := opts.minimum; third <= opts.maximum; third++ {
-				for fourth := opts.minimum; fourth <= opts.maximum; fourth++ {
-					reference, fault := opts.Reference(first, second, third, fourth)
+		for second := insp.minimum; second <= insp.maximum; second++ {
+			for third := insp.minimum; third <= insp.maximum; third++ {
+				for fourth := insp.minimum; fourth <= insp.maximum; fourth++ {
+					reference, fault := insp.reference(first, second, third, fourth)
 
-					actual, err := opts.Inspected(
+					actual, err := insp.inspected(
 						Type(first),
 						Type(second),
 						Type(third),
@@ -150,7 +150,7 @@ func (opts *Opts4[Type]) loop(firsts chan int64) types.Result[Type, Type, int64]
 						continue
 					}
 
-					if reference > opts.maximum || reference < opts.minimum {
+					if reference > insp.maximum || reference < insp.minimum {
 						if err == nil {
 							result.Actual = actual
 							result.Conclusion = ErrErrorExpected

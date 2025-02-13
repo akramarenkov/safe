@@ -11,47 +11,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsValid5(t *testing.T) {
-	opts := Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return first + second + third + fourth + fifth, nil
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first + second + third + fourth + fifth, nil
-		},
-	}
-
-	require.NoError(t, opts.IsValid())
-
-	opts = Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return first + second + third + fourth + fifth, nil
-		},
-	}
-
-	require.Error(t, opts.IsValid())
-
-	opts = Opts5[int8]{
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first + second + third + fourth + fifth, nil
-		},
-	}
-
-	require.Error(t, opts.IsValid())
-}
-
 func TestDo5Sig(t *testing.T) {
 	// It is impossible to test in automatic mode in an acceptable time
 	if os.Getenv(env.EnableLongTest) == "" {
 		t.SkipNow()
 	}
 
-	opts := Opts5[int8]{
-		Inspected: testInspected5Sig,
-		Reference: testReference5,
-	}
-
-	result, err := opts.Do()
+	result, err := Do5(testInspected5Sig, testReference5)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -72,12 +38,7 @@ func TestDo5Uns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := Opts5[uint8]{
-		Inspected: testInspected5Uns,
-		Reference: testReference5,
-	}
-
-	result, err := opts.Do()
+	result, err := Do5(testInspected5Uns, testReference5)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -93,10 +54,25 @@ func TestDo5Uns(t *testing.T) {
 }
 
 func TestDo5Error(t *testing.T) {
-	opts := Opts5[int8]{}
+	inspected := func(_, _, _, _, _ int8) (int8, error) {
+		return 0, nil
+	}
 
-	_, err := opts.Do()
+	reference := func(_, _, _, _, _ int64) (int64, error) {
+		return 0, nil
+	}
+
+	result, err := Do5(inspected, nil)
 	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Do5[int8](nil, reference)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+
+	result, err = Do5[int8](nil, nil)
+	require.Error(t, err)
+	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 }
 
 func TestDo5NegativeConclusionSig(t *testing.T) {
@@ -123,34 +99,22 @@ func TestDo5NegativeConclusionSig(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts5[int8]{
-		Inspected: errorExpected,
-		Reference: testReference5,
-	}
-
-	result, err := opts.Do()
+	result, err := Do5(errorExpected, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = unexpectedError
-
-	result, err = opts.Do()
+	result, err = Do5(unexpectedError, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = notEqual
-
-	result, err = opts.Do()
+	result, err = Do5(notEqual, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected5Sig
-	opts.Reference = referenceFault
-
-	result, err = opts.Do()
+	result, err = Do5(testInspected5Sig, referenceFault)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -180,34 +144,22 @@ func TestDo5NegativeConclusionUns(t *testing.T) {
 		return 0, ErrOverflow
 	}
 
-	opts := Opts5[uint8]{
-		Inspected: errorExpected,
-		Reference: testReference5,
-	}
-
-	result, err := opts.Do()
+	result, err := Do5(errorExpected, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = unexpectedError
-
-	result, err = opts.Do()
+	result, err = Do5(unexpectedError, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = notEqual
-
-	result, err = opts.Do()
+	result, err = Do5(notEqual, testReference5)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
-	opts.Inspected = testInspected5Uns
-	opts.Reference = referenceFault
-
-	result, err = opts.Do()
+	result, err = Do5(testInspected5Uns, referenceFault)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -219,18 +171,13 @@ func BenchmarkDo5(b *testing.B) {
 		b.SkipNow()
 	}
 
-	opts := Opts5[int8]{
-		Inspected: testInspected5Sig,
-		Reference: testReference5,
-	}
-
 	var (
 		result types.Result[int8, int8, int64]
 		err    error
 	)
 
 	for range b.N {
-		result, err = opts.Do()
+		result, err = Do5(testInspected5Sig, testReference5)
 	}
 
 	require.NoError(b, err)

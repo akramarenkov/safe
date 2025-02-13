@@ -317,16 +317,15 @@ func TestAddM4ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return AddM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first + second + third + fourth, nil
-		},
+	inspected := func(first, second, third, fourth int8) (int8, error) {
+		return AddM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first + second + third + fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -348,16 +347,15 @@ func TestAddM4ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[uint8]{
-		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
-			return AddM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first + second + third + fourth, nil
-		},
+	inspected := func(first, second, third, fourth uint8) (uint8, error) {
+		return AddM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first + second + third + fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -379,16 +377,15 @@ func TestAddM5ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return AddM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first + second + third + fourth + fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
+		return AddM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first + second + third + fourth + fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -410,16 +407,15 @@ func TestAddM5ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[uint8]{
-		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
-			return AddM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first + second + third + fourth + fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
+		return AddM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first + second + third + fourth + fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -780,16 +776,15 @@ func TestSubM4ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return SubM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first - second - third - fourth, nil
-		},
+	inspected := func(first, second, third, fourth int8) (int8, error) {
+		return SubM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first - second - third - fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -811,16 +806,15 @@ func TestSubM4ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[uint8]{
-		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
-			return SubM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first - second - third - fourth, nil
-		},
+	inspected := func(first, second, third, fourth uint8) (uint8, error) {
+		return SubM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first - second - third - fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -842,16 +836,15 @@ func TestSubM5ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return SubM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first - second - third - fourth - fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
+		return SubM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first - second - third - fourth - fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -873,16 +866,15 @@ func TestSubM5ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[uint8]{
-		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
-			return SubM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first - second - third - fourth - fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
+		return SubM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first - second - third - fourth - fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1245,16 +1237,15 @@ func TestMulM4ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return MulM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first * second * third * fourth, nil
-		},
+	inspected := func(first, second, third, fourth int8) (int8, error) {
+		return MulM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first * second * third * fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1276,16 +1267,15 @@ func TestMulM4ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[uint8]{
-		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
-			return MulM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			return first * second * third * fourth, nil
-		},
+	inspected := func(first, second, third, fourth uint8) (uint8, error) {
+		return MulM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		return first * second * third * fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1307,16 +1297,15 @@ func TestMulM5ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return MulM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first * second * third * fourth * fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
+		return MulM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first * second * third * fourth * fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1338,16 +1327,15 @@ func TestMulM5ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[uint8]{
-		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
-			return MulM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			return first * second * third * fourth * fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
+		return MulM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		return first * second * third * fourth * fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1647,20 +1635,19 @@ func TestDivM4ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[int8]{
-		Inspected: func(first, second, third, fourth int8) (int8, error) {
-			return DivM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			if second == 0 || third == 0 || fourth == 0 {
-				return 0, ErrDivisionByZero
-			}
-
-			return first / second / third / fourth, nil
-		},
+	inspected := func(first, second, third, fourth int8) (int8, error) {
+		return DivM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		if second == 0 || third == 0 || fourth == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return first / second / third / fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1682,20 +1669,19 @@ func TestDivM4ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[uint8]{
-		Inspected: func(first, second, third, fourth uint8) (uint8, error) {
-			return DivM(first, second, third, fourth)
-		},
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			if second == 0 || third == 0 || fourth == 0 {
-				return 0, ErrDivisionByZero
-			}
-
-			return first / second / third / fourth, nil
-		},
+	inspected := func(first, second, third, fourth uint8) (uint8, error) {
+		return DivM(first, second, third, fourth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		if second == 0 || third == 0 || fourth == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return first / second / third / fourth, nil
+	}
+
+	result, err := inspect.Do4(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1717,20 +1703,19 @@ func TestDivM5ArgsSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[int8]{
-		Inspected: func(first, second, third, fourth, fifth int8) (int8, error) {
-			return DivM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
-				return 0, ErrDivisionByZero
-			}
-
-			return first / second / third / fourth / fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth int8) (int8, error) {
+		return DivM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return first / second / third / fourth / fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1752,20 +1737,19 @@ func TestDivM5ArgsUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts5[uint8]{
-		Inspected: func(first, second, third, fourth, fifth uint8) (uint8, error) {
-			return DivM(first, second, third, fourth, fifth)
-		},
-		Reference: func(first, second, third, fourth, fifth int64) (int64, error) {
-			if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
-				return 0, ErrDivisionByZero
-			}
-
-			return first / second / third / fourth / fifth, nil
-		},
+	inspected := func(first, second, third, fourth, fifth uint8) (uint8, error) {
+		return DivM(first, second, third, fourth, fifth)
 	}
 
-	result, err := opts.Do()
+	reference := func(first, second, third, fourth, fifth int64) (int64, error) {
+		if second == 0 || third == 0 || fourth == 0 || fifth == 0 {
+			return 0, ErrDivisionByZero
+		}
+
+		return first / second / third / fourth / fifth, nil
+	}
+
+	result, err := inspect.Do5(inspected, reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,

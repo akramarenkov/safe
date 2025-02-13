@@ -483,18 +483,15 @@ func TestAddSubDivFullSig(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[int8]{
-		Inspected: AddSubDiv[int8],
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			if fourth == 0 {
-				return 0, ErrDivisionByZero
-			}
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		if fourth == 0 {
+			return 0, ErrDivisionByZero
+		}
 
-			return (first + second - third) / fourth, nil
-		},
+		return (first + second - third) / fourth, nil
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do4(AddSubDiv[int8], reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -516,18 +513,15 @@ func TestAddSubDivFullUns(t *testing.T) {
 		t.SkipNow()
 	}
 
-	opts := inspect.Opts4[uint8]{
-		Inspected: AddSubDiv[uint8],
-		Reference: func(first, second, third, fourth int64) (int64, error) {
-			if fourth == 0 {
-				return 0, ErrDivisionByZero
-			}
+	reference := func(first, second, third, fourth int64) (int64, error) {
+		if fourth == 0 {
+			return 0, ErrDivisionByZero
+		}
 
-			return (first + second - third) / fourth, nil
-		},
+		return (first + second - third) / fourth, nil
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do4(AddSubDiv[uint8], reference)
 	require.NoError(t, err)
 	require.NoError(
 		t,
