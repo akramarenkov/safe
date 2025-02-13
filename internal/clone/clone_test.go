@@ -98,6 +98,18 @@ func BenchmarkSlicesClone128(b *testing.B) {
 	benchmarkSlicesClone(b, 128)
 }
 
+func BenchmarkClone256(b *testing.B) {
+	benchmarkClone(b, 256)
+}
+
+func BenchmarkAppend256(b *testing.B) {
+	benchmarkAppend(b, 256)
+}
+
+func BenchmarkSlicesClone256(b *testing.B) {
+	benchmarkSlicesClone(b, 256)
+}
+
 func benchmarkClone(b *testing.B, quantity int) {
 	slice := make([]int, quantity)
 
