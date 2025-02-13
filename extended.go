@@ -1,6 +1,8 @@
 package safe
 
 import (
+	"slices"
+
 	"github.com/akramarenkov/safe/internal/clone"
 	"github.com/akramarenkov/safe/internal/is"
 
@@ -79,7 +81,7 @@ func AddM[Type constraints.Integer](addends ...Type) (Type, error) {
 			if !sorted {
 				sorted = true
 
-				sortAddM(addends)
+				slices.Sort(addends)
 
 				continue
 			}
@@ -300,7 +302,7 @@ func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
 
 	factors = clone.Slice(factors)
 
-	sortMulM(factors)
+	slices.SortFunc(factors, compareMulM)
 
 	for _, factor := range factors {
 		if factor == 0 {
