@@ -302,7 +302,7 @@ func MulM[Type constraints.Integer](factors ...Type) (Type, error) {
 
 	factors = clone.Slice(factors)
 
-	slices.SortFunc(factors, compareMulM)
+	sortMulM(factors)
 
 	for _, factor := range factors {
 		if factor == 0 {
