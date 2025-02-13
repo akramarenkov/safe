@@ -10,13 +10,12 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	// inspected functions. A value greater than three is not recommended due to low
 	// performance
 	LoopsQuantity uint
-
+	// Optional function that customize arg values span
+	Span func() (TypeFrom, TypeFrom)
 	// Inspected function
 	types.Inspected[TypeFrom, TypeTo]
 	// Function that returns a reference value
 	types.Reference[TypeRef]
-	// Optional function that customize arg values span
-	Span func() (TypeFrom, TypeFrom)
 }
 
 type inspector[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
