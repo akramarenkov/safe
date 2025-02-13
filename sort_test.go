@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/akramarenkov/safe/internal/iterator"
 	"github.com/stretchr/testify/require"
 )
 
@@ -143,19 +144,19 @@ func benchmarkPrepareMulM(b *testing.B, quantity int) ([]int, []int) {
 	original := make([]int, 0, quantity)
 	expected := make([]int, 0, quantity)
 
-	for number := range Iter(positive, 1) {
+	for number := range iterator.Iter(positive, 1) {
 		original = append(original, number)
 	}
 
-	for number := range Iter(negative, -1) {
+	for number := range iterator.Iter(negative, -1) {
 		original = append(original, number)
 	}
 
-	for number := range Iter(-1, negative) {
+	for number := range iterator.Iter(-1, negative) {
 		expected = append(expected, number)
 	}
 
-	for number := range Iter(1, positive) {
+	for number := range iterator.Iter(1, positive) {
 		expected = append(expected, number)
 	}
 
