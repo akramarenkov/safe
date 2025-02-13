@@ -4,7 +4,6 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/clone"
 	"github.com/akramarenkov/safe/internal/iterator"
 
 	"github.com/stretchr/testify/require"
@@ -25,7 +24,7 @@ func TestSortAddM(t *testing.T) {
 }
 
 func testSortAddM(t *testing.T, unsorted, expected []int) {
-	sorted := clone.Slice(unsorted)
+	sorted := slices.Clone(unsorted)
 
 	sortAddM(sorted)
 
@@ -48,8 +47,8 @@ func TestSortMulM(t *testing.T) {
 }
 
 func testSortMulM(t *testing.T, unsorted, expected []int) {
-	sorted := clone.Slice(unsorted)
-	sortedStd := clone.Slice(unsorted)
+	sorted := slices.Clone(unsorted)
+	sortedStd := slices.Clone(unsorted)
 
 	sortMulM(sorted)
 	slices.SortFunc(sortedStd, compareMulM)
