@@ -4,8 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/iterator"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -42,8 +40,8 @@ func TestDistManually(t *testing.T) {
 }
 
 func TestDistSig(t *testing.T) {
-	for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
-		for second := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {
+	for first := range Iter[int8](math.MinInt8, math.MaxInt8) {
+		for second := range Iter[int8](math.MinInt8, math.MaxInt8) {
 			reference := int(second) - int(first)
 
 			if first > second {
@@ -63,8 +61,8 @@ func TestDistSig(t *testing.T) {
 }
 
 func TestDistUns(t *testing.T) {
-	for first := range iterator.Iter[uint8](0, math.MaxUint8) {
-		for second := range iterator.Iter[uint8](0, math.MaxUint8) {
+	for first := range Iter[uint8](0, math.MaxUint8) {
+		for second := range Iter[uint8](0, math.MaxUint8) {
 			reference := uint64(second) - uint64(first)
 
 			if first > second {
