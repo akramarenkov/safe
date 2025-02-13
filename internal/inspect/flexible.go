@@ -4,7 +4,7 @@ import (
 	"github.com/akramarenkov/safe/internal/inspect/types"
 )
 
-// Options of inspecting. A reference and inspected functions must be specified.
+// Options of inspecting. A inspected and reference functions must be specified.
 type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	// Number of nested loops, i.e. the number of generated arguments for reference and
 	// inspected functions. A value greater than three is not recommended due to low
@@ -17,6 +17,10 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	types.Reference[TypeRef]
 	// Optional function that customize arg values span
 	Span func() (TypeFrom, TypeFrom)
+}
+
+type inspector[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
+	opts Opts[TypeFrom, TypeTo, TypeRef]
 
 	// Minimum and maximum value for specified TypeTo type
 	minimum TypeRef
@@ -30,91 +34,96 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	result types.Result[TypeFrom, TypeTo, TypeRef]
 }
 
-// Validates options. A reference and inspected functions must be specified.
-func (opts Opts[TypeFrom, TypeTo, TypeRef]) IsValid() error {
-	if opts.Reference == nil {
-		return ErrReferenceNotSpecified
-	}
-
+func (opts Opts[TypeFrom, TypeTo, TypeRef]) isValid() error {
 	if opts.Inspected == nil {
 		return ErrInspectedNotSpecified
+	}
+
+	if opts.Reference == nil {
+		return ErrReferenceNotSpecified
 	}
 
 	return nil
 }
 
 // Performs inspection.
-func (opts Opts[TypeFrom, TypeTo, TypeRef]) Do() (
-	types.Result[TypeFrom, TypeTo, TypeRef],
-	error,
-) {
-	if err := opts.IsValid(); err != nil {
+func Do[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64](
+	opts Opts[TypeFrom, TypeTo, TypeRef],
+) (types.Result[TypeFrom, TypeTo, TypeRef], error) {
+	if err := opts.isValid(); err != nil {
 		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
 	}
 
-	opts.minimum, opts.maximum = ConvSpan[TypeTo, TypeRef]()
+	minimum, maximum := ConvSpan[TypeTo, TypeRef]()
 
-	opts.argsFrom = make([]TypeFrom, opts.LoopsQuantity)
-	opts.argsRef = make([]TypeRef, opts.LoopsQuantity)
+	insp := &inspector[TypeFrom, TypeTo, TypeRef]{
+		opts: opts,
 
-	opts.main()
+		minimum: minimum,
+		maximum: maximum,
 
-	return opts.result, nil
-}
-
-func (opts *Opts[TypeFrom, TypeTo, TypeRef]) main() {
-	_ = loop[TypeRef](opts.LoopsQuantity, opts.Span, opts.do)
-}
-
-func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
-	// Protection against changes from the inspected and reference functions
-	copy(opts.argsFrom, args)
-
-	for id := range args {
-		opts.argsRef[id] = TypeRef(args[id])
+		argsFrom: make([]TypeFrom, opts.LoopsQuantity),
+		argsRef:  make([]TypeRef, opts.LoopsQuantity),
 	}
 
-	reference, fault := opts.Reference(opts.argsRef...)
+	insp.main()
 
-	actual, err := opts.Inspected(opts.argsFrom...)
+	return insp.result, nil
+}
+
+func (insp *inspector[TypeFrom, TypeTo, TypeRef]) main() {
+	_ = loop[TypeRef](insp.opts.LoopsQuantity, insp.opts.Span, insp.do)
+}
+
+func (insp *inspector[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
+	// Protection against changes from the inspected and reference functions
+	copy(insp.argsFrom, args)
+
+	for id := range args {
+		insp.argsRef[id] = TypeRef(args[id])
+	}
+
+	reference, fault := insp.opts.Reference(insp.argsRef...)
+
+	actual, err := insp.opts.Inspected(insp.argsFrom...)
 
 	if fault != nil {
 		if err == nil {
-			opts.result.Actual = actual
-			opts.result.Conclusion = ErrErrorExpected
+			insp.result.Actual = actual
+			insp.result.Conclusion = ErrErrorExpected
 
-			opts.result.Args = append([]TypeFrom(nil), args...)
+			insp.result.Args = append([]TypeFrom(nil), args...)
 
 			return true
 		}
 
-		opts.result.ReferenceFaults++
+		insp.result.ReferenceFaults++
 
 		return false
 	}
 
-	if reference > opts.maximum || reference < opts.minimum {
+	if reference > insp.maximum || reference < insp.minimum {
 		if err == nil {
-			opts.result.Actual = actual
-			opts.result.Conclusion = ErrErrorExpected
-			opts.result.Reference = reference
+			insp.result.Actual = actual
+			insp.result.Conclusion = ErrErrorExpected
+			insp.result.Reference = reference
 
-			opts.result.Args = append([]TypeFrom(nil), args...)
+			insp.result.Args = append([]TypeFrom(nil), args...)
 
 			return true
 		}
 
-		opts.result.Overflows++
+		insp.result.Overflows++
 
 		return false
 	}
 
 	if err != nil {
-		opts.result.Conclusion = ErrUnexpectedError
-		opts.result.Err = err
-		opts.result.Reference = reference
+		insp.result.Conclusion = ErrUnexpectedError
+		insp.result.Err = err
+		insp.result.Reference = reference
 
-		opts.result.Args = append([]TypeFrom(nil), args...)
+		insp.result.Args = append([]TypeFrom(nil), args...)
 
 		return true
 	}
@@ -122,16 +131,16 @@ func (opts *Opts[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 	// An universal, in this case, condition for comparing for inequality
 	// (actual != reference), both for integers and for floating point numbers
 	if TypeRef(actual)-reference >= 1 || TypeRef(actual)-reference <= -1 {
-		opts.result.Actual = actual
-		opts.result.Conclusion = ErrNotEqual
-		opts.result.Reference = reference
+		insp.result.Actual = actual
+		insp.result.Conclusion = ErrNotEqual
+		insp.result.Reference = reference
 
-		opts.result.Args = append([]TypeFrom(nil), args...)
+		insp.result.Args = append([]TypeFrom(nil), args...)
 
 		return true
 	}
 
-	opts.result.NoOverflows++
+	insp.result.NoOverflows++
 
 	return false
 }

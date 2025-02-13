@@ -23,7 +23,7 @@ func TestAddSubSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -51,7 +51,7 @@ func TestAddSubUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -83,7 +83,7 @@ func TestAddDivSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -115,7 +115,7 @@ func TestAddDivUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -147,7 +147,7 @@ func TestAddDivRemSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -179,7 +179,7 @@ func TestAddDivRemUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -211,7 +211,7 @@ func TestAddDivU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -243,7 +243,7 @@ func TestSubDivSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -275,7 +275,7 @@ func TestSubDivUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -307,7 +307,7 @@ func TestSubDivRemSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -339,7 +339,7 @@ func TestSubDivRemUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -371,7 +371,7 @@ func TestSubDivU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -553,7 +553,7 @@ func TestAddOneSubDivSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -585,7 +585,7 @@ func TestAddOneSubDivUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,

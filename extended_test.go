@@ -26,7 +26,7 @@ func TestAdd3Sig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -54,7 +54,7 @@ func TestAdd3Uns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -82,7 +82,7 @@ func TestAdd3U(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -108,7 +108,7 @@ func TestAddM1ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -134,7 +134,7 @@ func TestAddM2ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -160,7 +160,7 @@ func TestAddM3ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -186,7 +186,7 @@ func TestAddM1ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -212,7 +212,7 @@ func TestAddM2ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -238,7 +238,7 @@ func TestAddM3ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -441,7 +441,7 @@ func TestAddMU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -474,7 +474,7 @@ func TestSub3Sig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -502,7 +502,7 @@ func TestSub3Uns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -530,7 +530,7 @@ func TestSub3U(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -558,7 +558,7 @@ func TestSubM1ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -586,7 +586,7 @@ func TestSubM2ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -614,7 +614,7 @@ func TestSubM3ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -642,7 +642,7 @@ func TestSubM1ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -670,7 +670,7 @@ func TestSubM2ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -698,7 +698,7 @@ func TestSubM3ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -906,7 +906,7 @@ func TestSubMU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -934,7 +934,7 @@ func TestMul3Sig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -962,7 +962,7 @@ func TestMul3Uns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -990,7 +990,7 @@ func TestMul3U(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1016,7 +1016,7 @@ func TestMulM1ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1042,7 +1042,7 @@ func TestMulM2ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1068,7 +1068,7 @@ func TestMulM3ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1094,7 +1094,7 @@ func TestMulM1ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1120,7 +1120,7 @@ func TestMulM2ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1146,7 +1146,7 @@ func TestMulM3ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1361,7 +1361,7 @@ func TestMulMU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1394,7 +1394,7 @@ func TestDivM1ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1426,7 +1426,7 @@ func TestDivM2ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1458,7 +1458,7 @@ func TestDivM3ArgsSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1486,7 +1486,7 @@ func TestDivM1ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1518,7 +1518,7 @@ func TestDivM2ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1550,7 +1550,7 @@ func TestDivM3ArgsUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1838,7 +1838,7 @@ func TestPow(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,

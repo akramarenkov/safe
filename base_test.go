@@ -23,7 +23,7 @@ func TestAddSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -51,7 +51,7 @@ func TestAddUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -79,7 +79,7 @@ func TestAddU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -107,7 +107,7 @@ func TestSubSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -135,7 +135,7 @@ func TestSubUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -163,7 +163,7 @@ func TestSubU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -191,7 +191,7 @@ func TestMulSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -219,7 +219,7 @@ func TestMulUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -247,7 +247,7 @@ func TestMulU(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -279,7 +279,7 @@ func TestDivSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -311,7 +311,7 @@ func TestDivUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -339,7 +339,7 @@ func TestNegateSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -367,7 +367,7 @@ func TestNegateUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -392,7 +392,7 @@ func TestIToIU8ToS8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -420,7 +420,7 @@ func TestIToIS8ToU8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -448,7 +448,7 @@ func TestIToIS8ToU16(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -476,7 +476,7 @@ func TestIToIU16ToS8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -504,7 +504,7 @@ func TestIToIU16ToU8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -532,7 +532,7 @@ func TestIToIS16ToS8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -560,7 +560,7 @@ func TestIToIS16ToU8(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -679,7 +679,7 @@ func testFToISig(t *testing.T, addition float64) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -725,7 +725,7 @@ func testFToIUns(t *testing.T, addition float64) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -788,7 +788,7 @@ func TestShiftSig(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -829,7 +829,7 @@ func TestShiftUns(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -864,7 +864,7 @@ func TestShiftIntViaFloat(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -899,7 +899,7 @@ func TestShiftUintViaFloat(t *testing.T) {
 		},
 	}
 
-	result, err := opts.Do()
+	result, err := inspect.Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,

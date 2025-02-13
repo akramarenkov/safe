@@ -18,19 +18,19 @@ func TestIsValid(t *testing.T) {
 		Reference: func(...int64) (int64, error) { return 0, nil },
 	}
 
-	require.NoError(t, opts.IsValid())
+	require.NoError(t, opts.isValid())
 
 	opts = Opts[int8, int8, int64]{
 		Inspected: func(...int8) (int8, error) { return 0, nil },
 	}
 
-	require.Error(t, opts.IsValid())
+	require.Error(t, opts.isValid())
 
 	opts = Opts[int8, int8, int64]{
 		Reference: func(...int64) (int64, error) { return 0, nil },
 	}
 
-	require.Error(t, opts.IsValid())
+	require.Error(t, opts.isValid())
 }
 
 func TestDoSig(t *testing.T) {
@@ -41,7 +41,7 @@ func TestDoSig(t *testing.T) {
 		Reference: testReference3,
 	}
 
-	result, err := opts.Do()
+	result, err := Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -64,7 +64,7 @@ func TestDoUns(t *testing.T) {
 		Reference: testReference3,
 	}
 
-	result, err := opts.Do()
+	result, err := Do(opts)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -84,7 +84,7 @@ func TestDoError(t *testing.T) {
 		LoopsQuantity: 3,
 	}
 
-	_, err := opts.Do()
+	_, err := Do(opts)
 	require.Error(t, err)
 }
 
@@ -118,21 +118,21 @@ func TestDoNegativeConclusionSig(t *testing.T) {
 		Reference: testReference2,
 	}
 
-	result, err := opts.Do()
+	result, err := Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	opts.Inspected = unexpectedError
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	opts.Inspected = notEqual
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -140,7 +140,7 @@ func TestDoNegativeConclusionSig(t *testing.T) {
 	opts.Inspected = testInspected2Sig
 	opts.Reference = referenceFault
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -176,21 +176,21 @@ func TestDoNegativeConclusionUns(t *testing.T) {
 		Reference: testReference2,
 	}
 
-	result, err := opts.Do()
+	result, err := Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	opts.Inspected = unexpectedError
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	opts.Inspected = notEqual
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -198,7 +198,7 @@ func TestDoNegativeConclusionUns(t *testing.T) {
 	opts.Inspected = testInspected2Uns
 	opts.Reference = referenceFault
 
-	result, err = opts.Do()
+	result, err = Do(opts)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -397,7 +397,7 @@ func BenchmarkDo(b *testing.B) {
 	)
 
 	for range b.N {
-		result, err = opts.Do()
+		result, err = Do(opts)
 	}
 
 	require.NoError(b, err)
