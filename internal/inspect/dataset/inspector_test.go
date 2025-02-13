@@ -22,7 +22,7 @@ func TestInspectSig(t *testing.T) {
 		}
 	}
 
-	result, err := Inspect(buffer, testInspectedSig)
+	result, err := Inspect(testInspectedSig, buffer)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -46,7 +46,7 @@ func TestInspectUns(t *testing.T) {
 		}
 	}
 
-	result, err := Inspect(buffer, testInspectedUns)
+	result, err := Inspect(testInspectedUns, buffer)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -64,15 +64,15 @@ func TestInspectUns(t *testing.T) {
 func TestInspectError(t *testing.T) {
 	inspected := func(...int8) (int8, error) { return 0, nil }
 
-	result, err := Inspect(bytes.NewBuffer(nil), inspected)
+	result, err := Inspect(inspected, bytes.NewBuffer(nil))
 	require.NoError(t, err)
 	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 
-	result, err = Inspect(nil, inspected)
+	result, err = Inspect(inspected, nil)
 	require.Error(t, err)
 	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 
-	result, err = Inspect[int8](bytes.NewBuffer(nil), nil)
+	result, err = Inspect[int8](nil, bytes.NewBuffer(nil))
 	require.Error(t, err)
 	require.Equal(t, types.Result[int8, int8, int64]{}, result)
 
@@ -87,25 +87,25 @@ func TestInspectConvertErrorSig(t *testing.T) {
 	buffer.Reset()
 	buffer.WriteString("false 2")
 
-	_, err := Inspect(buffer, testInspectedSig)
+	_, err := Inspect(testInspectedSig, buffer)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("flase 2 1 1")
 
-	_, err = Inspect(buffer, testInspectedSig)
+	_, err = Inspect(testInspectedSig, buffer)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("false true 1 1")
 
-	_, err = Inspect(buffer, testInspectedSig)
+	_, err = Inspect(testInspectedSig, buffer)
 	require.Error(t, err)
 
 	buffer.Reset()
 	buffer.WriteString("false 2 true 1")
 
-	_, err = Inspect(buffer, testInspectedSig)
+	_, err = Inspect(testInspectedSig, buffer)
 	require.Error(t, err)
 }
 
@@ -115,7 +115,7 @@ func TestInspectConvertErrorUns(t *testing.T) {
 	buffer.Reset()
 	buffer.WriteString("false 2 true 1")
 
-	_, err := Inspect(buffer, testInspectedUns)
+	_, err := Inspect(testInspectedUns, buffer)
 	require.Error(t, err)
 }
 
@@ -156,28 +156,28 @@ func TestInspectNegativeConclusion(t *testing.T) {
 
 	collect(testReference)
 
-	result, err := Inspect(buffer, errorExpected)
+	result, err := Inspect(errorExpected, buffer)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(testReference)
 
-	result, err = Inspect(buffer, unexpectedError)
+	result, err = Inspect(unexpectedError, buffer)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(testReference)
 
-	result, err = Inspect(buffer, notEqual)
+	result, err = Inspect(notEqual, buffer)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
 
 	collect(referenceFault)
 
-	result, err = Inspect(buffer, testInspectedSig)
+	result, err = Inspect(testInspectedSig, buffer)
 	require.NoError(t, err)
 	require.Error(t, result.Conclusion)
 	require.NotEmpty(t, result.Args)
@@ -186,6 +186,6 @@ func TestInspectNegativeConclusion(t *testing.T) {
 func TestInspectFromFileError(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "dataset")
 
-	_, err := InspectFromFile(filePath, testInspectedSig)
+	_, err := InspectFromFile(testInspectedSig, filePath)
 	require.Error(t, err)
 }

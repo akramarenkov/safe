@@ -392,7 +392,7 @@ func TestAddSubDivDatasetSig(t *testing.T) {
 		return AddSubDiv(args[0], args[1], args[2], args[3])
 	}
 
-	result, err := dataset.InspectFromFile("testdata/addsubdiv/signed", inspected)
+	result, err := dataset.InspectFromFile(inspected, "testdata/addsubdiv/signed")
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -413,7 +413,7 @@ func TestAddSubDivDatasetUns(t *testing.T) {
 		return AddSubDiv(args[0], args[1], args[2], args[3])
 	}
 
-	result, err := dataset.InspectFromFile("testdata/addsubdiv/unsigned", inspected)
+	result, err := dataset.InspectFromFile(inspected, "testdata/addsubdiv/unsigned")
 	require.NoError(t, err)
 	require.NoError(
 		t,

@@ -37,8 +37,8 @@ type inspector[Type types.UpToUSI32] struct {
 
 // Performs inspecting with dataset from file.
 func InspectFromFile[Type types.UpToUSI32](
-	path string,
 	inspected func(args ...Type) (Type, error),
+	path string,
 ) (types.Result[Type, Type, int64], error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -47,20 +47,20 @@ func InspectFromFile[Type types.UpToUSI32](
 
 	defer file.Close()
 
-	return Inspect(file, inspected)
+	return Inspect(inspected, file)
 }
 
 // Performs inspecting with dataset from reader.
 func Inspect[Type types.UpToUSI32](
-	reader io.Reader,
 	inspected func(args ...Type) (Type, error),
+	reader io.Reader,
 ) (types.Result[Type, Type, int64], error) {
-	if reader == nil {
-		return types.Result[Type, Type, int64]{}, ErrReaderNotSpecified
-	}
-
 	if inspected == nil {
 		return types.Result[Type, Type, int64]{}, inspect.ErrInspectedNotSpecified
+	}
+
+	if reader == nil {
+		return types.Result[Type, Type, int64]{}, ErrReaderNotSpecified
 	}
 
 	minimum, maximum := inspect.ConvSpan[Type, int64]()

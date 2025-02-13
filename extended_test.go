@@ -269,7 +269,7 @@ func TestAddMUnmodify(t *testing.T) {
 }
 
 func TestAddMDataset(t *testing.T) {
-	result, err := dataset.InspectFromFile("testdata/addm", AddM[int8])
+	result, err := dataset.InspectFromFile(AddM[int8], "testdata/addm")
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -728,7 +728,7 @@ func TestSubMDataset(t *testing.T) {
 		return SubM(args[0], args[1:]...)
 	}
 
-	result, err := dataset.InspectFromFile("testdata/subm", inspected)
+	result, err := dataset.InspectFromFile(inspected, "testdata/subm")
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1177,7 +1177,7 @@ func TestMulMUnmodify(t *testing.T) {
 }
 
 func TestMulMDataset(t *testing.T) {
-	result, err := dataset.InspectFromFile("testdata/mulm", MulM[int8])
+	result, err := dataset.InspectFromFile(MulM[int8], "testdata/mulm")
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -1571,7 +1571,7 @@ func TestDivMDataset(t *testing.T) {
 		return DivM(args[0], args[1:]...)
 	}
 
-	result, err := dataset.InspectFromFile("testdata/divm", inspected)
+	result, err := dataset.InspectFromFile(inspected, "testdata/divm")
 	require.NoError(t, err)
 	require.NoError(
 		t,

@@ -32,6 +32,36 @@ type Opts[Type types.UpToUSI32] struct {
 	Fillers []filler.Filler[Type]
 }
 
+func (opts Opts[Type]) isValid() error {
+	if opts.Reference == nil {
+		return inspect.ErrReferenceNotSpecified
+	}
+
+	return nil
+}
+
+func (opts Opts[Type]) normalize() Opts[Type] {
+	if len(opts.Fillers) == 0 {
+		opts.Fillers = []filler.Filler[Type]{filler.NewSet[Type](), filler.NewRand[Type]()}
+	}
+
+	return opts
+}
+
+func (opts Opts[Type]) datasetLength() int {
+	length := 0
+
+	if opts.NotOverflowedItemsQuantity > 0 {
+		length += opts.NotOverflowedItemsQuantity
+	}
+
+	if opts.OverflowedItemsQuantity > 0 {
+		length += opts.OverflowedItemsQuantity
+	}
+
+	return length
+}
+
 type collector[Type types.UpToUSI32] struct {
 	opts Opts[Type]
 
@@ -62,36 +92,6 @@ type collector[Type types.UpToUSI32] struct {
 	unique map[string]struct{}
 }
 
-func (opts Opts[Type]) isValid() error {
-	if opts.Reference == nil {
-		return inspect.ErrReferenceNotSpecified
-	}
-
-	return nil
-}
-
-func (opts Opts[Type]) normalize() Opts[Type] {
-	if len(opts.Fillers) == 0 {
-		opts.Fillers = []filler.Filler[Type]{filler.NewSet[Type](), filler.NewRand[Type]()}
-	}
-
-	return opts
-}
-
-func (opts Opts[Type]) calcDatasetLength() int {
-	length := 0
-
-	if opts.NotOverflowedItemsQuantity > 0 {
-		length += opts.NotOverflowedItemsQuantity
-	}
-
-	if opts.OverflowedItemsQuantity > 0 {
-		length += opts.OverflowedItemsQuantity
-	}
-
-	return length
-}
-
 // Performs collecting dataset to file.
 func CollectToFile[Type types.UpToUSI32](opts Opts[Type], path string) error {
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, defaultFileMode)
@@ -104,7 +104,7 @@ func CollectToFile[Type types.UpToUSI32](opts Opts[Type], path string) error {
 	return Collect(opts, file)
 }
 
-// Performs collecting dataset.
+// Performs collecting dataset to writer.
 func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
 	if err := opts.isValid(); err != nil {
 		return err
@@ -134,7 +134,7 @@ func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
 		args64:    make([]int64, opts.ArgsQuantity),
 		args64Dup: make([]int64, opts.ArgsQuantity),
 		item:      make([]byte, calcMaxItemLength[Type](opts.ArgsQuantity)),
-		unique:    make(map[string]struct{}, opts.calcDatasetLength()),
+		unique:    make(map[string]struct{}, opts.datasetLength()),
 	}
 
 	return cltr.main()

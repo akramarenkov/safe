@@ -26,7 +26,7 @@ func TestFile(t *testing.T) {
 	err := CollectToFile(opts, filePath)
 	require.NoError(t, err)
 
-	result, err := InspectFromFile(filePath, testInspectedSig)
+	result, err := InspectFromFile(testInspectedSig, filePath)
 	require.NoError(t, err)
 	require.NoError(
 		t,
@@ -66,7 +66,7 @@ func BenchmarkDataset(b *testing.B) {
 			require.NoError(b, err)
 		}
 
-		result, err := Inspect(buffer, testInspectedSig)
+		result, err := Inspect(testInspectedSig, buffer)
 		if err != nil {
 			require.NoError(b, err)
 		}

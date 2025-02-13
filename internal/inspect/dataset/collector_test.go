@@ -27,7 +27,34 @@ func TestOptsIsValid(t *testing.T) {
 	require.Error(t, opts.isValid())
 }
 
-func TestCollector(t *testing.T) {
+func TestOptsDatasetLength(t *testing.T) {
+	opts := Opts[int8]{
+		NotOverflowedItemsQuantity: 20,
+		OverflowedItemsQuantity:    -1,
+	}
+
+	require.Equal(t, opts.NotOverflowedItemsQuantity, opts.datasetLength())
+
+	opts = Opts[int8]{
+		NotOverflowedItemsQuantity: -1,
+		OverflowedItemsQuantity:    10,
+	}
+
+	require.Equal(t, opts.OverflowedItemsQuantity, opts.datasetLength())
+
+	opts = Opts[int8]{
+		NotOverflowedItemsQuantity: 20,
+		OverflowedItemsQuantity:    10,
+	}
+
+	require.Equal(
+		t,
+		opts.NotOverflowedItemsQuantity+opts.OverflowedItemsQuantity,
+		opts.datasetLength(),
+	)
+}
+
+func TestCollect(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	opts := Opts[int8]{
@@ -54,7 +81,7 @@ func TestCollector(t *testing.T) {
 	require.Equal(t, expected, buffer.String())
 }
 
-func TestCollectorDefaultFillers(t *testing.T) {
+func TestCollectDefaultFillers(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	opts := Opts[int8]{
@@ -71,7 +98,7 @@ func TestCollectorDefaultFillers(t *testing.T) {
 	require.Len(t, strings.Split(buffer.String(), "\n"), 3)
 }
 
-func TestCollectorReferenceLimits(t *testing.T) {
+func TestCollectReferenceLimits(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	limited := int64(127)
@@ -103,15 +130,15 @@ func TestCollectorReferenceLimits(t *testing.T) {
 		return quantity
 	}
 
-	testCollectorReferenceLimits(t, buffer, nil)
+	testCollectReferenceLimits(t, buffer, nil)
 	require.Equal(t, 4, accounter(limited))
 
-	testCollectorReferenceLimits(t, buffer, limits)
+	testCollectReferenceLimits(t, buffer, limits)
 	require.Equal(t, 1, accounter(limited))
 	require.Equal(t, expected, limits)
 }
 
-func testCollectorReferenceLimits(
+func testCollectReferenceLimits(
 	t *testing.T,
 	buffer *bytes.Buffer,
 	limits map[int64]uint,
@@ -140,7 +167,7 @@ func testCollectorReferenceLimits(
 	require.NoError(t, err)
 }
 
-func TestCollectorUniqueness(t *testing.T) {
+func TestCollectUniqueness(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	opts := Opts[int8]{
@@ -167,34 +194,7 @@ func TestCollectorUniqueness(t *testing.T) {
 	require.Len(t, items, 3)
 }
 
-func TestCollectorCalcDatasetLength(t *testing.T) {
-	opts := Opts[int8]{
-		NotOverflowedItemsQuantity: 20,
-		OverflowedItemsQuantity:    -1,
-	}
-
-	require.Equal(t, opts.NotOverflowedItemsQuantity, opts.calcDatasetLength())
-
-	opts = Opts[int8]{
-		NotOverflowedItemsQuantity: -1,
-		OverflowedItemsQuantity:    10,
-	}
-
-	require.Equal(t, opts.OverflowedItemsQuantity, opts.calcDatasetLength())
-
-	opts = Opts[int8]{
-		NotOverflowedItemsQuantity: 20,
-		OverflowedItemsQuantity:    10,
-	}
-
-	require.Equal(
-		t,
-		opts.NotOverflowedItemsQuantity+opts.OverflowedItemsQuantity,
-		opts.calcDatasetLength(),
-	)
-}
-
-func TestCollectorError(t *testing.T) {
+func TestCollectError(t *testing.T) {
 	opts := Opts[int8]{}
 
 	err := Collect(opts, bytes.NewBuffer(nil))
@@ -247,7 +247,7 @@ func TestCollectorError(t *testing.T) {
 	require.Equal(t, ErrNotEnoughDataInFillers, err)
 }
 
-func TestCollectorFileError(t *testing.T) {
+func TestCollectToFileError(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "")
 
 	opts := Opts[int8]{
