@@ -25,6 +25,8 @@ type inspector4[Type types.USI8] struct {
 }
 
 // Performs inspection with four arguments.
+//
+// A inspected and reference functions must be specified.
 func Do4[Type types.USI8](
 	inspected Inspected4[Type],
 	reference Reference4,
@@ -53,7 +55,7 @@ func Do4[Type types.USI8](
 func (insp *inspector4[Type]) do() types.Result[Type, Type, int64] {
 	parallelization := runtime.NumCPU()
 
-	// buffer size is chosen for simplicity: so that all goroutines can
+	// Buffer size is chosen for simplicity: so that all goroutines can
 	// definitely write the result and not block on writing even without reading
 	// these results
 	results := make(chan types.Result[Type, Type, int64], parallelization)
@@ -62,11 +64,11 @@ func (insp *inspector4[Type]) do() types.Result[Type, Type, int64] {
 	wg := &sync.WaitGroup{}
 	defer wg.Wait()
 
-	// buffer size is chosen for simplicity: so that the goroutine can
+	// Buffer size is chosen for simplicity: so that the goroutine can
 	// definitely write all the first numbers and not block on writing even without
 	// reading these first numbers
 	//
-	// opts.maximum and opts.minimum accept values ​​in the range int8|uint8, and
+	// insp.maximum and insp.minimum accept values ​​in the range int8|uint8, and
 	// themselves have type int64, so overflow is impossible
 	firsts := make(chan int64, insp.maximum-insp.minimum)
 
