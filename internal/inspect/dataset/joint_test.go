@@ -16,14 +16,14 @@ import (
 func TestFile(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "dataset")
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
 	}
 
-	err := collector.CollectToFile(filePath)
+	err := CollectToFile(opts, filePath)
 	require.NoError(t, err)
 
 	result, err := InspectFromFile(filePath, testInspectedSig)
@@ -51,19 +51,18 @@ func BenchmarkDataset(b *testing.B) {
 
 	buffer.Grow(2 * itemsQuantity * calcMaxItemLength[int8](argsQuantity))
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               argsQuantity,
 		NotOverflowedItemsQuantity: itemsQuantity,
 		OverflowedItemsQuantity:    itemsQuantity,
 		Reference:                  testReference,
-		Writer:                     buffer,
 		Fillers: []filler.Filler[int8]{
 			filler.NewSet[int8](),
 		},
 	}
 
 	for range b.N {
-		if err := collector.Collect(); err != nil {
+		if err := Collect(opts, buffer); err != nil {
 			require.NoError(b, err)
 		}
 

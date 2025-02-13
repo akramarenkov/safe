@@ -300,14 +300,14 @@ func TestAddMCollectDataset(t *testing.T) {
 		return reference, nil
 	}
 
-	collector := dataset.Collector[int8]{
+	opts := dataset.Opts[int8]{
 		ArgsQuantity:               6,
 		NotOverflowedItemsQuantity: 1 << 15,
 		OverflowedItemsQuantity:    1 << 15,
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("testdata/addm")
+	err := dataset.CollectToFile(opts, "testdata/addm")
 	require.NoError(t, err)
 }
 
@@ -759,14 +759,14 @@ func TestSubMCollectDataset(t *testing.T) {
 		return reference, nil
 	}
 
-	collector := dataset.Collector[int8]{
+	opts := dataset.Opts[int8]{
 		ArgsQuantity:               6,
 		NotOverflowedItemsQuantity: 1 << 15,
 		OverflowedItemsQuantity:    1 << 15,
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("testdata/subm")
+	err := dataset.CollectToFile(opts, "testdata/subm")
 	require.NoError(t, err)
 }
 
@@ -1208,7 +1208,7 @@ func TestMulMCollectDataset(t *testing.T) {
 		return reference, nil
 	}
 
-	collector := dataset.Collector[int8]{
+	opts := dataset.Opts[int8]{
 		ArgsQuantity:               6,
 		NotOverflowedItemsQuantity: 1 << 15,
 		OverflowedItemsQuantity:    1 << 15,
@@ -1227,7 +1227,7 @@ func TestMulMCollectDataset(t *testing.T) {
 		},
 	}
 
-	err := collector.CollectToFile("testdata/mulm")
+	err := dataset.CollectToFile(opts, "testdata/mulm")
 	require.NoError(t, err)
 }
 
@@ -1606,7 +1606,7 @@ func TestDivMCollectDataset(t *testing.T) {
 		return reference, nil
 	}
 
-	collector := dataset.Collector[int8]{
+	opts := dataset.Opts[int8]{
 		ArgsQuantity:               6,
 		NotOverflowedItemsQuantity: 1<<16 - 1<<4,
 		OverflowedItemsQuantity:    1 << 4,
@@ -1625,7 +1625,7 @@ func TestDivMCollectDataset(t *testing.T) {
 		},
 	}
 
-	err := collector.CollectToFile("testdata/divm")
+	err := dataset.CollectToFile(opts, "testdata/divm")
 	require.NoError(t, err)
 }
 

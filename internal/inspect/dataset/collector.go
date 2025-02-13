@@ -14,8 +14,8 @@ import (
 	"github.com/akramarenkov/intspec"
 )
 
-// Options of collecting. A reference function and writer must be specified.
-type Collector[Type types.UpToUSI32] struct {
+// Options of collecting. A reference function must be specified.
+type Opts[Type types.UpToUSI32] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
 	// Quantity of dataset items which not produce overflow of inspected function
@@ -26,12 +26,25 @@ type Collector[Type types.UpToUSI32] struct {
 	types.Reference[int64]
 	// Quantity limits for reference values
 	ReferenceLimits map[int64]uint
-	// Writer associated with dataset storage
-	Writer io.Writer
 	// List of fillers that fill arguments of dataset item (reference function) by
 	// values. If not specified will be used filler [filler.Set] with
 	// [filler.Boundaries] setter and filler [filler.Rand]
 	Fillers []filler.Filler[Type]
+}
+
+type collector[Type types.UpToUSI32] struct {
+	opts Opts[Type]
+
+	// Writer associated with dataset storage
+	writer io.Writer
+
+	// Quantity limits for reference values
+	referenceLimits map[int64]uint
+
+	// Quantity of dataset items which not produce overflow of inspected function
+	notOverflowedItemsQuantity int
+	// Quantity of dataset items which produce overflow of inspected function
+	overflowedItemsQuantity int
 
 	// Minimum and maximum value for specified type
 	minimum int64
@@ -49,29 +62,38 @@ type Collector[Type types.UpToUSI32] struct {
 	unique map[string]struct{}
 }
 
-// Validates options. A reference function and writer must be specified.
-func (cltr Collector[Type]) IsValid() error {
-	if cltr.Reference == nil {
+func (opts Opts[Type]) isValid() error {
+	if opts.Reference == nil {
 		return inspect.ErrReferenceNotSpecified
-	}
-
-	if cltr.Writer == nil {
-		return ErrWriterNotSpecified
 	}
 
 	return nil
 }
 
-func (cltr Collector[Type]) normalize() Collector[Type] {
-	if len(cltr.Fillers) == 0 {
-		cltr.Fillers = append(cltr.Fillers, filler.NewSet[Type](), filler.NewRand[Type]())
+func (opts Opts[Type]) normalize() Opts[Type] {
+	if len(opts.Fillers) == 0 {
+		opts.Fillers = []filler.Filler[Type]{filler.NewSet[Type](), filler.NewRand[Type]()}
 	}
 
-	return cltr
+	return opts
+}
+
+func (opts Opts[Type]) calcDatasetLength() int {
+	length := 0
+
+	if opts.NotOverflowedItemsQuantity > 0 {
+		length += opts.NotOverflowedItemsQuantity
+	}
+
+	if opts.OverflowedItemsQuantity > 0 {
+		length += opts.OverflowedItemsQuantity
+	}
+
+	return length
 }
 
 // Performs collecting dataset to file.
-func (cltr Collector[Type]) CollectToFile(path string) error {
+func CollectToFile[Type types.UpToUSI32](opts Opts[Type], path string) error {
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, defaultFileMode)
 	if err != nil {
 		return err
@@ -79,48 +101,46 @@ func (cltr Collector[Type]) CollectToFile(path string) error {
 
 	defer file.Close()
 
-	cltr.Writer = file
-
-	return cltr.Collect()
+	return Collect(opts, file)
 }
 
 // Performs collecting dataset.
-func (cltr Collector[Type]) Collect() error {
-	if err := cltr.IsValid(); err != nil {
+func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
+	if err := opts.isValid(); err != nil {
 		return err
 	}
 
-	cltr = cltr.normalize()
+	if writer == nil {
+		return ErrWriterNotSpecified
+	}
 
-	cltr.ReferenceLimits = maps.Clone(cltr.ReferenceLimits)
+	opts = opts.normalize()
 
-	cltr.minimum, cltr.maximum = inspect.ConvSpan[Type, int64]()
+	minimum, maximum := inspect.ConvSpan[Type, int64]()
 
-	cltr.args = make([]Type, cltr.ArgsQuantity)
-	cltr.args64 = make([]int64, cltr.ArgsQuantity)
-	cltr.args64Dup = make([]int64, cltr.ArgsQuantity)
-	cltr.item = make([]byte, calcMaxItemLength[Type](cltr.ArgsQuantity))
+	cltr := &collector[Type]{
+		opts: opts,
 
-	cltr.unique = make(map[string]struct{}, cltr.calcDatasetLength())
+		writer: writer,
+
+		referenceLimits:            maps.Clone(opts.ReferenceLimits),
+		notOverflowedItemsQuantity: opts.NotOverflowedItemsQuantity,
+		overflowedItemsQuantity:    opts.OverflowedItemsQuantity,
+
+		minimum: minimum,
+		maximum: maximum,
+
+		args:      make([]Type, opts.ArgsQuantity),
+		args64:    make([]int64, opts.ArgsQuantity),
+		args64Dup: make([]int64, opts.ArgsQuantity),
+		item:      make([]byte, calcMaxItemLength[Type](opts.ArgsQuantity)),
+		unique:    make(map[string]struct{}, opts.calcDatasetLength()),
+	}
 
 	return cltr.main()
 }
 
-func (cltr Collector[Type]) calcDatasetLength() int {
-	length := 0
-
-	if cltr.NotOverflowedItemsQuantity > 0 {
-		length += cltr.NotOverflowedItemsQuantity
-	}
-
-	if cltr.OverflowedItemsQuantity > 0 {
-		length += cltr.OverflowedItemsQuantity
-	}
-
-	return length
-}
-
-func (cltr *Collector[Type]) main() error {
+func (cltr *collector[Type]) main() error {
 	for !cltr.isCollected() {
 		if err := cltr.fillArgs(); err != nil {
 			return err
@@ -138,12 +158,12 @@ func (cltr *Collector[Type]) main() error {
 	return nil
 }
 
-func (cltr *Collector[Type]) isCollected() bool {
-	return cltr.OverflowedItemsQuantity <= 0 && cltr.NotOverflowedItemsQuantity <= 0
+func (cltr *collector[Type]) isCollected() bool {
+	return cltr.overflowedItemsQuantity <= 0 && cltr.notOverflowedItemsQuantity <= 0
 }
 
-func (cltr *Collector[Type]) fillArgs() error {
-	for _, flr := range cltr.Fillers {
+func (cltr *collector[Type]) fillArgs() error {
+	for _, flr := range cltr.opts.Fillers {
 		completed, err := flr.Fill(cltr.args, cltr.args64)
 		if err != nil {
 			return err
@@ -159,15 +179,15 @@ func (cltr *Collector[Type]) fillArgs() error {
 	return ErrNotEnoughDataInFillers
 }
 
-func (cltr *Collector[Type]) isUseArgs() bool {
-	reference, fault := cltr.Reference(cltr.dupArgs64()...)
+func (cltr *collector[Type]) isUseArgs() bool {
+	reference, fault := cltr.opts.Reference(cltr.dupArgs64()...)
 
 	if cltr.isLimited(reference) {
 		return false
 	}
 
 	if reference > cltr.maximum || reference < cltr.minimum {
-		if cltr.OverflowedItemsQuantity <= 0 {
+		if cltr.overflowedItemsQuantity <= 0 {
 			return false
 		}
 
@@ -177,12 +197,12 @@ func (cltr *Collector[Type]) isUseArgs() bool {
 			return false
 		}
 
-		cltr.OverflowedItemsQuantity--
+		cltr.overflowedItemsQuantity--
 
 		return true
 	}
 
-	if cltr.NotOverflowedItemsQuantity <= 0 {
+	if cltr.notOverflowedItemsQuantity <= 0 {
 		return false
 	}
 
@@ -192,17 +212,17 @@ func (cltr *Collector[Type]) isUseArgs() bool {
 		return false
 	}
 
-	cltr.NotOverflowedItemsQuantity--
+	cltr.notOverflowedItemsQuantity--
 
 	return true
 }
 
-func (cltr *Collector[Type]) isLimited(reference int64) bool {
-	if len(cltr.ReferenceLimits) == 0 {
+func (cltr *collector[Type]) isLimited(reference int64) bool {
+	if len(cltr.referenceLimits) == 0 {
 		return false
 	}
 
-	quantity, exists := cltr.ReferenceLimits[reference]
+	quantity, exists := cltr.referenceLimits[reference]
 	if !exists {
 		return false
 	}
@@ -211,12 +231,12 @@ func (cltr *Collector[Type]) isLimited(reference int64) bool {
 		return true
 	}
 
-	cltr.ReferenceLimits[reference]--
+	cltr.referenceLimits[reference]--
 
 	return false
 }
 
-func (cltr *Collector[Type]) isUnique() bool {
+func (cltr *collector[Type]) isUnique() bool {
 	key := string(cltr.item)
 
 	if _, exists := cltr.unique[key]; exists {
@@ -228,12 +248,12 @@ func (cltr *Collector[Type]) isUnique() bool {
 	return true
 }
 
-func (cltr *Collector[Type]) prepareItem(reference int64, fault error) {
+func (cltr *collector[Type]) prepareItem(reference int64, fault error) {
 	cltr.item = prepareItem(cltr.item, reference, fault, cltr.args...)
 }
 
-func (cltr *Collector[Type]) writeItem() error {
-	if _, err := cltr.Writer.Write(cltr.item); err != nil {
+func (cltr *collector[Type]) writeItem() error {
+	if _, err := cltr.writer.Write(cltr.item); err != nil {
 		return err
 	}
 
@@ -241,7 +261,7 @@ func (cltr *Collector[Type]) writeItem() error {
 }
 
 // Protection against changes args64 from the reference function.
-func (cltr *Collector[Type]) dupArgs64() []int64 {
+func (cltr *collector[Type]) dupArgs64() []int64 {
 	copy(cltr.args64Dup, cltr.args64)
 	return cltr.args64Dup
 }

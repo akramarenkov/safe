@@ -17,36 +17,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCollectorIsValid(t *testing.T) {
-	collector := Collector[int8]{
-		Reference: func(...int64) (int64, error) { return 0, nil },
-		Writer:    bytes.NewBuffer(nil),
-	}
-
-	require.NoError(t, collector.IsValid())
-
-	collector = Collector[int8]{
+func TestOptsIsValid(t *testing.T) {
+	opts := Opts[int8]{
 		Reference: func(...int64) (int64, error) { return 0, nil },
 	}
+	require.NoError(t, opts.isValid())
 
-	require.Error(t, collector.IsValid())
-
-	collector = Collector[int8]{
-		Writer: bytes.NewBuffer(nil),
-	}
-
-	require.Error(t, collector.IsValid())
+	opts = Opts[int8]{}
+	require.Error(t, opts.isValid())
 }
 
 func TestCollector(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 1,
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     buffer,
 		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
@@ -61,7 +49,7 @@ func TestCollector(t *testing.T) {
 
 	expected := "false 0 0 0 0 0 0\nfalse 128 127 1 0 0 0\n"
 
-	err := collector.Collect()
+	err := Collect(opts, buffer)
 	require.NoError(t, err)
 	require.Equal(t, expected, buffer.String())
 }
@@ -69,15 +57,14 @@ func TestCollector(t *testing.T) {
 func TestCollectorDefaultFillers(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 1,
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     buffer,
 	}
 
-	err := collector.Collect()
+	err := Collect(opts, buffer)
 	require.NoError(t, err)
 
 	// two dataset items + empty string after last separator
@@ -131,13 +118,12 @@ func testCollectorReferenceLimits(
 ) {
 	buffer.Reset()
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
 		ReferenceLimits:            limits,
-		Writer:                     buffer,
 		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
@@ -150,26 +136,25 @@ func testCollectorReferenceLimits(
 		},
 	}
 
-	err := collector.Collect()
+	err := Collect(opts, buffer)
 	require.NoError(t, err)
 }
 
 func TestCollectorUniqueness(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
-		Writer:                     buffer,
 		Fillers: []filler.Filler[int8]{
 			filler.NewSame[int8](1, 100),
 			filler.NewSame[int8](127, 100),
 		},
 	}
 
-	err := collector.Collect()
+	err := Collect(opts, buffer)
 	require.Equal(t, ErrNotEnoughDataInFillers, err)
 
 	items := strings.Split(buffer.String(), "\n")
@@ -183,69 +168,69 @@ func TestCollectorUniqueness(t *testing.T) {
 }
 
 func TestCollectorCalcDatasetLength(t *testing.T) {
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		NotOverflowedItemsQuantity: 20,
 		OverflowedItemsQuantity:    -1,
 	}
 
-	require.Equal(t, collector.NotOverflowedItemsQuantity, collector.calcDatasetLength())
+	require.Equal(t, opts.NotOverflowedItemsQuantity, opts.calcDatasetLength())
 
-	collector = Collector[int8]{
+	opts = Opts[int8]{
 		NotOverflowedItemsQuantity: -1,
 		OverflowedItemsQuantity:    10,
 	}
 
-	require.Equal(t, collector.OverflowedItemsQuantity, collector.calcDatasetLength())
+	require.Equal(t, opts.OverflowedItemsQuantity, opts.calcDatasetLength())
 
-	collector = Collector[int8]{
+	opts = Opts[int8]{
 		NotOverflowedItemsQuantity: 20,
 		OverflowedItemsQuantity:    10,
 	}
 
 	require.Equal(
 		t,
-		collector.NotOverflowedItemsQuantity+collector.OverflowedItemsQuantity,
-		collector.calcDatasetLength(),
+		opts.NotOverflowedItemsQuantity+opts.OverflowedItemsQuantity,
+		opts.calcDatasetLength(),
 	)
 }
 
 func TestCollectorError(t *testing.T) {
-	collector := Collector[int8]{}
+	opts := Opts[int8]{}
 
-	err := collector.Collect()
+	err := Collect(opts, bytes.NewBuffer(nil))
 	require.Error(t, err)
 
-	collector = Collector[int8]{
+	opts = Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 1,
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     wrecker.New(wrecker.Opts{Error: io.ErrUnexpectedEOF}),
 	}
 
-	err = collector.Collect()
+	err = Collect(opts, nil)
+	require.Error(t, err)
+
+	err = Collect(opts, wrecker.New(wrecker.Opts{Error: io.ErrUnexpectedEOF}))
 	require.Equal(t, io.ErrUnexpectedEOF, err)
 
-	collector = Collector[int8]{
+	opts = Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 1,
 		OverflowedItemsQuantity:    1,
 		Reference:                  testReference,
-		Writer:                     bytes.NewBuffer(nil),
 		Fillers: []filler.Filler[int8]{
 			filler.NewFaulty[int8](),
 		},
 	}
 
-	err = collector.Collect()
+	err = Collect(opts, bytes.NewBuffer(nil))
 	require.Equal(t, filler.ErrFaulty, err)
 
-	collector = Collector[int8]{
+	opts = Opts[int8]{
 		ArgsQuantity:               2,
 		NotOverflowedItemsQuantity: 1 << 16,
 		OverflowedItemsQuantity:    1 << 16,
 		Reference:                  testReference,
-		Writer:                     bytes.NewBuffer(nil),
 		Fillers: []filler.Filler[int8]{
 			filler.NewSet(
 				func() []int8 {
@@ -258,21 +243,21 @@ func TestCollectorError(t *testing.T) {
 		},
 	}
 
-	err = collector.Collect()
+	err = Collect(opts, bytes.NewBuffer(nil))
 	require.Equal(t, ErrNotEnoughDataInFillers, err)
 }
 
 func TestCollectorFileError(t *testing.T) {
 	filePath := filepath.Join(t.TempDir(), "")
 
-	collector := Collector[int8]{
+	opts := Opts[int8]{
 		ArgsQuantity:               5,
 		NotOverflowedItemsQuantity: 10,
 		OverflowedItemsQuantity:    10,
 		Reference:                  testReference,
 	}
 
-	err := collector.CollectToFile(filePath)
+	err := CollectToFile(opts, filePath)
 	require.Error(t, err)
 }
 

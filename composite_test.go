@@ -442,14 +442,14 @@ func TestAddSubDivCollectDatasetSig(t *testing.T) {
 		return (args[0] + args[1] - args[2]) / args[3], nil
 	}
 
-	collector := dataset.Collector[int8]{
+	opts := dataset.Opts[int8]{
 		ArgsQuantity:               4,
 		NotOverflowedItemsQuantity: 1 << 14,
 		OverflowedItemsQuantity:    1 << 14,
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("testdata/addsubdiv/signed")
+	err := dataset.CollectToFile(opts, "testdata/addsubdiv/signed")
 	require.NoError(t, err)
 }
 
@@ -466,14 +466,14 @@ func TestAddSubDivCollectDatasetUns(t *testing.T) {
 		return (args[0] + args[1] - args[2]) / args[3], nil
 	}
 
-	collector := dataset.Collector[uint8]{
+	opts := dataset.Opts[uint8]{
 		ArgsQuantity:               4,
 		NotOverflowedItemsQuantity: 1 << 14,
 		OverflowedItemsQuantity:    1 << 14,
 		Reference:                  reference,
 	}
 
-	err := collector.CollectToFile("testdata/addsubdiv/unsigned")
+	err := dataset.CollectToFile(opts, "testdata/addsubdiv/unsigned")
 	require.NoError(t, err)
 }
 
