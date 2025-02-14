@@ -18,7 +18,7 @@ import (
 
 type inspector[Type types.UpToI32] struct {
 	// Inspected function
-	inspected func(args ...Type) (Type, error)
+	inspected types.Inspected[Type, Type]
 	// Reader associated with dataset source
 	reader io.Reader
 
@@ -37,7 +37,7 @@ type inspector[Type types.UpToI32] struct {
 
 // Performs inspecting with dataset from file.
 func InspectFromFile[Type types.UpToI32](
-	inspected func(args ...Type) (Type, error),
+	inspected types.Inspected[Type, Type],
 	path string,
 ) (types.Result[Type, Type, int64], error) {
 	file, err := os.Open(path)
@@ -52,7 +52,7 @@ func InspectFromFile[Type types.UpToI32](
 
 // Performs inspecting with dataset from reader.
 func Inspect[Type types.UpToI32](
-	inspected func(args ...Type) (Type, error),
+	inspected types.Inspected[Type, Type],
 	reader io.Reader,
 ) (types.Result[Type, Type, int64], error) {
 	if inspected == nil {
