@@ -12,27 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIsValid(t *testing.T) {
-	opts := Opts[int8, int8, int64]{
-		Inspected: func(...int8) (int8, error) { return 0, nil },
-		Reference: func(...int64) (int64, error) { return 0, nil },
-	}
-
-	require.NoError(t, opts.isValid())
-
-	opts = Opts[int8, int8, int64]{
-		Inspected: func(...int8) (int8, error) { return 0, nil },
-	}
-
-	require.Error(t, opts.isValid())
-
-	opts = Opts[int8, int8, int64]{
-		Reference: func(...int64) (int64, error) { return 0, nil },
-	}
-
-	require.Error(t, opts.isValid())
-}
-
 func TestDoSig(t *testing.T) {
 	opts := Opts[int8, int8, int64]{
 		LoopsQuantity: 3,
@@ -85,6 +64,22 @@ func TestDoError(t *testing.T) {
 	}
 
 	_, err := Do(opts)
+	require.Error(t, err)
+
+	opts = Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+		Inspected:     func(...int8) (int8, error) { return 0, nil },
+	}
+
+	_, err = Do(opts)
+	require.Error(t, err)
+
+	opts = Opts[int8, int8, int64]{
+		LoopsQuantity: 3,
+		Reference:     func(...int64) (int64, error) { return 0, nil },
+	}
+
+	_, err = Do(opts)
 	require.Error(t, err)
 }
 

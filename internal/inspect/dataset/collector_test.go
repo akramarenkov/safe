@@ -17,16 +17,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOptsIsValid(t *testing.T) {
-	opts := Opts[int8]{
-		Reference: func(...int64) (int64, error) { return 0, nil },
-	}
-	require.NoError(t, opts.isValid())
-
-	opts = Opts[int8]{}
-	require.Error(t, opts.isValid())
-}
-
 func TestOptsDatasetLength(t *testing.T) {
 	opts := Opts[int8]{
 		NotOverflowedItemsQuantity: 20,
