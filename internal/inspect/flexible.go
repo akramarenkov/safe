@@ -2,6 +2,8 @@ package inspect
 
 import (
 	"github.com/akramarenkov/safe/internal/inspect/types"
+
+	"github.com/akramarenkov/intspec"
 )
 
 // Options of inspecting. A inspected and reference functions must be specified.
@@ -53,13 +55,13 @@ func Do[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64](
 		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
 	}
 
-	minimum, maximum := ConvSpan[TypeTo, TypeRef]()
+	minimum, maximum := intspec.Range[TypeTo]()
 
 	insp := &inspector[TypeFrom, TypeTo, TypeRef]{
 		opts: opts,
 
-		minimum: minimum,
-		maximum: maximum,
+		minimum: TypeRef(minimum),
+		maximum: TypeRef(maximum),
 
 		argsFrom: make([]TypeFrom, opts.LoopsQuantity),
 		argsRef:  make([]TypeRef, opts.LoopsQuantity),
@@ -183,7 +185,8 @@ func getSpan[TypeFrom types.UpToUSI32, TypeRef types.SIF64](
 	span func() (TypeFrom, TypeFrom),
 ) (TypeRef, TypeRef) {
 	if span == nil {
-		return ConvSpan[TypeFrom, TypeRef]()
+		minimum, maximum := intspec.Range[TypeFrom]()
+		return TypeRef(minimum), TypeRef(maximum)
 	}
 
 	begin, end := span()

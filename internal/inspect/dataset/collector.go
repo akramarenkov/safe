@@ -116,7 +116,7 @@ func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
 
 	opts = opts.normalize()
 
-	minimum, maximum := inspect.ConvSpan[Type, int64]()
+	minimum, maximum := intspec.Range[Type]()
 
 	cltr := &collector[Type]{
 		opts: opts,
@@ -127,8 +127,8 @@ func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
 		notOverflowedItemsQuantity: opts.NotOverflowedItemsQuantity,
 		overflowedItemsQuantity:    opts.OverflowedItemsQuantity,
 
-		minimum: minimum,
-		maximum: maximum,
+		minimum: int64(minimum),
+		maximum: int64(maximum),
 
 		args:      make([]Type, opts.ArgsQuantity),
 		args64:    make([]int64, opts.ArgsQuantity),

@@ -63,14 +63,14 @@ func Inspect[Type types.UpToUSI32](
 		return types.Result[Type, Type, int64]{}, ErrReaderNotSpecified
 	}
 
-	minimum, maximum := inspect.ConvSpan[Type, int64]()
+	minimum, maximum := intspec.Range[Type]()
 
 	insp := &inspector[Type]{
 		inspected: inspected,
 		reader:    reader,
 
-		minimum: minimum,
-		maximum: maximum,
+		minimum: int64(minimum),
+		maximum: int64(maximum),
 
 		args:    reusable.New[Type](0),
 		argsDup: reusable.New[Type](0),

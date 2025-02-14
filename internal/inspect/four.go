@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	"github.com/akramarenkov/safe/internal/inspect/types"
+
+	"github.com/akramarenkov/intspec"
 )
 
 // Inspected function with four arguments.
@@ -39,14 +41,14 @@ func Do4[Type types.USI8](
 		return types.Result[Type, Type, int64]{}, ErrReferenceNotSpecified
 	}
 
-	minimum, maximum := ConvSpan[Type, int64]()
+	minimum, maximum := intspec.Range[Type]()
 
 	insp := &inspector4[Type]{
 		inspected: inspected,
 		reference: reference,
 
-		minimum: minimum,
-		maximum: maximum,
+		minimum: int64(minimum),
+		maximum: int64(maximum),
 	}
 
 	return insp.do(), nil
