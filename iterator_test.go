@@ -602,7 +602,7 @@ func TestStepSizeSig(t *testing.T) {
 
 				actual := StepSize(begin, end, step)
 
-				// duplication of conditions is done for performance reasons
+				// Duplication of conditions is done for performance reasons
 				if actual != reference {
 					require.Equal(
 						t,
@@ -631,7 +631,7 @@ func TestStepSizeUns(t *testing.T) {
 
 				actual := StepSize(begin, end, step)
 
-				// duplication of conditions is done for performance reasons
+				// Duplication of conditions is done for performance reasons
 				if actual != reference {
 					require.Equal(
 						t,

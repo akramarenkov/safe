@@ -178,6 +178,7 @@ func AddDivU[Type constraints.Unsigned](first, second, divisor Type) (Type, erro
 
 	// For unsigned types, the maximum value for the type in case of overflow can be
 	// calculated
+	//
 	// complement := second - excess
 	// maximum := first + complement
 	maximum := ^Type(0)
@@ -272,7 +273,7 @@ func SubDiv[Type constraints.Integer](minuend, subtrahend, divisor Type) (Type, 
 	qe := excess / divisor
 	re := excess % divisor
 
-	// excess is overflowed, sign inversion performed
+	// Excess is overflowed, sign inversion performed
 	if excess < 0 {
 		negated, err := Negate(qe)
 		if err != nil {

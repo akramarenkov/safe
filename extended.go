@@ -447,7 +447,7 @@ func Pow[Type, TypePower constraints.Integer](base Type, power TypePower) (Type,
 	powered := base
 
 	for step := TypePower(1); step < power; step++ {
-		// overflow must be checked at each multiplication step
+		// Overflow must be checked at each multiplication step
 		product, err := Mul(powered, base)
 		if err != nil {
 			return 0, err

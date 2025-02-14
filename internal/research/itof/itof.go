@@ -56,20 +56,20 @@ func findLastLosslesslyPositive[TypeTo constraints.Float, TypeFrom constraints.I
 
 		exponent, err := safe.Pow10[TypeFrom](power)
 		if err != nil {
-			// too large a power for a given integer type, try a smaller power
+			// Too large a power for a given integer type, try a smaller power
 			continue
 		}
 
 		for multiplier := TypeFrom(1); multiplier <= consts.DecimalBase; multiplier++ {
 			current, err := safe.Mul(multiplier, exponent)
 			if err != nil {
-				// too large a number for a given integer type, try a smaller power
+				// Too large a number for a given integer type, try a smaller power
 				break
 			}
 
 			base, err := safe.Add(previous, current)
 			if err != nil {
-				// too large a number for a given integer type, try a smaller power
+				// Too large a number for a given integer type, try a smaller power
 				break
 			}
 
@@ -116,20 +116,20 @@ func findLastLosslesslyNegative[TypeTo constraints.Float, TypeFrom constraints.I
 
 		exponent, err := safe.Pow10[TypeFrom](power)
 		if err != nil {
-			// too large a power for a given integer type, try a smaller power
+			// Too large a power for a given integer type, try a smaller power
 			continue
 		}
 
 		for multiplier := TypeFrom(1); multiplier <= consts.DecimalBase; multiplier++ {
 			current, err := safe.Mul(multiplier, exponent)
 			if err != nil {
-				// too large a number for a given integer type, try a smaller power
+				// Too large a number for a given integer type, try a smaller power
 				break
 			}
 
 			base, err := safe.Sub(previous, current)
 			if err != nil {
-				// too large a number for a given integer type, try a smaller power
+				// Too large a number for a given integer type, try a smaller power
 				break
 			}
 
@@ -260,7 +260,7 @@ func IsSequenceLosslessly[TypeTo constraints.Float, TypeFrom constraints.Integer
 		}
 	}
 
-	// prevents infinite loop when end is equal maximum value of type
+	// Prevents infinite loop when end is equal maximum value of type
 	return passThroughFloat[TypeTo](end) == end, nil
 }
 

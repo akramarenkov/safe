@@ -68,7 +68,7 @@ func (inc *Incrementor[Type]) Test(args ...Type) error {
 }
 
 func (inc *Incrementor[Type]) increase() {
-	// smaller the id, the more nested the loop it corresponds to and vice versa
+	// Smaller the id, the more nested the loop it corresponds to and vice versa
 	for id := range inc.expected {
 		inc.expected[id]++
 

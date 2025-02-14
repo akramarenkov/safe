@@ -18,14 +18,19 @@ import (
 type Opts[Type types.UpToI32] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
+
 	// Quantity of dataset items which not produce overflow of inspected function
 	NotOverflowedItemsQuantity int
+
 	// Quantity of dataset items which produce overflow of inspected function
 	OverflowedItemsQuantity int
+
 	// Function that returns a reference value
 	types.Reference[int64]
+
 	// Quantity limits for reference values
 	ReferenceLimits map[int64]uint
+
 	// List of fillers that fill arguments of dataset item (reference function) by
 	// values. If not specified will be used filler [filler.Set] with
 	// [filler.Boundaries] setter and filler [filler.Rand]
@@ -73,6 +78,7 @@ type collector[Type types.UpToI32] struct {
 
 	// Quantity of dataset items which not produce overflow of inspected function
 	notOverflowedItemsQuantity int
+
 	// Quantity of dataset items which produce overflow of inspected function
 	overflowedItemsQuantity int
 

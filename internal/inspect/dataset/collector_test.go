@@ -84,7 +84,7 @@ func TestCollectDefaultFillers(t *testing.T) {
 	err := Collect(opts, buffer)
 	require.NoError(t, err)
 
-	// two dataset items + empty string after last separator
+	// Two dataset items + empty string after last separator
 	require.Len(t, strings.Split(buffer.String(), "\n"), 3)
 }
 
@@ -180,7 +180,7 @@ func TestCollectUniqueness(t *testing.T) {
 
 	require.Equal(t, slices.Compact(slices.Clone(items)), items)
 
-	// two dataset items + empty string after last separator
+	// Two dataset items + empty string after last separator
 	require.Len(t, items, 3)
 }
 

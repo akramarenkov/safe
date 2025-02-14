@@ -19,6 +19,7 @@ import (
 type inspector[Type types.UpToI32] struct {
 	// Inspected function
 	inspected types.Inspected[Type, Type]
+
 	// Reader associated with dataset source
 	reader io.Reader
 

@@ -206,7 +206,7 @@ func TestLoopSig(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...int8) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
@@ -225,7 +225,7 @@ func TestLoopUns(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...uint8) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
@@ -248,7 +248,7 @@ func TestLoopSpanSig(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...int8) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
@@ -275,7 +275,7 @@ func TestLoopSpanUns(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...uint8) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
@@ -298,7 +298,7 @@ func TestLoopFloatU16(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...uint16) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}
@@ -322,7 +322,7 @@ func TestLoopFloatU32(t *testing.T) {
 	require.NoError(t, err)
 
 	do := func(args ...uint32) bool {
-		// duplication of conditions is done for performance reasons
+		// Duplication of conditions is done for performance reasons
 		if err := incr.Test(args...); err != nil {
 			require.NoError(t, err)
 		}

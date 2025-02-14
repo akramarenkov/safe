@@ -154,7 +154,7 @@ func Step[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Typ
 			previous := begin
 
 			for number := begin; number >= end; number -= step {
-				// integer overflow
+				// Integer overflow
 				if number > previous {
 					return
 				}
@@ -175,7 +175,7 @@ func Step[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, Typ
 		previous := begin
 
 		for number := begin; number <= end; number += step {
-			// integer overflow
+			// Integer overflow
 			if number < previous {
 				return
 			}
@@ -246,7 +246,7 @@ func IncStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 		previous := begin
 
 		for number := begin; number <= end; number += step {
-			// integer overflow
+			// Integer overflow
 			if number < previous {
 				return
 			}
@@ -308,7 +308,7 @@ func DecStep[Type constraints.Integer](begin, end, step Type) iter.Seq2[uint64, 
 		previous := begin
 
 		for number := begin; number >= end; number -= step {
-			// integer overflow
+			// Integer overflow
 			if number > previous {
 				return
 			}

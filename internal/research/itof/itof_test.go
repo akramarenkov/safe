@@ -144,7 +144,7 @@ func TestPassThroughFloat(t *testing.T) {
 		passThroughFloat[float32](math.MinInt32),
 	)
 
-	// there is a loss of precision
+	// There is a loss of precision
 	require.NotEqual(
 		t,
 		math.MaxInt32,
@@ -178,7 +178,7 @@ func TestPassThroughFloat(t *testing.T) {
 		passThroughFloat[float64](int64(math.MinInt64)),
 	)
 
-	// there is a loss of precision
+	// There is a loss of precision
 	require.NotEqual(
 		t,
 		int64(math.MaxInt64),

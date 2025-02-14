@@ -18,6 +18,7 @@ type Reference5 func(first, second, third, fourth, fifth int64) (int64, error)
 type inspector5[Type types.I8] struct {
 	// Inspected function with five arguments
 	inspected Inspected5[Type]
+
 	// Function with five arguments that returns a reference value
 	reference Reference5
 
@@ -109,7 +110,7 @@ func (insp *inspector5[Type]) do() types.Result[Type, Type, int64] {
 		result.ReferenceFaults += interim.ReferenceFaults
 
 		if received == parallelization {
-			break // for coverage
+			break // For coverage
 		}
 	}
 

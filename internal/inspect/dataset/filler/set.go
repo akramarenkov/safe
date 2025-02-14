@@ -54,14 +54,14 @@ func (bnd *Set[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 }
 
 func (bnd *Set[Type]) extendIndices(args []int64) {
-	// extension corresponds to the addition of top-level loops
+	// Extension corresponds to the addition of top-level loops
 	if len(args) > len(bnd.indices) {
 		bnd.indices = append(bnd.indices, make([]int, len(args)-len(bnd.indices))...)
 	}
 }
 
 func (bnd *Set[Type]) increase() {
-	// smaller the id, the more nested the loop it corresponds to and vice versa
+	// Smaller the id, the more nested the loop it corresponds to and vice versa
 	for id := range bnd.indices {
 		bnd.indices[id]++
 
