@@ -9,8 +9,3 @@ var (
 	ErrReferenceNotSpecified = errors.New("reference function is not specified")
 	ErrUnexpectedError       = errors.New("received unexpected error")
 )
-
-// Used only in tests.
-var (
-	ErrOverflow = errors.New("overflow")
-)

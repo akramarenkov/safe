@@ -81,7 +81,7 @@ func TestDo5NegativeConclusionSig(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _, _ int8) (int8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth int8) (int8, error) {
@@ -89,14 +89,14 @@ func TestDo5NegativeConclusionSig(t *testing.T) {
 			int64(fifth)
 
 		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	result, err := Do5(errorExpected, testReference5)
@@ -126,7 +126,7 @@ func TestDo5NegativeConclusionUns(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _, _ uint8) (uint8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(first, second, third, fourth, fifth uint8) (uint8, error) {
@@ -134,14 +134,14 @@ func TestDo5NegativeConclusionUns(t *testing.T) {
 			int64(fifth)
 
 		if reference > math.MaxUint8 || reference < 0 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _, _ int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	result, err := Do5(errorExpected, testReference5)
@@ -193,7 +193,7 @@ func testInspected5Sig(first, second, third, fourth, fifth int8) (int8, error) {
 		int64(fifth)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return int8(reference), nil
@@ -204,7 +204,7 @@ func testInspected5Uns(first, second, third, fourth, fifth uint8) (uint8, error)
 		int64(fifth)
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return uint8(reference), nil

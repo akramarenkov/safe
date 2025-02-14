@@ -69,21 +69,21 @@ func TestDo4NegativeConclusionSig(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _ int8) (int8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(first, second, third, fourth int8) (int8, error) {
 		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _ int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	result, err := Do4(errorExpected, testReference4)
@@ -113,21 +113,21 @@ func TestDo4NegativeConclusionUns(t *testing.T) {
 	}
 
 	unexpectedError := func(_, _, _, _ uint8) (uint8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(first, second, third, fourth uint8) (uint8, error) {
 		reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 		if reference > math.MaxUint8 || reference < 0 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(_, _, _, _ int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	result, err := Do4(errorExpected, testReference4)
@@ -173,7 +173,7 @@ func testInspected4Sig(first, second, third, fourth int8) (int8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return int8(reference), nil
@@ -183,7 +183,7 @@ func testInspected4Uns(first, second, third, fourth uint8) (uint8, error) {
 	reference := int64(first) + int64(second) + int64(third) + int64(fourth)
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return uint8(reference), nil

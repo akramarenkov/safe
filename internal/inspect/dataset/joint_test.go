@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 	"github.com/akramarenkov/safe/internal/inspect/types"
 
@@ -101,7 +100,7 @@ func testInspectedSig(args ...int8) (int8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, inspect.ErrOverflow
+		return 0, errOverflow
 	}
 
 	return int8(reference), nil
@@ -111,7 +110,7 @@ func testInspectedUns(args ...uint8) (uint8, error) {
 	reference := testReference8(args...)
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, inspect.ErrOverflow
+		return 0, errOverflow
 	}
 
 	return uint8(reference), nil

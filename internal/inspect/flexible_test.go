@@ -89,21 +89,21 @@ func TestDoNegativeConclusionSig(t *testing.T) {
 	}
 
 	unexpectedError := func(...int8) (int8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(args ...int8) (int8, error) {
 		reference := int64(args[0]) + int64(args[1])
 
 		if reference > math.MaxInt8 || reference < math.MinInt8 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(...int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	opts := Opts[int8, int8, int64]{
@@ -147,21 +147,21 @@ func TestDoNegativeConclusionUns(t *testing.T) {
 	}
 
 	unexpectedError := func(...uint8) (uint8, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	notEqual := func(args ...uint8) (uint8, error) {
 		reference := int64(args[0]) + int64(args[1])
 
 		if reference > math.MaxUint8 || reference < 0 {
-			return 0, ErrOverflow
+			return 0, errOverflow
 		}
 
 		return 0, nil
 	}
 
 	referenceFault := func(...int64) (int64, error) {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	opts := Opts[uint8, uint8, int64]{
@@ -487,7 +487,7 @@ func testInspected2Sig(args ...int8) (int8, error) {
 	reference := int64(args[0]) + int64(args[1])
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return int8(reference), nil
@@ -497,7 +497,7 @@ func testInspected2Uns(args ...uint8) (uint8, error) {
 	reference := int64(args[0]) + int64(args[1])
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return uint8(reference), nil
@@ -507,7 +507,7 @@ func testInspected3Sig(args ...int8) (int8, error) {
 	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
 
 	if reference > math.MaxInt8 || reference < math.MinInt8 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return int8(reference), nil
@@ -517,7 +517,7 @@ func testInspected3Uns(args ...uint8) (uint8, error) {
 	reference := int64(args[0]) + int64(args[1]) + int64(args[2])
 
 	if reference > math.MaxUint8 || reference < 0 {
-		return 0, ErrOverflow
+		return 0, errOverflow
 	}
 
 	return uint8(reference), nil
