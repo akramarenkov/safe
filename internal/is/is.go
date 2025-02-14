@@ -1,4 +1,5 @@
-// Package with assist functions that verify variables to corresponds some conditions.
+// Internal package with assist functions that verify variables to corresponds some
+// conditions.
 package is
 
 import (
