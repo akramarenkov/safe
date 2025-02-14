@@ -10,12 +10,12 @@ import (
 )
 
 // Inspected function with four arguments.
-type Inspected4[Type types.USI8] func(first, second, third, fourth Type) (Type, error)
+type Inspected4[Type types.I8] func(first, second, third, fourth Type) (Type, error)
 
 // Function with four arguments that returns a reference value.
 type Reference4 func(first, second, third, fourth int64) (int64, error)
 
-type inspector4[Type types.USI8] struct {
+type inspector4[Type types.I8] struct {
 	// Inspected function with four arguments
 	inspected Inspected4[Type]
 	// Function with four arguments that returns a reference value
@@ -29,7 +29,7 @@ type inspector4[Type types.USI8] struct {
 // Performs inspection with four arguments.
 //
 // A inspected and reference functions must be specified.
-func Do4[Type types.USI8](
+func Do4[Type types.I8](
 	inspected Inspected4[Type],
 	reference Reference4,
 ) (types.Result[Type, Type, int64], error) {

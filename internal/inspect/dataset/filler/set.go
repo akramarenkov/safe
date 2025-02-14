@@ -5,7 +5,7 @@ import (
 )
 
 // Fills arguments with values ​from set.
-type Set[Type types.UpToUSI32] struct {
+type Set[Type types.UpToI32] struct {
 	completed bool
 	indices   []int
 	set       []Type
@@ -14,7 +14,7 @@ type Set[Type types.UpToUSI32] struct {
 // Creates filler that fill arguments with values ​from set.
 //
 // If setter functions was not specified then [Boundaries] function will be used.
-func NewSet[Type types.UpToUSI32](setters ...func() []Type) *Set[Type] {
+func NewSet[Type types.UpToI32](setters ...func() []Type) *Set[Type] {
 	bnd := &Set[Type]{}
 
 	for _, setter := range setters {

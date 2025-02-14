@@ -12,7 +12,7 @@ var (
 )
 
 // Returns values from begin to end inclusive.
-func Span[Type types.UpToUSI32](begin, end Type) []Type {
+func Span[Type types.UpToI32](begin, end Type) []Type {
 	if begin > end {
 		panic(ErrBeginGreaterEnd)
 	}

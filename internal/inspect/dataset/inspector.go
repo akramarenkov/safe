@@ -16,7 +16,7 @@ import (
 	"github.com/akramarenkov/reusable"
 )
 
-type inspector[Type types.UpToUSI32] struct {
+type inspector[Type types.UpToI32] struct {
 	// Inspected function
 	inspected func(args ...Type) (Type, error)
 	// Reader associated with dataset source
@@ -36,7 +36,7 @@ type inspector[Type types.UpToUSI32] struct {
 }
 
 // Performs inspecting with dataset from file.
-func InspectFromFile[Type types.UpToUSI32](
+func InspectFromFile[Type types.UpToI32](
 	inspected func(args ...Type) (Type, error),
 	path string,
 ) (types.Result[Type, Type, int64], error) {
@@ -51,7 +51,7 @@ func InspectFromFile[Type types.UpToUSI32](
 }
 
 // Performs inspecting with dataset from reader.
-func Inspect[Type types.UpToUSI32](
+func Inspect[Type types.UpToI32](
 	inspected func(args ...Type) (Type, error),
 	reader io.Reader,
 ) (types.Result[Type, Type, int64], error) {
@@ -134,7 +134,7 @@ func (insp *inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 	return fault, reference, args, nil
 }
 
-func parseArg[Type types.UpToUSI32](field string) (Type, error) {
+func parseArg[Type types.UpToI32](field string) (Type, error) {
 	size := intspec.BitSize[Type]()
 
 	if is.Signed[Type]() {

@@ -15,7 +15,7 @@ var (
 )
 
 // Checks that the arguments change as if they were incremented by nested loops.
-type Incrementor[Type types.UpToUSI32] struct {
+type Incrementor[Type types.UpToI32] struct {
 	begin Type
 	end   Type
 
@@ -23,7 +23,7 @@ type Incrementor[Type types.UpToUSI32] struct {
 }
 
 // Creates Incrementor instance.
-func New[Type types.UpToUSI32](
+func New[Type types.UpToI32](
 	loopsQuantity uint,
 	begin Type,
 	end Type,

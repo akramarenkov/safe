@@ -2,28 +2,28 @@
 package types
 
 // Constraints by 8-bit integer types.
-type USI8 interface {
+type I8 interface {
 	~int8 | ~uint8
 }
 
 // Constraints by up to 32-bit integer types.
-type UpToUSI32 interface {
-	USI8 | ~int16 | ~uint16 | ~int32 | ~uint32
+type UpToI32 interface {
+	I8 | ~int16 | ~uint16 | ~int32 | ~uint32
 }
 
 // Constraints by 64-bit signed integer and floating point types.
-type SIF64 interface {
+type IF64 interface {
 	~int64 | ~float64
 }
 
 // Inspected function.
-type Inspected[TypeFrom, TypeTo UpToUSI32] func(args ...TypeFrom) (TypeTo, error)
+type Inspected[TypeFrom, TypeTo UpToI32] func(args ...TypeFrom) (TypeTo, error)
 
 // Function that returns a reference value.
-type Reference[TypeRef SIF64] func(args ...TypeRef) (TypeRef, error)
+type Reference[TypeRef IF64] func(args ...TypeRef) (TypeRef, error)
 
 // Inspection result.
-type Result[TypeFrom, TypeTo UpToUSI32, TypeRef SIF64] struct {
+type Result[TypeFrom, TypeTo UpToI32, TypeRef IF64] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error

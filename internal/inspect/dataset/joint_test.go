@@ -86,7 +86,7 @@ func testReference(args ...int64) (int64, error) {
 	return reference, nil
 }
 
-func testReference8[Type types.USI8](args ...Type) int64 {
+func testReference8[Type types.I8](args ...Type) int64 {
 	reference := int64(0)
 
 	for _, arg := range args {
@@ -116,7 +116,7 @@ func testInspectedUns(args ...uint8) (uint8, error) {
 	return uint8(reference), nil
 }
 
-func testInspectedUnsafe[Type types.USI8](args ...Type) Type {
+func testInspectedUnsafe[Type types.I8](args ...Type) Type {
 	sum := Type(0)
 
 	for _, arg := range args {

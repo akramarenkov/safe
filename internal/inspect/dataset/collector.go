@@ -15,7 +15,7 @@ import (
 )
 
 // Options of collecting. A reference function must be specified.
-type Opts[Type types.UpToUSI32] struct {
+type Opts[Type types.UpToI32] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
 	// Quantity of dataset items which not produce overflow of inspected function
@@ -62,7 +62,7 @@ func (opts Opts[Type]) datasetLength() int {
 	return length
 }
 
-type collector[Type types.UpToUSI32] struct {
+type collector[Type types.UpToI32] struct {
 	opts Opts[Type]
 
 	// Writer associated with dataset storage
@@ -93,7 +93,7 @@ type collector[Type types.UpToUSI32] struct {
 }
 
 // Performs collecting dataset to file.
-func CollectToFile[Type types.UpToUSI32](opts Opts[Type], path string) error {
+func CollectToFile[Type types.UpToI32](opts Opts[Type], path string) error {
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, defaultFileMode)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func CollectToFile[Type types.UpToUSI32](opts Opts[Type], path string) error {
 }
 
 // Performs collecting dataset to writer.
-func Collect[Type types.UpToUSI32](opts Opts[Type], writer io.Writer) error {
+func Collect[Type types.UpToI32](opts Opts[Type], writer io.Writer) error {
 	if err := opts.isValid(); err != nil {
 		return err
 	}
@@ -267,7 +267,7 @@ func (cltr *collector[Type]) dupArgs64() []int64 {
 }
 
 // Writes dataset item to specified writer.
-func WriteItem[Type types.UpToUSI32](
+func WriteItem[Type types.UpToI32](
 	writer io.Writer,
 	reference types.Reference[int64],
 	args ...Type,
@@ -291,7 +291,7 @@ func WriteItem[Type types.UpToUSI32](
 	return nil
 }
 
-func prepareItem[Type types.UpToUSI32](
+func prepareItem[Type types.UpToI32](
 	buffer []byte,
 	reference int64,
 	fault error,
@@ -314,7 +314,7 @@ func prepareItem[Type types.UpToUSI32](
 	return buffer
 }
 
-func calcMaxItemLength[Type types.UpToUSI32](argsQuantity int) int {
+func calcMaxItemLength[Type types.UpToI32](argsQuantity int) int {
 	const (
 		maxFaultLen        = len("false")
 		maxReferenceLen    = len(" -9223372036854775808")

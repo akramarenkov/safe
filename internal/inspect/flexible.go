@@ -7,7 +7,7 @@ import (
 )
 
 // Options of inspecting. A inspected and reference functions must be specified.
-type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
+type Opts[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
 	// Number of nested loops, i.e. the number of generated arguments for reference and
 	// inspected functions. A value greater than three is not recommended due to low
 	// performance
@@ -20,7 +20,7 @@ type Opts[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
 	types.Reference[TypeRef]
 }
 
-type inspector[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64] struct {
+type inspector[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
 	opts Opts[TypeFrom, TypeTo, TypeRef]
 
 	// Minimum and maximum value for specified TypeTo type
@@ -48,7 +48,7 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) isValid() error {
 }
 
 // Performs inspection.
-func Do[TypeFrom, TypeTo types.UpToUSI32, TypeRef types.SIF64](
+func Do[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64](
 	opts Opts[TypeFrom, TypeTo, TypeRef],
 ) (types.Result[TypeFrom, TypeTo, TypeRef], error) {
 	if err := opts.isValid(); err != nil {
@@ -146,7 +146,7 @@ func (insp *inspector[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 	return false
 }
 
-func loop[TypeRef types.SIF64, TypeFrom types.UpToUSI32](
+func loop[TypeRef types.IF64, TypeFrom types.UpToI32](
 	level uint,
 	span func() (TypeFrom, TypeFrom),
 	do func(args ...TypeFrom) bool,
@@ -181,7 +181,7 @@ func loop[TypeRef types.SIF64, TypeFrom types.UpToUSI32](
 	return false
 }
 
-func getSpan[TypeFrom types.UpToUSI32, TypeRef types.SIF64](
+func getSpan[TypeFrom types.UpToI32, TypeRef types.IF64](
 	span func() (TypeFrom, TypeFrom),
 ) (TypeRef, TypeRef) {
 	if span == nil {
