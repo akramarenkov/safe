@@ -8,7 +8,7 @@ require (
 	github.com/akramarenkov/reusable v0.1.4
 	github.com/akramarenkov/wrecker v0.1.3
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac
+	golang.org/x/exp v0.0.0-20250215185904-eff6e970281f
 )
 
 require (
