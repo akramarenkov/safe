@@ -73,7 +73,7 @@ func findLastLosslesslyPositive[TypeTo constraints.Float, TypeFrom constraints.I
 				break
 			}
 
-			number, beginning, finded, err := findLosslessly[TypeTo](
+			number, beginning, found, err := findLosslessly[TypeTo](
 				base,
 				losslesslyLength,
 				sign,
@@ -82,7 +82,7 @@ func findLastLosslesslyPositive[TypeTo constraints.Float, TypeFrom constraints.I
 				return 0, false, err
 			}
 
-			if finded {
+			if found {
 				return number, true, nil
 			}
 
@@ -133,7 +133,7 @@ func findLastLosslesslyNegative[TypeTo constraints.Float, TypeFrom constraints.I
 				break
 			}
 
-			number, beginning, finded, err := findLosslessly[TypeTo](
+			number, beginning, found, err := findLosslessly[TypeTo](
 				base,
 				losslesslyLength,
 				sign,
@@ -142,7 +142,7 @@ func findLastLosslesslyNegative[TypeTo constraints.Float, TypeFrom constraints.I
 				return 0, false, err
 			}
 
-			if finded {
+			if found {
 				return number, true, nil
 			}
 

@@ -90,7 +90,7 @@ func TestInspectConvertErrorSig(t *testing.T) {
 	require.Error(t, err)
 
 	buffer.Reset()
-	buffer.WriteString("flase 2 1 1")
+	buffer.WriteString("error 2 1 1")
 
 	_, err = Inspect(testInspectedSig, buffer)
 	require.Error(t, err)

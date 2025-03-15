@@ -8,66 +8,66 @@ import (
 )
 
 func TestFindLastLosslessly(t *testing.T) {
-	number, finded, err := FindLastLosslessly[float32, uint64](1, 0)
+	number, found, err := FindLastLosslessly[float32, uint64](1, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(10000000000), number)
 
-	number, finded, err = FindLastLosslessly[float64, uint64](1, 0)
+	number, found, err = FindLastLosslessly[float64, uint64](1, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(10000000000000000000), number)
 
-	number, finded, err = FindLastLosslessly[float32, uint64](2, 0)
+	number, found, err = FindLastLosslessly[float32, uint64](2, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(1<<24), number)
 
-	number, finded, err = FindLastLosslessly[float64, uint64](2, 0)
+	number, found, err = FindLastLosslessly[float64, uint64](2, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(1<<53), number)
 
-	number, finded, err = FindLastLosslessly[float32, uint64](1000, 0)
+	number, found, err = FindLastLosslessly[float32, uint64](1000, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(1<<24), number)
 
-	number, finded, err = FindLastLosslessly[float64, uint64](1000, 0)
+	number, found, err = FindLastLosslessly[float64, uint64](1000, 0)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, uint64(1<<53), number)
 }
 
 func TestFindLastLosslesslyNegative(t *testing.T) {
-	number, finded, err := FindLastLosslessly[float32, int64](1, -1)
+	number, found, err := FindLastLosslessly[float32, int64](1, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-10000000000), number)
 
-	number, finded, err = FindLastLosslessly[float64, int64](1, -1)
+	number, found, err = FindLastLosslessly[float64, int64](1, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-1000000000000000000), number)
 
-	number, finded, err = FindLastLosslessly[float32, int64](2, -1)
+	number, found, err = FindLastLosslessly[float32, int64](2, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-1<<24), number)
 
-	number, finded, err = FindLastLosslessly[float64, int64](2, -1)
+	number, found, err = FindLastLosslessly[float64, int64](2, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-1<<53), number)
 
-	number, finded, err = FindLastLosslessly[float32, int64](1000, -1)
+	number, found, err = FindLastLosslessly[float32, int64](1000, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-1<<24), number)
 
-	number, finded, err = FindLastLosslessly[float64, int64](1000, -1)
+	number, found, err = FindLastLosslessly[float64, int64](1000, -1)
 	require.NoError(t, err)
-	require.True(t, finded)
+	require.True(t, found)
 	require.Equal(t, int64(-1<<53), number)
 }
 
@@ -81,13 +81,13 @@ func TestFindLastLosslesslyUnsuccessful(t *testing.T) {
 	_, _, err = FindLastLosslessly[float64, int8](100, -1)
 	require.Error(t, err)
 
-	_, finded, err := FindLastLosslessly[float64, int8](10, -1)
+	_, found, err := FindLastLosslessly[float64, int8](10, -1)
 	require.NoError(t, err)
-	require.False(t, finded)
+	require.False(t, found)
 
-	_, finded, err = FindLastLosslessly[float64, uint8](10, 1)
+	_, found, err = FindLastLosslessly[float64, uint8](10, 1)
 	require.NoError(t, err)
-	require.False(t, finded)
+	require.False(t, found)
 }
 
 func TestIsSequenceLosslessly(t *testing.T) {
