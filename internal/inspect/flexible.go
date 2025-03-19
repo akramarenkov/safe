@@ -1,13 +1,13 @@
 package inspect
 
 import (
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Options of inspecting. A inspected and reference functions must be specified.
-type Opts[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
+type Opts[TypeFrom, TypeTo confines.UpToI32, TypeRef confines.IF64] struct {
 	// Number of nested loops, i.e. the number of generated arguments for reference and
 	// inspected functions. A value greater than three is not recommended due to low
 	// performance
@@ -23,7 +23,7 @@ type Opts[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct
 	Reference[TypeRef]
 }
 
-type inspector[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
+type inspector[TypeFrom, TypeTo confines.UpToI32, TypeRef confines.IF64] struct {
 	opts Opts[TypeFrom, TypeTo, TypeRef]
 
 	// Minimum and maximum value for specified TypeTo type
@@ -51,7 +51,7 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) isValid() error {
 }
 
 // Performs inspection.
-func Do[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64](
+func Do[TypeFrom, TypeTo confines.UpToI32, TypeRef confines.IF64](
 	opts Opts[TypeFrom, TypeTo, TypeRef],
 ) (Result[TypeFrom, TypeTo, TypeRef], error) {
 	if err := opts.isValid(); err != nil {
@@ -149,7 +149,7 @@ func (insp *inspector[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 	return false
 }
 
-func loop[TypeRef constraints.IF64, TypeFrom constraints.UpToI32](
+func loop[TypeRef confines.IF64, TypeFrom confines.UpToI32](
 	level uint,
 	span func() (TypeFrom, TypeFrom),
 	do func(args ...TypeFrom) bool,
@@ -184,7 +184,7 @@ func loop[TypeRef constraints.IF64, TypeFrom constraints.UpToI32](
 	return false
 }
 
-func getSpan[TypeFrom constraints.UpToI32, TypeRef constraints.IF64](
+func getSpan[TypeFrom confines.UpToI32, TypeRef confines.IF64](
 	span func() (TypeFrom, TypeFrom),
 ) (TypeRef, TypeRef) {
 	if span == nil {

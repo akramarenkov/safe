@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"math/big"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 	"github.com/akramarenkov/safe/internal/is"
 
 	"github.com/akramarenkov/intspec"
@@ -13,7 +13,7 @@ import (
 // Fills arguments with random values.
 //
 // Data in this filler never ends, so it must be specified last.
-type Rand[Type constraints.UpToI32] struct {
+type Rand[Type confines.UpToI32] struct {
 	maximum     int64
 	maximumRand *big.Int
 }
@@ -21,7 +21,7 @@ type Rand[Type constraints.UpToI32] struct {
 // Creates filler that fill arguments with random values.
 //
 // Data in this filler never ends, so it must be specified last.
-func NewRand[Type constraints.UpToI32]() *Rand[Type] {
+func NewRand[Type confines.UpToI32]() *Rand[Type] {
 	_, maximum := intspec.Range[Type]()
 
 	rnd := &Rand[Type]{

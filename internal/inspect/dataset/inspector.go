@@ -8,7 +8,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 	"github.com/akramarenkov/safe/internal/is"
 
 	abytes "github.com/akramarenkov/alter/bytes"
@@ -16,7 +16,7 @@ import (
 	"github.com/akramarenkov/reusable"
 )
 
-type inspector[Type constraints.UpToI32] struct {
+type inspector[Type confines.UpToI32] struct {
 	// Inspected function
 	inspected inspect.Inspected[Type, Type]
 
@@ -37,7 +37,7 @@ type inspector[Type constraints.UpToI32] struct {
 }
 
 // Performs inspecting with dataset from file.
-func InspectFromFile[Type constraints.UpToI32](
+func InspectFromFile[Type confines.UpToI32](
 	inspected inspect.Inspected[Type, Type],
 	path string,
 ) (inspect.Result[Type, Type, int64], error) {
@@ -52,7 +52,7 @@ func InspectFromFile[Type constraints.UpToI32](
 }
 
 // Performs inspecting with dataset from reader.
-func Inspect[Type constraints.UpToI32](
+func Inspect[Type confines.UpToI32](
 	inspected inspect.Inspected[Type, Type],
 	reader io.Reader,
 ) (inspect.Result[Type, Type, int64], error) {
@@ -135,7 +135,7 @@ func (insp *inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 	return fault, reference, args, nil
 }
 
-func parseArg[Type constraints.UpToI32](field string) (Type, error) {
+func parseArg[Type confines.UpToI32](field string) (Type, error) {
 	size := intspec.BitSize[Type]()
 
 	if is.Signed[Type]() {

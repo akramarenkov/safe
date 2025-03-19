@@ -4,18 +4,18 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Inspected function with four arguments.
-type Inspected4[Type constraints.I8] func(first, second, third, fourth Type) (Type, error)
+type Inspected4[Type confines.I8] func(first, second, third, fourth Type) (Type, error)
 
 // Function with four arguments that returns a reference value.
 type Reference4 func(first, second, third, fourth int64) (int64, error)
 
-type inspector4[Type constraints.I8] struct {
+type inspector4[Type confines.I8] struct {
 	// Inspected function with four arguments
 	inspected Inspected4[Type]
 
@@ -30,7 +30,7 @@ type inspector4[Type constraints.I8] struct {
 // Performs inspection with four arguments.
 //
 // A inspected and reference functions must be specified.
-func Do4[Type constraints.I8](
+func Do4[Type confines.I8](
 	inspected Inspected4[Type],
 	reference Reference4,
 ) (Result[Type, Type, int64], error) {

@@ -1,14 +1,14 @@
 package filler
 
 import (
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 	"github.com/akramarenkov/safe/internal/is"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
-func Boundaries[Type constraints.UpToI32]() []Type {
+func Boundaries[Type confines.UpToI32]() []Type {
 	minimum, maximum := intspec.Range[Type]()
 
 	zero := Type(0)

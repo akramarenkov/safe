@@ -1,5 +1,5 @@
 // Internal package with constraints used when inspecting.
-package constraints
+package confines
 
 // Constraints by 8-bit integer types.
 type I8 interface {

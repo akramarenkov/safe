@@ -3,7 +3,7 @@ package filler
 import (
 	"errors"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 )
 
 var (
@@ -11,10 +11,10 @@ var (
 )
 
 // Filler that always returns an error.
-type Faulty[Type constraints.UpToI32] struct{}
+type Faulty[Type confines.UpToI32] struct{}
 
 // Creates filler that always returns an error.
-func NewFaulty[Type constraints.UpToI32]() *Faulty[Type] {
+func NewFaulty[Type confines.UpToI32]() *Faulty[Type] {
 	return &Faulty[Type]{}
 }
 

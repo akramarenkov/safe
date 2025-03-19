@@ -3,7 +3,7 @@ package filler
 import (
 	"errors"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 	"github.com/akramarenkov/safe/internal/iterator"
 )
 
@@ -12,7 +12,7 @@ var (
 )
 
 // Returns values from begin to end inclusive.
-func Span[Type constraints.UpToI32](begin, end Type) []Type {
+func Span[Type confines.UpToI32](begin, end Type) []Type {
 	if begin > end {
 		panic(ErrBeginGreaterEnd)
 	}

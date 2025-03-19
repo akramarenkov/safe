@@ -1,9 +1,9 @@
 package filler
 
-import "github.com/akramarenkov/safe/internal/inspect/constraints"
+import "github.com/akramarenkov/safe/internal/inspect/confines"
 
 // Fills arguments with values ​from set.
-type Set[Type constraints.UpToI32] struct {
+type Set[Type confines.UpToI32] struct {
 	completed bool
 	indices   []int
 	set       []Type
@@ -12,7 +12,7 @@ type Set[Type constraints.UpToI32] struct {
 // Creates filler that fill arguments with values ​from set.
 //
 // If setter functions was not specified then [Boundaries] function will be used.
-func NewSet[Type constraints.UpToI32](setters ...func() []Type) *Set[Type] {
+func NewSet[Type confines.UpToI32](setters ...func() []Type) *Set[Type] {
 	bnd := &Set[Type]{}
 
 	for _, setter := range setters {

@@ -5,7 +5,7 @@ package incrementor
 import (
 	"errors"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 )
 
 // Checks that the arguments change as if they were incremented by nested loops.
-type Incrementor[Type constraints.UpToI32] struct {
+type Incrementor[Type confines.UpToI32] struct {
 	begin Type
 	end   Type
 
@@ -23,7 +23,7 @@ type Incrementor[Type constraints.UpToI32] struct {
 }
 
 // Creates Incrementor instance.
-func New[Type constraints.UpToI32](
+func New[Type confines.UpToI32](
 	loopsQuantity uint,
 	begin Type,
 	end Type,

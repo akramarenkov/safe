@@ -8,14 +8,14 @@ import (
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Options of collecting. A reference function must be specified.
-type Opts[Type constraints.UpToI32] struct {
+type Opts[Type confines.UpToI32] struct {
 	// Quantity of arguments for inspected and reference functions
 	ArgsQuantity int
 
@@ -67,7 +67,7 @@ func (opts Opts[Type]) datasetLength() int {
 	return length
 }
 
-type collector[Type constraints.UpToI32] struct {
+type collector[Type confines.UpToI32] struct {
 	opts Opts[Type]
 
 	// Writer associated with dataset storage
@@ -99,7 +99,7 @@ type collector[Type constraints.UpToI32] struct {
 }
 
 // Performs collecting dataset to file.
-func CollectToFile[Type constraints.UpToI32](opts Opts[Type], path string) error {
+func CollectToFile[Type confines.UpToI32](opts Opts[Type], path string) error {
 	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, defaultFileMode)
 	if err != nil {
 		return err
@@ -111,7 +111,7 @@ func CollectToFile[Type constraints.UpToI32](opts Opts[Type], path string) error
 }
 
 // Performs collecting dataset to writer.
-func Collect[Type constraints.UpToI32](opts Opts[Type], writer io.Writer) error {
+func Collect[Type confines.UpToI32](opts Opts[Type], writer io.Writer) error {
 	if err := opts.isValid(); err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func (cltr *collector[Type]) dupArgs64() []int64 {
 }
 
 // Writes dataset item to specified writer.
-func WriteItem[Type constraints.UpToI32](
+func WriteItem[Type confines.UpToI32](
 	writer io.Writer,
 	reference inspect.Reference[int64],
 	args ...Type,
@@ -297,7 +297,7 @@ func WriteItem[Type constraints.UpToI32](
 	return nil
 }
 
-func prepareItem[Type constraints.UpToI32](
+func prepareItem[Type confines.UpToI32](
 	buffer []byte,
 	reference int64,
 	fault error,
@@ -320,7 +320,7 @@ func prepareItem[Type constraints.UpToI32](
 	return buffer
 }
 
-func calcMaxItemLength[Type constraints.UpToI32](argsQuantity int) int {
+func calcMaxItemLength[Type confines.UpToI32](argsQuantity int) int {
 	const (
 		maxFaultLen        = len("false")
 		maxReferenceLen    = len(" -9223372036854775808")

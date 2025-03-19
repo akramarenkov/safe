@@ -1,15 +1,15 @@
 package inspect
 
-import "github.com/akramarenkov/safe/internal/inspect/constraints"
+import "github.com/akramarenkov/safe/internal/inspect/confines"
 
 // Inspected function.
-type Inspected[TypeFrom, TypeTo constraints.UpToI32] func(args ...TypeFrom) (TypeTo, error)
+type Inspected[TypeFrom, TypeTo confines.UpToI32] func(args ...TypeFrom) (TypeTo, error)
 
 // Function that returns a reference value.
-type Reference[TypeRef constraints.IF64] func(args ...TypeRef) (TypeRef, error)
+type Reference[TypeRef confines.IF64] func(args ...TypeRef) (TypeRef, error)
 
 // Inspection result.
-type Result[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
+type Result[TypeFrom, TypeTo confines.UpToI32, TypeRef confines.IF64] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error

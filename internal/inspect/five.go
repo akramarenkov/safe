@@ -4,18 +4,18 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/akramarenkov/safe/internal/inspect/constraints"
+	"github.com/akramarenkov/safe/internal/inspect/confines"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Inspected function with five arguments.
-type Inspected5[Type constraints.I8] func(first, second, third, fourth, fifth Type) (Type, error)
+type Inspected5[Type confines.I8] func(first, second, third, fourth, fifth Type) (Type, error)
 
 // Function with five arguments that returns a reference value.
 type Reference5 func(first, second, third, fourth, fifth int64) (int64, error)
 
-type inspector5[Type constraints.I8] struct {
+type inspector5[Type confines.I8] struct {
 	// Inspected function with five arguments
 	inspected Inspected5[Type]
 
@@ -30,7 +30,7 @@ type inspector5[Type constraints.I8] struct {
 // Performs inspection with five arguments.
 //
 // A inspected and reference functions must be specified.
-func Do5[Type constraints.I8](
+func Do5[Type confines.I8](
 	inspected Inspected5[Type],
 	reference Reference5,
 ) (Result[Type, Type, int64], error) {
