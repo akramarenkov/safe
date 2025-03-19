@@ -24,11 +24,21 @@ func benchSpanAdd3U() ([]uint8, []uint8, []uint8) {
 	return span, span, span
 }
 
+// Six result arguments are used for the following reasons:
+//
+// 1. To use in the benchmark that part of the function code that sorts
+// the input arguments and increase the impact of this sorting on the benchmark results
+//
+// 2. To reduce the chances of using in the benchmark a number of nested loops
+// different from the intended one
+//
+//nolint:gocritic // The reasons are stated above.
 func benchSpanAddM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
 	span := int8Short()
 	return span, span, span, span, span, span
 }
 
+//nolint:gocritic // For reasons, see the description of the [benchSpanAddM] function.
 func benchSpanAddMU() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
 	span := uint8Short()
 	return span, span, span, span, span, span
@@ -54,11 +64,13 @@ func benchSpanSub3U() ([]uint8, []uint8, []uint8) {
 	return span, span, span
 }
 
+//nolint:gocritic // For reasons, see the description of the [benchSpanAddM] function.
 func benchSpanSubM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
 	span := int8Short()
 	return span, span, span, span, span, span
 }
 
+//nolint:gocritic // For reasons, see the description of the [benchSpanAddM] function.
 func benchSpanSubMU() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
 	span := uint8Short()
 	return span, span, span, span, span, span
@@ -84,11 +96,13 @@ func benchSpanMul3U() ([]uint8, []uint8, []uint8) {
 	return span, span, span
 }
 
+//nolint:gocritic // For reasons, see the description of the [benchSpanAddM] function.
 func benchSpanMulM() ([]int8, []int8, []int8, []int8, []int8, []int8) {
 	span := int8Short()
 	return span, span, span, span, span, span
 }
 
+//nolint:gocritic // For reasons, see the description of the [benchSpanAddM] function.
 func benchSpanMulMU() ([]uint8, []uint8, []uint8, []uint8, []uint8, []uint8) {
 	span := uint8Short()
 	return span, span, span, span, span, span
