@@ -1,29 +1,15 @@
-// Internal package with types used when inspecting.
-package types
+package inspect
 
-// Constraints by 8-bit integer types.
-type I8 interface {
-	~int8 | ~uint8
-}
-
-// Constraints by up to 32-bit integer types.
-type UpToI32 interface {
-	I8 | ~int16 | ~uint16 | ~int32 | ~uint32
-}
-
-// Constraints by 64-bit signed integer and floating point types.
-type IF64 interface {
-	~int64 | ~float64
-}
+import "github.com/akramarenkov/safe/internal/inspect/constraints"
 
 // Inspected function.
-type Inspected[TypeFrom, TypeTo UpToI32] func(args ...TypeFrom) (TypeTo, error)
+type Inspected[TypeFrom, TypeTo constraints.UpToI32] func(args ...TypeFrom) (TypeTo, error)
 
 // Function that returns a reference value.
-type Reference[TypeRef IF64] func(args ...TypeRef) (TypeRef, error)
+type Reference[TypeRef constraints.IF64] func(args ...TypeRef) (TypeRef, error)
 
 // Inspection result.
-type Result[TypeFrom, TypeTo UpToI32, TypeRef IF64] struct {
+type Result[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
 	// Value returned by the inspected function. Filled in if its value is not
 	// equal to the reference value or the inspected function incorrectly reports
 	// the absence of an error

@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/akramarenkov/safe/internal/env"
-	"github.com/akramarenkov/safe/internal/inspect/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -64,15 +63,15 @@ func TestDo5Error(t *testing.T) {
 
 	result, err := Do5(inspected, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 
 	result, err = Do5[int8](nil, reference)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 
 	result, err = Do5[int8](nil, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 }
 
 func TestDo5NegativeConclusionSig(t *testing.T) {
@@ -172,7 +171,7 @@ func BenchmarkDo5(b *testing.B) {
 	}
 
 	var (
-		result types.Result[int8, int8, int64]
+		result Result[int8, int8, int64]
 		err    error
 	)
 

@@ -1,11 +1,9 @@
 package filler
 
-import (
-	"github.com/akramarenkov/safe/internal/inspect/types"
-)
+import "github.com/akramarenkov/safe/internal/inspect/constraints"
 
 // Filler that always returns the same item.
-type Same[Type types.UpToI32] struct {
+type Same[Type constraints.UpToI32] struct {
 	maximum int
 	value   Type
 }
@@ -14,7 +12,7 @@ type Same[Type types.UpToI32] struct {
 //
 // Arguments are filled with 'value' value, after 'max' number of calls method Fill
 // will stop filling arguments and will return true.
-func NewSame[Type types.UpToI32](value Type, maximum int) *Same[Type] {
+func NewSame[Type constraints.UpToI32](value Type, maximum int) *Same[Type] {
 	sm := &Same[Type]{
 		maximum: maximum,
 		value:   value,

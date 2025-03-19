@@ -4,8 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/inspect/types"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -52,15 +50,15 @@ func TestDo4Error(t *testing.T) {
 
 	result, err := Do4(inspected, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 
 	result, err = Do4[int8](nil, reference)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 
 	result, err = Do4[int8](nil, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, Result[int8, int8, int64]{}, result)
 }
 
 func TestDo4NegativeConclusionSig(t *testing.T) {
@@ -153,7 +151,7 @@ func TestDo4NegativeConclusionUns(t *testing.T) {
 
 func BenchmarkDo4(b *testing.B) {
 	var (
-		result types.Result[int8, int8, int64]
+		result Result[int8, int8, int64]
 		err    error
 	)
 

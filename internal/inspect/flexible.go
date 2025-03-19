@@ -1,13 +1,13 @@
 package inspect
 
 import (
-	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/inspect/constraints"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Options of inspecting. A inspected and reference functions must be specified.
-type Opts[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
+type Opts[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
 	// Number of nested loops, i.e. the number of generated arguments for reference and
 	// inspected functions. A value greater than three is not recommended due to low
 	// performance
@@ -17,13 +17,13 @@ type Opts[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
 	Span func() (TypeFrom, TypeFrom)
 
 	// Inspected function
-	types.Inspected[TypeFrom, TypeTo]
+	Inspected[TypeFrom, TypeTo]
 
 	// Function that returns a reference value
-	types.Reference[TypeRef]
+	Reference[TypeRef]
 }
 
-type inspector[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
+type inspector[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64] struct {
 	opts Opts[TypeFrom, TypeTo, TypeRef]
 
 	// Minimum and maximum value for specified TypeTo type
@@ -35,7 +35,7 @@ type inspector[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64] struct {
 	argsRef  []TypeRef
 
 	// Result of inspecting
-	result types.Result[TypeFrom, TypeTo, TypeRef]
+	result Result[TypeFrom, TypeTo, TypeRef]
 }
 
 func (opts Opts[TypeFrom, TypeTo, TypeRef]) isValid() error {
@@ -51,11 +51,11 @@ func (opts Opts[TypeFrom, TypeTo, TypeRef]) isValid() error {
 }
 
 // Performs inspection.
-func Do[TypeFrom, TypeTo types.UpToI32, TypeRef types.IF64](
+func Do[TypeFrom, TypeTo constraints.UpToI32, TypeRef constraints.IF64](
 	opts Opts[TypeFrom, TypeTo, TypeRef],
-) (types.Result[TypeFrom, TypeTo, TypeRef], error) {
+) (Result[TypeFrom, TypeTo, TypeRef], error) {
 	if err := opts.isValid(); err != nil {
-		return types.Result[TypeFrom, TypeTo, TypeRef]{}, err
+		return Result[TypeFrom, TypeTo, TypeRef]{}, err
 	}
 
 	minimum, maximum := intspec.Range[TypeTo]()
@@ -149,7 +149,7 @@ func (insp *inspector[TypeFrom, TypeTo, TypeRef]) do(args ...TypeFrom) bool {
 	return false
 }
 
-func loop[TypeRef types.IF64, TypeFrom types.UpToI32](
+func loop[TypeRef constraints.IF64, TypeFrom constraints.UpToI32](
 	level uint,
 	span func() (TypeFrom, TypeFrom),
 	do func(args ...TypeFrom) bool,
@@ -184,7 +184,7 @@ func loop[TypeRef types.IF64, TypeFrom types.UpToI32](
 	return false
 }
 
-func getSpan[TypeFrom types.UpToI32, TypeRef types.IF64](
+func getSpan[TypeFrom constraints.UpToI32, TypeRef constraints.IF64](
 	span func() (TypeFrom, TypeFrom),
 ) (TypeRef, TypeRef) {
 	if span == nil {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/inspect"
 	"github.com/akramarenkov/safe/internal/iterator"
 
 	"github.com/stretchr/testify/require"
@@ -65,19 +65,19 @@ func TestInspectError(t *testing.T) {
 
 	result, err := Inspect(inspected, bytes.NewBuffer(nil))
 	require.NoError(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, inspect.Result[int8, int8, int64]{}, result)
 
 	result, err = Inspect(inspected, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, inspect.Result[int8, int8, int64]{}, result)
 
 	result, err = Inspect[int8](nil, bytes.NewBuffer(nil))
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, inspect.Result[int8, int8, int64]{}, result)
 
 	result, err = Inspect[int8](nil, nil)
 	require.Error(t, err)
-	require.Equal(t, types.Result[int8, int8, int64]{}, result)
+	require.Equal(t, inspect.Result[int8, int8, int64]{}, result)
 }
 
 func TestInspectConvertErrorSig(t *testing.T) {
@@ -143,7 +143,7 @@ func TestInspectNegativeConclusion(t *testing.T) {
 		return 0, errOverflow
 	}
 
-	collect := func(reference types.Reference[int64]) {
+	collect := func(reference inspect.Reference[int64]) {
 		buffer.Reset()
 
 		for first := range iterator.Iter[int8](math.MinInt8, math.MaxInt8) {

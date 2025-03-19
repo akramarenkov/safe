@@ -4,18 +4,18 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/inspect/constraints"
 
 	"github.com/akramarenkov/intspec"
 )
 
 // Inspected function with five arguments.
-type Inspected5[Type types.I8] func(first, second, third, fourth, fifth Type) (Type, error)
+type Inspected5[Type constraints.I8] func(first, second, third, fourth, fifth Type) (Type, error)
 
 // Function with five arguments that returns a reference value.
 type Reference5 func(first, second, third, fourth, fifth int64) (int64, error)
 
-type inspector5[Type types.I8] struct {
+type inspector5[Type constraints.I8] struct {
 	// Inspected function with five arguments
 	inspected Inspected5[Type]
 
@@ -30,16 +30,16 @@ type inspector5[Type types.I8] struct {
 // Performs inspection with five arguments.
 //
 // A inspected and reference functions must be specified.
-func Do5[Type types.I8](
+func Do5[Type constraints.I8](
 	inspected Inspected5[Type],
 	reference Reference5,
-) (types.Result[Type, Type, int64], error) {
+) (Result[Type, Type, int64], error) {
 	if inspected == nil {
-		return types.Result[Type, Type, int64]{}, ErrInspectedNotSpecified
+		return Result[Type, Type, int64]{}, ErrInspectedNotSpecified
 	}
 
 	if reference == nil {
-		return types.Result[Type, Type, int64]{}, ErrReferenceNotSpecified
+		return Result[Type, Type, int64]{}, ErrReferenceNotSpecified
 	}
 
 	minimum, maximum := intspec.Range[Type]()
@@ -55,13 +55,13 @@ func Do5[Type types.I8](
 	return insp.do(), nil
 }
 
-func (insp *inspector5[Type]) do() types.Result[Type, Type, int64] {
+func (insp *inspector5[Type]) do() Result[Type, Type, int64] {
 	parallelization := runtime.NumCPU()
 
 	// Buffer size is chosen for simplicity: so that all goroutines can
 	// definitely write the result and not block on writing even without reading
 	// these results
-	results := make(chan types.Result[Type, Type, int64], parallelization)
+	results := make(chan Result[Type, Type, int64], parallelization)
 	defer close(results)
 
 	wg := &sync.WaitGroup{}
@@ -96,7 +96,7 @@ func (insp *inspector5[Type]) do() types.Result[Type, Type, int64] {
 	close(firsts)
 
 	received := 0
-	result := types.Result[Type, Type, int64]{}
+	result := Result[Type, Type, int64]{}
 
 	for interim := range results {
 		received++
@@ -118,8 +118,8 @@ func (insp *inspector5[Type]) do() types.Result[Type, Type, int64] {
 }
 
 //nolint:gocognit // When the complexity decreases, the performance drops by half.
-func (insp *inspector5[Type]) loop(firsts chan int64) types.Result[Type, Type, int64] {
-	result := types.Result[Type, Type, int64]{}
+func (insp *inspector5[Type]) loop(firsts chan int64) Result[Type, Type, int64] {
+	result := Result[Type, Type, int64]{}
 
 	for first := range firsts {
 		for second := insp.minimum; second <= insp.maximum; second++ {

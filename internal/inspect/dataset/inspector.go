@@ -8,7 +8,7 @@ import (
 
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect"
-	"github.com/akramarenkov/safe/internal/inspect/types"
+	"github.com/akramarenkov/safe/internal/inspect/constraints"
 	"github.com/akramarenkov/safe/internal/is"
 
 	abytes "github.com/akramarenkov/alter/bytes"
@@ -16,9 +16,9 @@ import (
 	"github.com/akramarenkov/reusable"
 )
 
-type inspector[Type types.UpToI32] struct {
+type inspector[Type constraints.UpToI32] struct {
 	// Inspected function
-	inspected types.Inspected[Type, Type]
+	inspected inspect.Inspected[Type, Type]
 
 	// Reader associated with dataset source
 	reader io.Reader
@@ -33,17 +33,17 @@ type inspector[Type types.UpToI32] struct {
 	fields  *reusable.Buffer[[]byte]
 
 	// Result of inspecting
-	result types.Result[Type, Type, int64]
+	result inspect.Result[Type, Type, int64]
 }
 
 // Performs inspecting with dataset from file.
-func InspectFromFile[Type types.UpToI32](
-	inspected types.Inspected[Type, Type],
+func InspectFromFile[Type constraints.UpToI32](
+	inspected inspect.Inspected[Type, Type],
 	path string,
-) (types.Result[Type, Type, int64], error) {
+) (inspect.Result[Type, Type, int64], error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return types.Result[Type, Type, int64]{}, err
+		return inspect.Result[Type, Type, int64]{}, err
 	}
 
 	defer file.Close()
@@ -52,16 +52,16 @@ func InspectFromFile[Type types.UpToI32](
 }
 
 // Performs inspecting with dataset from reader.
-func Inspect[Type types.UpToI32](
-	inspected types.Inspected[Type, Type],
+func Inspect[Type constraints.UpToI32](
+	inspected inspect.Inspected[Type, Type],
 	reader io.Reader,
-) (types.Result[Type, Type, int64], error) {
+) (inspect.Result[Type, Type, int64], error) {
 	if inspected == nil {
-		return types.Result[Type, Type, int64]{}, inspect.ErrInspectedNotSpecified
+		return inspect.Result[Type, Type, int64]{}, inspect.ErrInspectedNotSpecified
 	}
 
 	if reader == nil {
-		return types.Result[Type, Type, int64]{}, ErrReaderNotSpecified
+		return inspect.Result[Type, Type, int64]{}, ErrReaderNotSpecified
 	}
 
 	minimum, maximum := intspec.Range[Type]()
@@ -79,7 +79,7 @@ func Inspect[Type types.UpToI32](
 	}
 
 	if err := insp.main(); err != nil {
-		return types.Result[Type, Type, int64]{}, err
+		return inspect.Result[Type, Type, int64]{}, err
 	}
 
 	return insp.result, nil
@@ -135,7 +135,7 @@ func (insp *inspector[Type]) convFields(fields [][]byte) (bool, int64, []Type, e
 	return fault, reference, args, nil
 }
 
-func parseArg[Type types.UpToI32](field string) (Type, error) {
+func parseArg[Type constraints.UpToI32](field string) (Type, error) {
 	size := intspec.BitSize[Type]()
 
 	if is.Signed[Type]() {

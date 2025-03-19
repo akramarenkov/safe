@@ -7,7 +7,6 @@ import (
 
 	"github.com/akramarenkov/safe/internal/env"
 	"github.com/akramarenkov/safe/internal/inspect/incrementor"
-	"github.com/akramarenkov/safe/internal/inspect/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -387,7 +386,7 @@ func BenchmarkDo(b *testing.B) {
 	}
 
 	var (
-		result types.Result[int8, int8, int64]
+		result Result[int8, int8, int64]
 		err    error
 	)
 
