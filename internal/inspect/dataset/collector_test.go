@@ -13,7 +13,7 @@ import (
 	"github.com/akramarenkov/safe/internal/consts"
 	"github.com/akramarenkov/safe/internal/inspect/dataset/filler"
 
-	"github.com/akramarenkov/wrecker"
+	"github.com/akramarenkov/wrecker/iow"
 	"github.com/stretchr/testify/require"
 )
 
@@ -200,7 +200,7 @@ func TestCollectError(t *testing.T) {
 	err = Collect(opts, nil)
 	require.Error(t, err)
 
-	err = Collect(opts, wrecker.New(wrecker.Opts{Error: io.ErrUnexpectedEOF}))
+	err = Collect(opts, iow.New(iow.Opts{Error: io.ErrUnexpectedEOF}))
 	require.Equal(t, io.ErrUnexpectedEOF, err)
 
 	opts = Opts[int8]{
@@ -264,7 +264,7 @@ func TestWriteItem(t *testing.T) {
 }
 
 func TestWriteItemError(t *testing.T) {
-	err := WriteItem[int8](wrecker.New(wrecker.Opts{}), testReference, 1, 1, 1, 1, 1)
+	err := WriteItem[int8](iow.New(iow.Opts{}), testReference, 1, 1, 1, 1, 1)
 	require.Error(t, err)
 }
 
