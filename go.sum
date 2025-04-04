@@ -4,8 +4,8 @@ github.com/akramarenkov/intspec v0.0.3 h1:nBZUoRZH5tMytjZgOBvZqd2epjtM4L9CB0sq58
 github.com/akramarenkov/intspec v0.0.3/go.mod h1:x+cashrrqoTTqx7spFMYMCwkaL/HAn+Gl/lYphSx7zU=
 github.com/akramarenkov/reusable v0.1.5 h1:9pV8Xe0EZJRptXjqWhAbJ2AXfG0ed9NAwZujxmLkftc=
 github.com/akramarenkov/reusable v0.1.5/go.mod h1:SpWyZDYWvYWA+c8RSQ+tymQOI7t4BWMtwIvadEpNgUk=
-github.com/akramarenkov/wrecker v0.2.0 h1:NnEeVrpHMEJ8SN6qXdpO5mT5leD0V7QBQMQm8W3+YMU=
-github.com/akramarenkov/wrecker v0.2.0/go.mod h1:2WHj+WSvPDnntWfcyqy2z3gcNxDBP9qNjPcJxAj2FUw=
+github.com/akramarenkov/wrecker v0.3.0 h1:1g0DPmm5RifXHEMIAQibeZNarT/4/nsgCFT46jGF6t4=
+github.com/akramarenkov/wrecker v0.3.0/go.mod h1:NAzl91+dSo5MXmSrTJ8AYrC3zpUZYu86Mau3zvXT5CA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
