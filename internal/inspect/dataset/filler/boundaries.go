@@ -7,7 +7,7 @@ import (
 	"github.com/akramarenkov/intspec"
 )
 
-// Returns values ​​equal to and close to the minimum and maximum values ​​for the used type.
+// Returns values equal to and close to the minimum and maximum values for the used type.
 func Boundaries[Type confines.UpToI32]() []Type {
 	minimum, maximum := intspec.Range[Type]()
 

@@ -2,14 +2,14 @@ package filler
 
 import "github.com/akramarenkov/safe/internal/inspect/confines"
 
-// Fills arguments with values ​from set.
+// Fills arguments with values from set.
 type Set[Type confines.UpToI32] struct {
 	completed bool
 	indices   []int
 	set       []Type
 }
 
-// Creates filler that fill arguments with values ​from set.
+// Creates filler that fill arguments with values from set.
 //
 // If setter functions was not specified then [Boundaries] function will be used.
 func NewSet[Type confines.UpToI32](setters ...func() []Type) *Set[Type] {
@@ -28,7 +28,7 @@ func NewSet[Type confines.UpToI32](setters ...func() []Type) *Set[Type] {
 	return bnd
 }
 
-// Fills arguments with values ​from set.
+// Fills arguments with values from set.
 func (bnd *Set[Type]) Fill(args []Type, args64 []int64) (bool, error) {
 	if bnd.completed {
 		return true, nil

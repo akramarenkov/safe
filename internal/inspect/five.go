@@ -71,7 +71,7 @@ func (insp *inspector5[Type]) do() Result[Type, Type, int64] {
 	// definitely write all the first numbers and not block on writing even without
 	// reading these first numbers
 	//
-	// insp.maximum and insp.minimum accept values ​​in the range int8|uint8, and
+	// insp.maximum and insp.minimum accept values in the range int8|uint8, and
 	// themselves have type int64, so overflow is impossible
 	firsts := make(chan int64, insp.maximum-insp.minimum)
 

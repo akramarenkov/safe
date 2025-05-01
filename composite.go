@@ -57,7 +57,7 @@ func AddDiv[Type constraints.Integer](first, second, divisor Type) (Type, error)
 
 	// The idea is to complement one of the arguments being added to the maximum
 	// (if the arguments are positive) or minimum (if the arguments are negative)
-	// values for a given type ​​so that the division result is never zero. Then divide
+	// values for a given type so that the division result is never zero. Then divide
 	// separately the maximum/minimum value and the excess that arose during overflow,
 	// add the quotients from these divisions and add the quotient from dividing the
 	// sum of the remainders from the two previous divisions
